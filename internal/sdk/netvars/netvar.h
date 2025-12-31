@@ -86,6 +86,7 @@ inline void DumpToFile(
 	}
 }
 
+// Use this to dump the netvars to netvars.txt in TF2's root folder!
 inline void SetupNetVarsToFile()
 {
 	interfaces::vstdlib->ConsoleColorPrintf(

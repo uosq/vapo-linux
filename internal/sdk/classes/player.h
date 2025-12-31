@@ -67,6 +67,9 @@ public:
 	NETVAR(m_nPlayerCondEx3, "CTFPlayer->m_nPlayerCondEx3", int)
 	NETVAR(m_nPlayerCondEx4, "CTFPlayer->m_nPlayerCondEx4", int)
 	NETVAR(m_condition_bits, "CTFPlayer->_condition_bits", int)
+	// !!! Only has 2 fields ([0], [1])
+	NETVAR(GetEyeAngles, "CTFPlayer->m_angEyeAngles[0]", Vector)
+	NETVAR(m_vecViewOffset, "CBasePlayer->m_vecViewOffset[0]", Vector)
 
 	bool IsAlive()
 	{
@@ -87,5 +90,15 @@ public:
 		}
 
 		return false;
+	}
+
+	Vector GetCenter()
+	{
+		return GetAbsOrigin() + ((m_vecMins() + m_vecMaxs()) * 0.5f);
+	}
+
+	Vector GetEyePos()
+	{
+		return GetAbsOrigin() + m_vecViewOffset();
 	}
 };

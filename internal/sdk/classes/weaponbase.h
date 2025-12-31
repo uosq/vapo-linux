@@ -15,7 +15,7 @@ class CTFGrenadePipebombProjectile;
 
 typedef unsigned short WEAPON_FILE_INFO_HANDLE;
 
-inline FileWeaponInfo_t* Rebuild_GetFileWeaponInfoFromhandle(void* handle)
+inline FileWeaponInfo_t* Rebuild_GetFileWeaponInfoFromHandle(void* handle)
 {
 	// GetFileWeaponInfoFromHandle 66 3B 3D D3 03 77 01 48 8D 05 72 FC 76 01 ? ? 48 8B 15 B1 03 77 01
 	using GetFileWeaponInfoFromHandleFn = FileWeaponInfo_t*(*)(void*);
@@ -46,7 +46,7 @@ public:
 	NETVAR(m_nInspectStage, "CTFWeaponBase->m_nInspectStage", int)
 	NETVAR(m_iConsecutiveShots, "CTFWeaponBase->m_iConsecutiveShots", int)
 
-	//NETVAR_OFFSET(GetWeaponInfo, "CTFWeaponBase->m_flEffectBarRegenTime", CTFWeaponInfo*, 16);
+	// gotta check, but these are probably all useless or return garbage dataa
 	NETVAR_OFFSET(m_flSmackTime, "CTFWeaponBase->m_nInspectStage", float, 28);
 	NETVAR_OFFSET(m_flCritTokenBucket, "CTFWeaponBase->m_iReloadMode", float, -244);
 	NETVAR_OFFSET(m_nCritChecks, "CTFWeaponBase->m_iReloadMode", int, -240);
@@ -56,12 +56,13 @@ public:
 	NETVAR_OFFSET(m_iCurrentSeed, "CTFWeaponBase->m_flLastCritCheckTime", int, 8);
 	NETVAR_OFFSET(m_flLastRapidFireCritCheckTime, "CTFWeaponBase->m_flLastCritCheckTime", float, 12);
 
+	// dentro de CTFWeaponBase!
 	const FileWeaponInfo_t* GetWeaponInfo()
 	{
 		// offset from EDI,word ptr [RDI + 0xF12] in CCombatWeapon(?)->GetTFWpnData()
 		uintptr_t handleAddress = (uintptr_t)this + 0xf12;
 		void* handleValue = *(void**)handleAddress;
-		return Rebuild_GetFileWeaponInfoFromhandle(handleValue);
+		return Rebuild_GetFileWeaponInfoFromHandle(handleValue);
 	}
 
 	//int GetSlot() { return GetWeaponInfo()->iSlot; }
@@ -73,11 +74,6 @@ public:
 		return fn(this);
 	}
 
-	/*int GetProjectileType()
-	{
-		return GetWeaponInfo()->GetWeaponData(GetWeaponID()).m_iProjectile;
-	}*/
-
 	bool IsEnergyWeapon() { return vtable::call<436, bool>(this); }
 	bool CalcIsAttackCriticalHelper() { return vtable::call<400, bool>(this); }
 	bool AreRandomCritsEnabled() { return vtable::call<406, bool>(this); }
@@ -87,6 +83,11 @@ public:
 	bool IsInReload()
 	{
 		return m_bInReload() || m_iReloadMode() != 0;
+	}
+
+	int GetSlot()
+	{
+		return GetWeaponInfo()->iSlot;
 	}
 
 	EWeaponType GetWeaponType()
@@ -103,8 +104,8 @@ public:
 			}
 		}*/
 
-		//if (GetSlot() == EWeaponSlot::SLOT_MELEE || GetWeaponID() == TF_WEAPON_BUILDER)
-			//return EWeaponType::MELEE;
+		if (GetSlot() == EWeaponSlot::SLOT_MELEE || GetWeaponID() == TF_WEAPON_BUILDER)
+			return EWeaponType::MELEE;
 
 		switch (m_iItemDefinitionIndex())
 		{

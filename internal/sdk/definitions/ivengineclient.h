@@ -2,10 +2,12 @@
 
 #include <cstddef>
 #include <sys/types.h>
+#include "buttoncode.h"
 #include "types.h"
 #include "../interfaces/createinterface.h"
 #include "../definitions/cviewsetup.h"
 #include "datatable.h"
+#include "inputenums.h"
 
 class IMaterial;
 class model_t;
@@ -15,7 +17,6 @@ class CSentence;
 class CAudioSource;
 class Vec3;
 
-class ButtonCode_t;
 class VMatrix;
 class ISpatialQuery;
 class IMaterialSystem;

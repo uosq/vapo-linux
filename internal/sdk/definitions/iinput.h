@@ -1,12 +1,12 @@
 #include "cusercmd.h"
 
+#include "buttoncode.h"
+#include "inputenums.h"
+
 struct kbutton_t;
 struct CameraThirdData_t;
 class bf_write;
 class bf_read;
-class GameActionSet_t;
-class GameActionSetFlags_t;
-class ButtonCode_t;
 
 class CVerifiedUserCmd
 {

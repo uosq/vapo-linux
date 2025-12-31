@@ -39,6 +39,8 @@ inline void HookedEngineVGuiPaint(IEngineVGui* thisptr, VGuiPanel_t type)
 	if (!pWeapon)
 		return;
 
+	// is this a good way of doing it? absolutely fucking not
+	// but im lazy and dont want to hook sdl and vulkan
 	if (auto response = cli.Get("/"))
 	{
 		nlohmann::json j = nlohmann::json::parse(response->body);

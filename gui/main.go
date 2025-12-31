@@ -15,6 +15,12 @@ var settings struct {
 		Enabled       bool `json:"enabled"`
 		IgnoreCloaked bool `json:"ignorecloaked"`
 	} `json:"esp"`
+
+	Aimbot struct {
+		Enabled bool    `json:"enabled"`
+		Key     string  `json:"key"`
+		Fov     float64 `json:"fov"`
+	} `json:"aimbot"`
 }
 
 func main() {
@@ -42,6 +48,12 @@ func main() {
 	w := a.NewWindow("Vapo Linux")
 
 	w.SetContent(container.NewVBox(
+		GroupV("Aimbot",
+			CreateToggle("Enabled", &settings.Aimbot.Enabled),
+			CreateEntry("Key", &settings.Aimbot.Key),
+			CreateSlider("Fov", &settings.Aimbot.Fov, 0, 180),
+		),
+
 		GroupV("ESP",
 			CreateToggle("Enabled", &settings.ESP.Enabled),
 			CreateToggle("Ignore Cloaked Spies", &settings.ESP.IgnoreCloaked),

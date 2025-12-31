@@ -15,6 +15,7 @@
 #include "../definitions/ivrenderview.h"
 #include "../definitions/attributemanager.h"
 #include "../definitions/weaponinfo.h"
+#include "../definitions/iinputsystem.h"
 #include <dlfcn.h>
 
 //static GetTFWeaponInfoFn GetTFWeaponInfo;
@@ -31,6 +32,7 @@ namespace interfaces
 	inline IEngineVGui* enginevgui = nullptr;
 	inline IEngineTool* enginetool = nullptr;
 	inline IVRenderView* renderview = nullptr;
+	inline IInputSystem* inputsystem = nullptr;
 	inline AttributeManager attributeManager;
 }
 
@@ -42,6 +44,7 @@ namespace factories
 	inline CreateInterfaceFn vgui = nullptr;
 	inline CreateInterfaceFn surface = nullptr;
 	inline CreateInterfaceFn enginevgui = nullptr;
+	inline CreateInterfaceFn inputsystem = nullptr;
 };
 
 template <typename T>
@@ -96,6 +99,14 @@ inline bool InitializeInterfaces()
 		factories::surface = (CreateInterfaceFn)dlsym(surface, "CreateInterface");
 	}
 
+	{ // inputsystem factory
+		void* inputsystem = dlopen("./bin/linux64/inputsystem.so", RTLD_NOLOAD | RTLD_NOW);
+		if (!inputsystem)
+			return false;
+
+		factories::inputsystem = (CreateInterfaceFn)(dlsym(inputsystem, "CreateInterface"));
+	}
+
 	// get interfaces
 	// i should probably check if they return false
 	GetInterface(interfaces::engine, factories::engine, "VEngineClient014");
@@ -107,6 +118,7 @@ inline bool InitializeInterfaces()
 	GetInterface(interfaces::entitylist, factories::client, "VClientEntityList003");
 	GetInterface(interfaces::enginetool, factories::engine, "VENGINETOOL003");
 	GetInterface(interfaces::renderview, factories::engine, "VEngineRenderView014");
+	GetInterface(interfaces::inputsystem, factories::inputsystem, "InputSystemVersion001");
 
 	{ // ClientModeShared
 		uintptr_t leaInstr = (uintptr_t)sigscan_module("client.so", "48 8D 05 ? ? ? ? 40 0F B6 F6 48 8B 38");
