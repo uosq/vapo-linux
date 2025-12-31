@@ -1,3 +1,4 @@
+// Dumped 29/12/2025
 
 [CWeaponIFMSteadyCam]
 

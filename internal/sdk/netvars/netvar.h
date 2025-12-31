@@ -24,6 +24,12 @@ inline std::unordered_map<uint32_t, uint32_t> netvars;
 	return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
 } \
 
+#define NETVAR_OFFSET(func_name, netvar, type, offset) type& func_name() \
+{ \
+	static auto m_offset = netvars[fnv::HashConst(netvar)] + offset; \
+	return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + m_offset); \
+} \
+
 inline void Dump(const char* baseClass, RecvTable* table, uint32_t offset = 0)
 {
 	for (int i = 0; i < table->propsCount; ++i)

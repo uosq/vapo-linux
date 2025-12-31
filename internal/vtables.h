@@ -31,4 +31,19 @@ namespace vtable
 		int32_t disp = *reinterpret_cast<int32_t*>(instr + dispOffset);
 		return instr + instrSize + disp;
 	}
+
+	template <size_t I, typename T, typename... Args>
+	inline T call(void* p, Args... args)
+	{
+		auto vTable = *static_cast<void***>(p);
+		return reinterpret_cast<T(*)(void*, Args...)>(vTable[I])(p, args...);
+	}
+
+	template <size_t I, typename T, typename... Args>
+	inline T call(uintptr_t u, Args... args)
+	{
+		auto p = reinterpret_cast<void*>(u);
+		auto vTable = *static_cast<void***>(p);
+		return reinterpret_cast<T(*)(void*, Args...)>(vTable[I])(p, args...);
+	}
 }

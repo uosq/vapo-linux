@@ -100,10 +100,10 @@ namespace helper
 			return interfaces::engine->Con_IsVisible();
 		}
 
-		inline Player* GetLocalPlayer()
+		inline CTFPlayer* GetLocalPlayer()
 		{
 			int index = interfaces::engine->GetLocalPlayer();
-			return (Player*)interfaces::entitylist->GetClientEntity(index);
+			return (CTFPlayer*)interfaces::entitylist->GetClientEntity(index);
 		}
 
 		inline void FixMovement(CUserCmd* pCmd, const Vec3& vCurAngle, const Vec3& vTargetAngle)
@@ -164,6 +164,11 @@ namespace helper
 			}
 
 			return bOnScreen;
+		}
+
+		inline float AttributeHookValue(float defaultValue, const char *attrib_name, CBaseEntity *entity)
+		{
+			return interfaces::attributeManager.AttributeHookValue(defaultValue, attrib_name, entity);
 		}
 	};
 

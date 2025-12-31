@@ -10,7 +10,7 @@
 
 #define MULTIPLAYER_BACKUP 90
 
-//typedef CHandle<CBaseEntity> EHANDLE;
+typedef CHandle<CBaseEntity> EHANDLE;
 
 class CBaseEntity : public IClientEntity
 {
@@ -30,8 +30,8 @@ public:
 	NETVAR(m_flGravity, "CBaseEntity->m_flGravity", float);
 	NETVAR(m_flElasticity, "CBaseEntity->m_flElasticity", float);
 	NETVAR(m_flShadowCastDistance, "CBaseEntity->m_flShadowCastDistance", float);
-	NETVAR(m_hOwnerEntity, "CBaseEntity->m_hOwnerEntity", CBaseEntity*);
-	NETVAR(m_hEffectEntity, "CBaseEntity->m_hEffectEntity", CBaseEntity*);
+	NETVAR(m_hOwnerEntity, "CBaseEntity->m_hOwnerEntity", EHANDLE);
+	NETVAR(m_hEffectEntity, "CBaseEntity->m_hEffectEntity", EHANDLE);
 	NETVAR(moveparent, "CBaseEntity->moveparent", int);
 	NETVAR(m_iParentAttachment, "CBaseEntity->m_iParentAttachment", int);
 	NETVAR(m_Collision, "CBaseEntity->m_Collision", void*);
@@ -56,6 +56,16 @@ public:
 	NETVAR(m_bAlternateSorting, "CBaseEntity->m_bAlternateSorting", bool);
 	NETVAR(m_nModelIndexOverrides, "CBaseEntity->m_nModelIndexOverrides", void*);
 	NETVAR(movetype, "CBaseEntity->movetype", int);
+
+	bool IsPlayer()
+	{
+		return GetClassID() == ETFClassID::CTFPlayer;
+	}
+
+	bool IsWeapon()
+	{
+		return true;
+	}
 
 	int GetIndex()
 	{

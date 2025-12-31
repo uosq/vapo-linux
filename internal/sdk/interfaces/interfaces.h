@@ -13,7 +13,11 @@
 #include "../definitions/enginetool.h"
 #include "../definitions/cglobalvars.h"
 #include "../definitions/ivrenderview.h"
+#include "../definitions/attributemanager.h"
+#include "../definitions/weaponinfo.h"
 #include <dlfcn.h>
+
+static GetTFWeaponInfoFn GetTFWeaponInfo;
 
 namespace interfaces
 {
@@ -27,6 +31,7 @@ namespace interfaces
 	inline IEngineVGui* enginevgui = nullptr;
 	inline IEngineTool* enginetool = nullptr;
 	inline IVRenderView* renderview = nullptr;
+	inline AttributeManager attributeManager;
 }
 
 namespace factories
@@ -117,6 +122,16 @@ inline bool InitializeInterfaces()
 		// MOV RAX,qword ptr [gpGlobals]
 		globalvars = (CGlobalVars*)(*(void **)(next_instr + mov_addr));
 		//interfaces::vstdlib->ConsolePrintf("%f\n", globalvars->interval_per_tick);
+	}
+
+	{ // attribute hook manager
+		// get the function
+		attribute_hook_value_float_original = (float (*)(float, const char*, CBaseEntity*, void*, bool))sigscan_module("client.so", "55 31 C0 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 49 89 FC 53 89 CB");
+	}
+
+	{ // hook GetTFWeaponInfo(int weaponID)
+		// 83 FF 6D 77 13 48 8D 05 ? ? ? ? 48 63 FF 48 8B 04 F8 C3 works but gives garbage data
+		GetTFWeaponInfo = reinterpret_cast<GetTFWeaponInfoFn>(sigscan_module("client.so", "55 8B EC FF 75 08 E8 ? ? ? ? 83 C4 04 85 C0 75 02"));
 	}
 
 	return true;
