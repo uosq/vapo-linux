@@ -38,6 +38,45 @@ struct AimbotProjectile
 		return true;
 	}
 
+	bool CheckTrajectory(CTFPlayer* target, Vector startPos, Vector targetPos, Vector angle, ProjectileInfo_t info, float gravity)
+	{
+		// step
+		float accuracy = 10.0f;
+
+		float distance = (targetPos - startPos).Length();
+		float totalTime = distance / info.speed;
+
+		Vector velocity;
+		Math::AngleVectors(angle, &velocity);
+		
+		velocity *= info.speed;
+
+		CGameTrace trace;
+		CTraceFilterWorldAndPropsOnly filter;
+		filter.pSkip = target;
+
+		Vector min{-info.hull.x, -info.hull.y, -info.hull.z};
+
+		for (int i = 0; i < accuracy; i++)
+		{
+			float t = (static_cast<float>(i) / accuracy) * totalTime;
+
+			Vector pos = startPos + (velocity * t);
+			pos.z -= (0.5 * gravity * t * t);
+
+			float prevT = (static_cast<float>(i - 1) / accuracy) * totalTime;
+			Vector prevPos = startPos + (velocity * prevT);
+			prevPos.z -= (0.5f * gravity * prevT * prevT);
+
+			helper::engine::TraceHull(prevPos, pos, min, info.hull, MASK_SHOT_HULL, &filter, &trace);
+
+			if (trace.DidHit() || trace.fraction < 1.0f)
+				return false;
+		}
+
+		return true;
+	}
+
 	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd)
 	{
 		ProjectileInfo_t info;
@@ -62,6 +101,12 @@ struct AimbotProjectile
 		CGameTrace trace;
 		CTraceFilterHitscan filter;
 		filter.pSkip = pLocal;
+
+		static ConVar* sv_gravity = interfaces::vstdlib->FindVar("sv_gravity");
+		if (!sv_gravity)
+			return;
+
+		float gravity = sv_gravity->GetFloat() * 0.5f * info.gravity;
 
 		for (int i = 1; i < helper::engine::GetMaxClients(); i++)
 		{
@@ -117,15 +162,16 @@ struct AimbotProjectile
 
 				if (info.simple_trace)
 				{
-					Vector dir = lastPos - shootPos;
-					dir.Normalize();
-	
+					Vector dir = target.dir.ToAngle();
 					Vector angle = dir.ToAngle();
 					pCmd->viewangles = angle;
 				} else
 				{
 					Vector angle;
-					if (!SolveBallisticArc(angle, shootPos, lastPos, info.speed, 400 * info.gravity))
+					if (!SolveBallisticArc(angle, shootPos, lastPos, info.speed, gravity))
+						continue;
+
+					if (CheckTrajectory((CTFPlayer*)target.entity, shootPos, lastPos, angle, info, gravity))
 						continue;
 
 					pCmd->viewangles = angle;

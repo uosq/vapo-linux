@@ -21,23 +21,21 @@ struct Aimbot
 		if (key && !interfaces::inputsystem->IsButtonDown(key))
 			return;
 
-		//interfaces::vstdlib->ConsolePrintf("slot: %d\n", pWeapon->GetWeaponInfo()->iSlot);
-		//interfaces::vstdlib->ConsolePrintf("Type: %d\n", pWeapon->GetWeaponType());
-		//interfaces::vstdlib->ConsolePrintf("Damage type: %d\n", pWeapon->GetProjectileType());
-
 		switch (pWeapon->GetWeaponType())
 		{
 			case EWeaponType::HITSCAN:
-				{
-					static AimbotHitscan hitscan;
-					hitscan.Run(pLocal, pWeapon, pCmd);
-					return;
-				} break;
+			{
+				static AimbotHitscan hitscan;
+				hitscan.Run(pLocal, pWeapon, pCmd);
+				return;
+			} break;
 			case EWeaponType::PROJECTILE:
 			{
 				static AimbotProjectile projectile;
 				projectile.Run(pLocal, pWeapon, pCmd);
+				return;
 			} break;
+
 			case EWeaponType::MELEE:
 			default: return;
 		}
