@@ -9,11 +9,16 @@
 #include "hitscan/aimbot_hitscan.h"
 #include "projectile/aimbot_projectile.h"
 
-struct Aimbot
+namespace Aimbot
 {
-	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd)
+	static inline std::vector<Vector> targetPath;
+
+	inline void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd)
 	{
 		if (!settings.aimbot.enabled)
+			return;
+
+		if (helper::engine::IsConsoleVisible() || helper::engine::IsGameUIVisible() || helper::engine::IsTakingScreenshot())
 			return;
 
 		ButtonCode_t key = interfaces::inputsystem->StringToButtonCode(settings.aimbot.key.c_str());
@@ -32,7 +37,7 @@ struct Aimbot
 			case EWeaponType::PROJECTILE:
 			{
 				static AimbotProjectile projectile;
-				projectile.Run(pLocal, pWeapon, pCmd);
+				projectile.Run(pLocal, pWeapon, pCmd, targetPath);
 				return;
 			} break;
 
@@ -40,4 +45,41 @@ struct Aimbot
 			default: return;
 		}
 	}
+
+	inline void DrawFOVIndicator(CTFPlayer* pLocal, CTFWeaponBase* pWeapon)
+	{
+		float aimFov = DEG2RAD(settings.aimbot.fov);
+		float camFov = DEG2RAD(pLocal->m_iDefaultFOV() * 0.5f);
+
+		int w, h;
+		helper::draw::GetScreenSize(w, h);
+
+		float radius = tan(aimFov)/tan(camFov) * w*0.5f * ((float)3/(float)4);
+
+		helper::draw::SetColor(255, 255, 255, 255);
+		interfaces::surface->DrawOutlinedCircle((int)(w*0.5f), (int)(h*0.5f), (int)(radius), 64);
+	}
+
+	inline void DrawTargetPath()
+	{
+		if (targetPath.size() < 2)
+			return;
+
+		Vector prevScreen;
+		if (!helper::engine::WorldToScreen(targetPath[0], prevScreen))
+			return;
+
+		helper::draw::SetColor({255, 255, 255, 255});
+
+		for (size_t i = 1; i < targetPath.size(); i++)
+		{
+			Vector currScreen;
+			if (!helper::engine::WorldToScreen(targetPath[i], currScreen))
+				continue;
+
+			interfaces::surface->DrawLine(prevScreen.x, prevScreen.y, currScreen.x, currScreen.y);
+			prevScreen = currScreen;
+		}
+	}
+
 };

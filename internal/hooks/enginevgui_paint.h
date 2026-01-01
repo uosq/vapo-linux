@@ -13,6 +13,8 @@
 #include "../features/esp/esp.h"
 #include "../httplib.h"
 
+#include "../features/aimbot/aimbot.h"
+
 //#include "../gui/gui.h"
 
 //using PaintTraverseFn = void (*)(IPanel* thisptr, VPANEL vguiPanel, bool forceRepaint, bool allowForce);
@@ -59,8 +61,16 @@ inline void HookedEngineVGuiPaint(IEngineVGui* thisptr, VGuiPanel_t type)
 
 	ESP::Run(pLocal, pWeapon);
 
-	helper::draw::Text(10, 10, (Color){255, 255, 255, 255}, "interval per tick: " + std::to_string(globalvars->interval_per_tick));
-	helper::draw::Text(10, 30, (Color){255, 255, 255, 255}, "tickcount: " + std::to_string(globalvars->tickcount));
+	Color color{255, 255, 255, 255};
+
+	helper::draw::Text(10, 10, color, "vapo linux");
+	helper::draw::Text(10, 30, color, "interval per tick: " + std::to_string(globalvars->interval_per_tick));
+	helper::draw::Text(10, 50, color, "tickcount: " + std::to_string(globalvars->tickcount));
+	helper::draw::Text(10, 70, color, "weapon is in reload:: " + std::to_string(pWeapon->IsInReload()));
+	helper::draw::Text(10, 90, color, std::to_string(pWeapon->GetMaxClip1()));
+
+	Aimbot::DrawTargetPath();
+	Aimbot::DrawFOVIndicator(pLocal, pWeapon);
 
 	/*int width, height;
 	std::wstring text = helper::draw::ConvertStringToWChar("Hello, world!");

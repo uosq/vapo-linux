@@ -76,6 +76,12 @@ namespace helper
 		{
 			return std::wstring(text.begin(), text.end());
 		}
+
+		inline void GetScreenSize(int &w, int &h)
+		{
+			w = interfaces::baseClientDll->GetScreenWidth();
+			h = interfaces::baseClientDll->GetScreenHeight();
+		}
 	};
 
 	namespace engine

@@ -1,6 +1,9 @@
 #include "hooks/clientmodeshared_createmove.h"
 #include "hooks/enginevgui_paint.h"
 #include "hooks/framestagenotify.h"
+#include "hooks/clientmodeshared_overrideview.h"
+#include "hooks/cbaseviewmodel_calcviewmodelview.h"
+
 #include "sdk/interfaces/interfaces.h"
 #include <pthread.h>
 #include <sys/types.h>
@@ -24,6 +27,8 @@ void *MainThread(void*)
 	HookCreateMove();
 	HookEngineVGuiPaint();
 	HookFrameStageNotify();
+	HookOverrideView();
+	HookCalcViewModelView();
 
 	return nullptr;
 }

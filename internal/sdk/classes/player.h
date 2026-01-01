@@ -72,6 +72,7 @@ public:
 	NETVAR(m_vecViewOffset, "CBasePlayer->m_vecViewOffset[0]", Vector)
 	NETVAR(m_flMaxspeed, "CBasePlayer->m_flMaxspeed", float)
 	NETVAR(m_flStepSize, "CBasePlayer->m_flStepSize", float)
+	NETVAR(m_iDefaultFOV, "CBasePlayer->m_iDefaultFOV", int)
 
 	bool IsAlive()
 	{

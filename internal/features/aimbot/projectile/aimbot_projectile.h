@@ -17,6 +17,22 @@
 
 struct AimbotProjectile
 {
+	// Offset before any multipointing is applied
+	float GetInitialOffset(CTFPlayer* target, CTFWeaponBase* pWeapon)
+	{
+		switch (pWeapon->GetWeaponID())
+		{
+			case TF_WEAPON_ROCKETLAUNCHER:
+			case TF_WEAPON_ROCKETLAUNCHER_DIRECTHIT:
+				return 10.0f;
+
+			case TF_WEAPON_COMPOUND_BOW:
+				return target->m_vecMaxs().z;
+		}
+
+		return target->m_vecMaxs().z * 0.5f;
+	}
+
 	bool SolveBallisticArc(Vector &outAngle, Vector p0, Vector p1, float speed, float gravity)
 	{
 		Vector diff = p1 - p0;
@@ -77,7 +93,7 @@ struct AimbotProjectile
 		return true;
 	}
 
-	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd)
+	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, std::vector<Vector> &targetPath)
 	{
 		ProjectileInfo_t info;
 		if (!GetProjectileInfo(info, pLocal, pWeapon))
@@ -146,7 +162,7 @@ struct AimbotProjectile
 				float time = (target.distance/info.speed);
 				//interfaces::vstdlib->ConsolePrintf("Time: %f\n", time);
 
-				if (time > 2.0f) // change 2.0f to max simulation time
+				if (time > settings.aimbot.max_sim_time)
 					continue;
 
 				std::vector<Vector> path;
@@ -160,9 +176,14 @@ struct AimbotProjectile
 				if (!std::isfinite(lastPos.x) || !std::isfinite(lastPos.y) || !std::isfinite(lastPos.z))
                 			continue;
 
+				float aimOffset = GetInitialOffset((CTFPlayer*)target.entity, pWeapon);
+				if (aimOffset > 0)
+					lastPos.z += aimOffset;
+
 				if (info.simple_trace)
 				{
-					Vector dir = target.dir.ToAngle();
+					Vector dir = (lastPos - shootPos);
+					dir.Normalize();
 					Vector angle = dir.ToAngle();
 					pCmd->viewangles = angle;
 				} else
@@ -171,7 +192,7 @@ struct AimbotProjectile
 					if (!SolveBallisticArc(angle, shootPos, lastPos, info.speed, gravity))
 						continue;
 
-					if (CheckTrajectory((CTFPlayer*)target.entity, shootPos, lastPos, angle, info, gravity))
+					if (!CheckTrajectory((CTFPlayer*)target.entity, shootPos, lastPos, angle, info, gravity))
 						continue;
 
 					pCmd->viewangles = angle;
@@ -180,6 +201,7 @@ struct AimbotProjectile
 				if (settings.aimbot.autoshoot)
 					pCmd->buttons |= IN_ATTACK;
 
+				targetPath = path;
 				return;
 			}
 		}

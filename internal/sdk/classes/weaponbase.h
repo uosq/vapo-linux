@@ -390,6 +390,7 @@ inline bool GetProjectileInfo(ProjectileInfo_t& info, CTFPlayer* owner, CTFWeapo
 			info.hull.Set(flhull, flhull, flhull);
 			info.speed = 1000;
 			info.lifetime = 0.285;
+			info.simple_trace = true;
 			return true;
 		}
 
@@ -400,6 +401,7 @@ inline bool GetProjectileInfo(ProjectileInfo_t& info, CTFPlayer* owner, CTFWeapo
 			info.speed = 3000;
 			info.lifetime = 0.18;
 			info.gravity = 0;
+			info.simple_trace = true;
 			return true;
 		}
 

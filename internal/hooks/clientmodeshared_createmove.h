@@ -10,17 +10,15 @@
 using CreateMoveFn = bool (*)(IClientMode* thisptr, float sample_frametime, CUserCmd* pCmd);
 inline CreateMoveFn originalCreateMove = nullptr;
 
-static inline Aimbot aimbot;
-
 inline bool HookedCreateMove (IClientMode* thisptr, float sample_frametime, CUserCmd* pCmd)
 {
 	if (!pCmd || !pCmd->command_number)
 		return originalCreateMove(thisptr, sample_frametime, pCmd);
 
-	Vector originalAngles = pCmd->viewangles;
-
 	if (!interfaces::engine->IsInGame() || !interfaces::engine->IsConnected())
 		return originalCreateMove(thisptr, sample_frametime, pCmd);
+	
+	Vector originalAngles = pCmd->viewangles;
 
 	// populate movement
 	int ret = originalCreateMove(thisptr, sample_frametime, pCmd);
@@ -34,9 +32,9 @@ inline bool HookedCreateMove (IClientMode* thisptr, float sample_frametime, CUse
 	if (!pWeapon)
 		return ret;
 
-	aimbot.Run(pLocal, pWeapon, pCmd);
+	Aimbot::Run(pLocal, pWeapon, pCmd);
 	helper::engine::FixMovement(pCmd, originalAngles, pCmd->viewangles);
-	
+
 	// Return false so the engine doesn't apply it to engine->SetViewAngles; (this is stupid)*/
 	return false;
 }
