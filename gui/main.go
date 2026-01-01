@@ -17,11 +17,12 @@ var settings struct {
 	} `json:"esp"`
 
 	Aimbot struct {
-		Enabled    bool    `json:"enabled"`
-		Key        string  `json:"key"`
-		Fov        float64 `json:"fov"`
-		Autoshoot  bool    `json:"autoshoot"`
-		MaxSimTime float64 `json:"max_sim_time"`
+		Enabled      bool    `json:"enabled"`
+		Key          string  `json:"key"`
+		Fov          float64 `json:"fov"`
+		Autoshoot    bool    `json:"autoshoot"`
+		MaxSimTime   float64 `json:"max_sim_time"`
+		ViewModelAim bool    `json:"viewmodelaim"`
 	} `json:"aimbot"`
 
 	Misc struct {
@@ -61,6 +62,7 @@ func main() {
 			CreateEntry("Key", &settings.Aimbot.Key),
 			CreateSlider("Fov", &settings.Aimbot.Fov, 0, 180),
 			CreateSlider("Max Simulation Time", &settings.Aimbot.MaxSimTime, 0, 5),
+			CreateToggle("ViewModel Aim", &settings.Aimbot.ViewModelAim),
 		),
 
 		GroupV("ESP",

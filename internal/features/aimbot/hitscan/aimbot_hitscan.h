@@ -18,7 +18,7 @@
 
 struct AimbotHitscan
 {
-	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd)
+	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, Vector &outAngle, bool &running)
 	{
 		int localTeam = pLocal->m_iTeamNum();
 		Vector shootPos = pLocal->GetEyePos();
@@ -79,6 +79,8 @@ struct AimbotHitscan
 			{
 				Vector angle = target.dir.ToAngle();
 				pCmd->viewangles = angle;
+				outAngle = angle;
+				running = true;
 				return;
 			}
 		}

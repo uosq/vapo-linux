@@ -12,9 +12,13 @@
 namespace Aimbot
 {
 	static inline std::vector<Vector> targetPath;
+	static inline Vector angle{0, 0, 0};
+	static bool running = true;
 
 	inline void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd)
 	{
+		running = false;
+
 		if (!settings.aimbot.enabled)
 			return;
 
@@ -31,13 +35,13 @@ namespace Aimbot
 			case EWeaponType::HITSCAN:
 			{
 				static AimbotHitscan hitscan;
-				hitscan.Run(pLocal, pWeapon, pCmd);
+				hitscan.Run(pLocal, pWeapon, pCmd, angle, running);
 				return;
 			} break;
 			case EWeaponType::PROJECTILE:
 			{
 				static AimbotProjectile projectile;
-				projectile.Run(pLocal, pWeapon, pCmd, targetPath);
+				projectile.Run(pLocal, pWeapon, pCmd, targetPath, angle, running);
 				return;
 			} break;
 
@@ -82,4 +86,13 @@ namespace Aimbot
 		}
 	}
 
+	inline Vector GetAngle()
+	{
+		return angle;
+	}
+
+	inline bool IsRunning()
+	{
+		return running;
+	}
 };

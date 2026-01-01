@@ -16,6 +16,7 @@ struct Settings_Aimbot
 	std::string key = "shift";
 	bool autoshoot = true;
 	float max_sim_time = 2.0f;
+	bool viewmodelaim = true;
 };
 
 struct Settings_Misc
@@ -33,7 +34,7 @@ struct Settings
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings_Misc, thirdperson, customfov)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings_ESP, enabled, ignorecloaked)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings_Aimbot, enabled, fov, key, autoshoot, max_sim_time)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings_Aimbot, enabled, fov, key, autoshoot, max_sim_time, viewmodelaim)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings, esp, aimbot, misc)
 
 static inline Settings settings;

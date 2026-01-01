@@ -93,7 +93,7 @@ struct AimbotProjectile
 		return true;
 	}
 
-	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, std::vector<Vector> &targetPath)
+	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, std::vector<Vector> &targetPath, Vector &outAngle, bool &running)
 	{
 		ProjectileInfo_t info;
 		if (!GetProjectileInfo(info, pLocal, pWeapon))
@@ -186,6 +186,7 @@ struct AimbotProjectile
 					dir.Normalize();
 					Vector angle = dir.ToAngle();
 					pCmd->viewangles = angle;
+					outAngle = angle;
 				} else
 				{
 					Vector angle;
@@ -196,11 +197,13 @@ struct AimbotProjectile
 						continue;
 
 					pCmd->viewangles = angle;
+					outAngle = angle;
 				}
 
 				if (settings.aimbot.autoshoot)
 					pCmd->buttons |= IN_ATTACK;
 
+				running = true;
 				targetPath = path;
 				return;
 			}
