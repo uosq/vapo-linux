@@ -28,7 +28,11 @@ struct SpectatorList
 
 		for (int i = 1; i < helper::engine::GetMaxClients(); i++)
 		{
-			CTFPlayer* player = (CTFPlayer*)interfaces::entitylist->GetClientEntity(i);
+			IClientEntity* clientEnt = interfaces::EntityList->GetClientEntity(i);
+			if (clientEnt == nullptr)
+				continue;
+
+			CTFPlayer* player = static_cast<CTFPlayer*>(clientEnt);
 			if (!player || !player->IsPlayer() || player->IsAlive() || player == pLocal)
 				continue;
 
@@ -36,11 +40,11 @@ struct SpectatorList
 				continue;
 
 			CTFPlayer* m_hObserverTarget = HandleAs<CTFPlayer>(player->m_hObserverTarget());
-			if (m_hObserverTarget->GetIndex() != ourIndex)
+			if (!m_hObserverTarget || m_hObserverTarget->GetIndex() != ourIndex)
 				continue;
 
 			player_info_t info;
-			if (!interfaces::engine->GetPlayerInfo(i, &info))
+			if (!interfaces::Engine->GetPlayerInfo(i, &info))
 				continue;
 
 			int m_iObserverMode = player->m_iObserverMode();

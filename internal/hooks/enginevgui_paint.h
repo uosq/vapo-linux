@@ -34,13 +34,13 @@ inline void HookedEngineVGuiPaint(IEngineVGui* thisptr, VGuiPanel_t type)
 		CTFPlayer* pLocal = helper::engine::GetLocalPlayer();
 		if (!pLocal)
 			return;
+
+		Visuals::spectatorlist.Run(pLocal);
+		ESP::Run(pLocal);
 	
 		CTFWeaponBase* pWeapon = HandleAs<CTFWeaponBase>(pLocal->GetActiveWeapon());
 		if (!pWeapon)
 			return;
-	
-		Visuals::spectatorlist.Run(pLocal);
-		ESP::Run(pLocal, pWeapon);
 	
 		Aimbot::DrawTargetPath();
 		Aimbot::DrawFOVIndicator(pLocal, pWeapon);
@@ -49,7 +49,7 @@ inline void HookedEngineVGuiPaint(IEngineVGui* thisptr, VGuiPanel_t type)
 
 inline void HookEngineVGuiPaint()
 {
-	auto vt = vtable::get(interfaces::enginevgui);
+	auto vt = vtable::get(interfaces::EngineVGui);
 	originalVGuiPaint = vtable::hook(vt, 15, HookedEngineVGuiPaint);
 	
 	/*

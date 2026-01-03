@@ -29,7 +29,7 @@ inline void HookedFrameStageNotify(IBaseClientDLL* thisptr, int stage)
 
 inline void HookFrameStageNotify()
 {
-	auto vt = vtable::get(interfaces::baseClientDll);
+	auto vt = vtable::get(interfaces::BaseClientDLL);
 	originalFrameStage = vtable::hook(vt, 35, &HookedFrameStageNotify);
 	
 	/*

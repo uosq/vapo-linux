@@ -22,15 +22,14 @@ inline static float stoptime = 0.0f;
 
 inline void HookedCalcViewModelView(void* thisptr, CBaseEntity* owner, const Vector& eyePosition, const QAngle& eyeAngles)
 {
-	CTFPlayer* player = static_cast<CTFPlayer*>(owner);
 	Vector angle = eyeAngles;
 
-	if (thisptr && settings.aimbot.viewmodelaim)
+	if (owner && settings.aimbot.viewmodelaim)
 	{	// viewmodel aim
-		if (Aimbot::IsRunning() && globalvars && globalvars->curtime)
-			stoptime = globalvars->curtime + VIEWMODELAIM_INTERVAL;
+		if (Aimbot::IsRunning() && interfaces::GlobalVars && interfaces::GlobalVars->curtime)
+			stoptime = interfaces::GlobalVars->curtime + VIEWMODELAIM_INTERVAL;
 	
-		if (globalvars && globalvars->curtime && globalvars->curtime < stoptime)
+		if (interfaces::GlobalVars && interfaces::GlobalVars->curtime && interfaces::GlobalVars->curtime < stoptime)
 			angle = Aimbot::GetAngle();
 	}
 
@@ -44,5 +43,5 @@ inline void HookCalcViewModelView()
 	detour_enable(&calcViewModel_ctx);
 
 	Color_t color{100, 255, 100, 255};
-	interfaces::cvar->ConsoleColorPrintf(color, "CalcViewModelView hooked\n");
+	interfaces::Cvar->ConsoleColorPrintf(color, "CalcViewModelView hooked\n");
 }

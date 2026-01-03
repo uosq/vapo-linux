@@ -15,8 +15,6 @@
 #include "sdk/helpers/fonts.h"
 #include "sdk/netvars/netvar.h"
 
-//#define PrintMsg(text) write(2, text, sizeof(text) - 1)
-
 void *MainThread(void*)
 {
 	if (!InitializeInterfaces())
@@ -44,5 +42,4 @@ void init(void)
 {
 	pthread_t thread;
 	pthread_create(&thread, nullptr, MainThread, nullptr);
-	//pthread_create(&settingsThread, nullptr, SettingsUpdateThread, nullptr);
 }

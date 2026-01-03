@@ -22,7 +22,7 @@ namespace PlayerPrediction
 		if (speed < 0.01f)
 			return;
 
-		ConVar* sv_stopspeed_cvar = interfaces::cvar->FindVar("sv_stopspeed");
+		ConVar* sv_stopspeed_cvar = interfaces::Cvar->FindVar("sv_stopspeed");
 		if (!sv_stopspeed_cvar)
 			return;
 			
@@ -31,13 +31,13 @@ namespace PlayerPrediction
 
 		if (isOnGround)
 		{
-			ConVar* sv_friction_cvar = interfaces::cvar->FindVar("sv_friction");
+			ConVar* sv_friction_cvar = interfaces::Cvar->FindVar("sv_friction");
 			if (!sv_friction_cvar)
 				return;
 			
 			float sv_friction = sv_friction_cvar->GetFloat();
 			float control = speed < sv_stopspeed ? sv_stopspeed : speed;
-			drop = control * sv_friction * globalvars->interval_per_tick;
+			drop = control * sv_friction * interfaces::GlobalVars->interval_per_tick;
 		}
 
 		float newspeed = speed - drop;
@@ -76,7 +76,7 @@ namespace PlayerPrediction
 		if (addspeed <= 0)
 			return;
 
-		accelspeed = accel * globalvars->interval_per_tick * wishspeed;
+		accelspeed = accel * interfaces::GlobalVars->interval_per_tick * wishspeed;
 		if (accelspeed > addspeed)
 			accelspeed = addspeed;
 
@@ -90,7 +90,7 @@ namespace PlayerPrediction
 		if (addspeed <= 0)
 			return;
 
-		float accelspeed = std::min(accel * wishspeed * surf * globalvars->interval_per_tick, addspeed);
+		float accelspeed = std::min(accel * wishspeed * surf * interfaces::GlobalVars->interval_per_tick, addspeed);
 		velocity += wishdir * accelspeed;
 	}
 
@@ -115,7 +115,7 @@ namespace PlayerPrediction
 
 	inline bool TryStepMove(CTFPlayer* player, Vector& origin, Vector& velocity, Vector mins, Vector maxs, float stepSize)
 	{
-		Vector move = velocity * globalvars->interval_per_tick;
+		Vector move = velocity * interfaces::GlobalVars->interval_per_tick;
 
 		CTraceFilterWorldAndPropsOnly filter;
 		filter.pSkip = player;
@@ -257,17 +257,17 @@ namespace PlayerPrediction
 		Vector mins = player->m_vecMins();
 		Vector maxs = player->m_vecMaxs();
 
-		ConVar* sv_airaccelerate = interfaces::cvar->FindVar("sv_airaccelerate");
+		ConVar* sv_airaccelerate = interfaces::Cvar->FindVar("sv_airaccelerate");
 		if (!sv_airaccelerate)
 			return;
 
-		ConVar* sv_accelerate = interfaces::cvar->FindVar("sv_accelerate");
+		ConVar* sv_accelerate = interfaces::Cvar->FindVar("sv_accelerate");
 		if (!sv_accelerate)
 			return;
 
 		float stepsize = player->m_flStepSize();
 
-		float gravity = 800 * globalvars->interval_per_tick * 0.5;
+		float gravity = 800 * interfaces::GlobalVars->interval_per_tick * 0.5;
 
 		time_seconds = std::min(time_seconds, 5.0f);
 
@@ -294,7 +294,7 @@ namespace PlayerPrediction
 				velocity.y = 0.0f;
 			}
 
-			//origin += velocity * globalvars->interval_per_tick;
+			//origin += velocity * interfaces::GlobalVars->interval_per_tick;
 
 			velocity.z -= gravity;
 
@@ -304,7 +304,7 @@ namespace PlayerPrediction
 
 			path.emplace_back((Vector){origin.x, origin.y, origin.z});
 
-			clock += globalvars->interval_per_tick;
+			clock += interfaces::GlobalVars->interval_per_tick;
 		}
 	}
 };

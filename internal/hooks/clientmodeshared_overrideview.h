@@ -14,7 +14,7 @@ inline void HookedOverrideView(IClientMode *thisptr, CViewSetup *view)
 {
 	originalOverrideView(thisptr, view);
 
-	if (!view)
+	if (view == nullptr)
 		return;
 
 	if (settings.misc.customfov_enabled)
@@ -23,7 +23,7 @@ inline void HookedOverrideView(IClientMode *thisptr, CViewSetup *view)
 
 inline void HookOverrideView()
 {
-	void** vt = vtable::get(interfaces::clientMode);
+	void** vt = vtable::get(interfaces::ClientMode);
 	originalOverrideView = vtable::hook(vt, 17, &HookedOverrideView);
 
 	helper::console::ColoredPrint("ClientModeShared::OverrideView hooked\n", (Color_t){100, 255, 100, 255});

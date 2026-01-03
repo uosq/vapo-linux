@@ -20,7 +20,7 @@ inline bool HookedCreateMove (IClientMode* thisptr, float sample_frametime, CUse
 	if (!pCmd || !pCmd->command_number)
 		return ret;
 
-	if (!interfaces::engine->IsInGame() || !interfaces::engine->IsConnected())
+	if (!interfaces::Engine->IsInGame() || !interfaces::Engine->IsConnected())
 		return ret;
 
 	CTFPlayer* pLocal = helper::engine::GetLocalPlayer();
@@ -48,7 +48,7 @@ inline bool HookedCreateMove (IClientMode* thisptr, float sample_frametime, CUse
 
 inline void HookCreateMove()
 {
-	void** vt = vtable::get(interfaces::clientMode);
+	void** vt = vtable::get(interfaces::ClientMode);
 	originalCreateMove = vtable::hook(vt, 22, &HookedCreateMove);
 
 	helper::console::ColoredPrint("ClientModeShared::CreateMove hooked\n", (Color_t){100, 255, 100, 255});

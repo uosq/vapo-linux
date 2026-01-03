@@ -9,6 +9,9 @@ struct Thirdperson
 	// Call in FrameStageNotify -> FRAME_NET_UPDATE_END
 	void Run(CTFPlayer* pLocal)
 	{
+		if (!pLocal || !pLocal->IsAlive())
+			return;
+
 		if (settings.misc.thirdperson)
 			pLocal->m_nForceTauntCam() = 1;
 

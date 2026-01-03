@@ -88,11 +88,11 @@ public:
 		return fn(this);
 	}
 
-	bool IsEnergyWeapon() { return vtable::call<436, bool>(this); }
-	bool CalcIsAttackCriticalHelper() { return vtable::call<400, bool>(this); }
-	bool AreRandomCritsEnabled() { return vtable::call<406, bool>(this); }
-	float GetWeaponSpread() { return vtable::call<471, float>(this); }
-	int GetSwingRange() { return vtable::call<459, int>(this); }
+	//bool IsEnergyWeapon() { return vtable::call<436, bool>(this); }
+	//bool CalcIsAttackCriticalHelper() { return vtable::call<400, bool>(this); }
+	//bool AreRandomCritsEnabled() { return vtable::call<406, bool>(this); }
+	//float GetWeaponSpread() { return vtable::call<471, float>(this); }
+	//int GetSwingRange() { return vtable::call<459, int>(this); }
 
 	bool IsInReload()
 	{
@@ -165,13 +165,35 @@ public:
 		return GetWeaponType() == EWeaponType::HITSCAN;
 	}
 
-	bool CanShoot()
+	bool CanPrimaryAttack()
 	{
-		if (m_iClip1() == 0)
+		CTFPlayer* owner = HandleAs<CTFPlayer>(m_hOwnerEntity());
+		if (!owner)
 			return false;
 
+		float curtime = TICKS_TO_TIME(owner->GetTickBase());
+		return m_flNextPrimaryAttack() <= curtime && m_flNextAttack() <= curtime;
+	}
+
+	bool CanSecondaryAttack()
+	{
 		CTFPlayer* owner = HandleAs<CTFPlayer>(m_hOwnerEntity());
-		return m_flNextPrimaryAttack() <= ((float)(owner->GetTickBase() * globalvars->interval_per_tick)) || m_bInReload();
+		if (!owner)
+			return false;
+
+		float curtime = TICKS_TO_TIME(owner->GetTickBase());
+		return m_flNextSecondaryAttack() && m_flNextAttack() <= curtime;
+	}
+
+	bool HasPrimaryAmmoForShot()
+	{
+		return m_iClip1() > 0 || m_iClip1() == -1;
+	}
+
+	template<typename T>
+	T As(T)
+	{
+		return static_cast<T>(this);
 	}
 };
 
@@ -279,7 +301,7 @@ public:
 inline bool GetProjectileInfo(ProjectileInfo_t& info, CTFPlayer* owner, CTFWeaponBase* pWeapon)
 {
 	bool bDucking = owner->GetFlags() & FL_DUCKING;
-	float gravity = interfaces::cvar->FindVar("sv_gravity")->GetFloat()/800;
+	float gravity = interfaces::Cvar->FindVar("sv_gravity")->GetFloat()/800;
 
 	int id = pWeapon->GetWeaponID();
 	//interfaces::cvar->ConsolePrintf("Weapon ID: %d\n", id);
@@ -358,6 +380,22 @@ inline bool GetProjectileInfo(ProjectileInfo_t& info, CTFPlayer* owner, CTFWeapo
 			return true;
 		}
 
+		case TF_WEAPON_COMPOUND_BOW:
+		{
+			info.offset.Set(23.5, 12, -3);
+			info.hull.Set(1, 1, 1);
+
+			float flchargebegintime = static_cast<CTFPipebombLauncher*>(pWeapon)->m_flChargeBeginTime();
+			float charge = 0.0f;
+			if (flchargebegintime > 0)
+				charge = TICKS_TO_TIME( owner->GetTickBase()) - flchargebegintime;
+
+			info.speed = Math::RemapVal(charge, 0, 1, 1800, 2600);
+			info.gravity = Math::RemapVal(charge, 0, 1, 0.5, 0.1) * gravity;
+			info.lifetime = 10;
+			return true;
+		}
+
 		case TF_WEAPON_CROSSBOW:
 		case TF_WEAPON_SHOTGUN_BUILDING_RESCUE:
 		{
@@ -381,7 +419,7 @@ inline bool GetProjectileInfo(ProjectileInfo_t& info, CTFPlayer* owner, CTFWeapo
 
 		case TF_WEAPON_FLAMETHROWER:
 		{
-			static ConVar* tf_flamethrower_size = interfaces::cvar->FindVar("tf_flamethrower_boxsize");
+			static ConVar* tf_flamethrower_size = interfaces::Cvar->FindVar("tf_flamethrower_boxsize");
 			if (!tf_flamethrower_size)
 				return false;
 			
@@ -417,7 +455,7 @@ inline bool GetProjectileInfo(ProjectileInfo_t& info, CTFPlayer* owner, CTFWeapo
 		case TF_WEAPON_BAT_WOOD:
 		case TF_WEAPON_BAT_GIFTWRAP:
 		{
-			ConVar* tf_scout_stunball_base_speed = interfaces::cvar->FindVar("tf_scout_stunball_base_speed");
+			ConVar* tf_scout_stunball_base_speed = interfaces::Cvar->FindVar("tf_scout_stunball_base_speed");
 			if (!tf_scout_stunball_base_speed)
 				return false;
 

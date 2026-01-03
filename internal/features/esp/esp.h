@@ -28,9 +28,12 @@ namespace ESP
 		return (Color){255, 255, 255, 255};
 	}
 
-	inline void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon)
+	inline void Run(CTFPlayer* pLocal)
 	{
 		if (!settings.esp.enabled)
+			return;
+
+		if (!pLocal)
 			return;
 
 		helper::draw::SetColor(255, 255, 255, 255);
@@ -38,12 +41,12 @@ namespace ESP
 		// start at 1 because 0 is the world
 		for (int i = 1; i < helper::engine::GetMaxClients(); i++)
 		{
-			IClientEntity* clientEnt = interfaces::entitylist->GetClientEntity(i);
+			IClientEntity* clientEnt = interfaces::EntityList->GetClientEntity(i);
 			if (!clientEnt)
 				continue;
 
 			auto entity = static_cast<CTFPlayer*>(clientEnt);
-			if (!entity)
+			if (!entity || !entity->IsPlayer())
 				continue;
 
 			if (entity->GetIndex() == pLocal->GetIndex())

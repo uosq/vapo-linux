@@ -28,5 +28,5 @@ inline void HookCheckForPure()
 	detour_enable(&CL_CheckForPureServerWhitelist_ctx);
 
 	Color_t color{100, 255, 100, 255};
-	interfaces::cvar->ConsoleColorPrintf(color, "CL_CheckForPureServerWhitelist hooked\n");
+	interfaces::Cvar->ConsoleColorPrintf(color, "CL_CheckForPureServerWhitelist hooked\n");
 }

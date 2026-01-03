@@ -125,7 +125,7 @@ public:
 	std::string GetName()
 	{
 		player_info_t info{};
-		if (!interfaces::engine->GetPlayerInfo(GetIndex(), &info))
+		if (!interfaces::Engine->GetPlayerInfo(GetIndex(), &info))
 			return {};
 
 		return info.name;

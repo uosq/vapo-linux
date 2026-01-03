@@ -20,17 +20,17 @@ struct AimbotHitscan
 {
 	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, Vector &outAngle, bool &running)
 	{
+		std::vector<PotentialTarget> targets;
+
 		int localTeam = pLocal->m_iTeamNum();
 		Vector shootPos = pLocal->GetEyePos();
 
 		Vector viewAngles;
-		interfaces::engine->GetViewAngles(viewAngles);
+		interfaces::Engine->GetViewAngles(viewAngles);
 
 		Vector viewForward;
 		Math::AngleVectors(viewAngles, &viewForward);
 		viewForward.Normalize();
-
-		std::vector<PotentialTarget> targets;
 
 		float fovRad = DEG2RAD(settings.aimbot.fov);
 		float minDot = cosf(fovRad);
@@ -41,7 +41,7 @@ struct AimbotHitscan
 
 		for (int i = 1; i < helper::engine::GetMaxClients(); i++)
 		{
-			CTFPlayer* entity = (CTFPlayer*)interfaces::entitylist->GetClientEntity(i);
+			CTFPlayer* entity = (CTFPlayer*)interfaces::EntityList->GetClientEntity(i);
 
 			if (!AimbotUtils::IsValidEnemyEntity(pLocal, entity))
 				continue;
@@ -70,10 +70,10 @@ struct AimbotHitscan
 
 		AimbotUtils::QuickSort(targets, 0, targets.size() - 1);
 
-		if (settings.aimbot.autoshoot && pWeapon->CanShoot())
+		if (settings.aimbot.autoshoot)
 			pCmd->buttons |= IN_ATTACK;
 
-		if (pWeapon->CanShoot() && (pCmd->buttons & IN_ATTACK))
+		if (pWeapon->CanPrimaryAttack() && (pCmd->buttons & IN_ATTACK))
 		{
 			for (auto target : targets)
 			{

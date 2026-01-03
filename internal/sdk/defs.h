@@ -9,7 +9,7 @@ enum
 	CRATETYPE_WINTER = 2,
 };
 
-#define TICK_INTERVAL globalvars->interval_per_tick
+#define TICK_INTERVAL interfaces::GlobalVars->interval_per_tick
 #define TIME_TO_TICKS(dt) (static_cast<int>(0.5f + static_cast<float>(dt) / TICK_INTERVAL))
 #define TICKS_TO_TIME(t) (TICK_INTERVAL * (t))
 #define ROUND_TO_TICKS(t) (TICKS_TO_TIME(TIME_TO_TICKS(t)))
@@ -3305,4 +3305,13 @@ enum ETFWeapons
 	Misc_t_FryingPan = 264,
 	Misc_t_GoldFryingPan = 1071,
 	Misc_t_Saxxy = 423
+};
+
+enum MinigunState_t
+{
+	AC_STATE_IDLE = 0,
+	AC_STATE_STARTFIRING,
+	AC_STATE_FIRING,
+	AC_STATE_SPINNING,
+	AC_STATE_DRYFIRE
 };

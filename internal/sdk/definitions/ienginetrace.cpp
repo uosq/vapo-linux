@@ -116,7 +116,7 @@ bool CTraceFilterWorldAndPropsOnly::ShouldHitEntity(IHandleEntity* pServerEntity
 	if (!pServerEntity || pServerEntity == pSkip)
 		return false;
 	if (pServerEntity->GetRefEHandle().GetSerialNumber() == (1 << 15))
-		return interfaces::entitylist->GetClientEntity(0) != pSkip;
+		return interfaces::EntityList->GetClientEntity(0) != pSkip;
 
 	auto pEntity = reinterpret_cast<CBaseEntity*>(pServerEntity);
 	if (iTeam == -1) iTeam = pSkip ? pSkip->m_iTeamNum() : 0;

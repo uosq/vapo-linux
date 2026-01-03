@@ -19,4 +19,4 @@ struct CGlobalVars
 	int nTimestampRandomizeWindow;
 };
 
-inline static CGlobalVars* globalvars;
+//inline static CGlobalVars* globalvars;

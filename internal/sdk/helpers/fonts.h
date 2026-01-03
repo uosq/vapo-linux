@@ -8,8 +8,8 @@ struct FontManager
 {
 	HFont CreateFont(const char* name, int height, int weight, int flags = 0)
 	{
-		HFont font = interfaces::surface->CreateFont();
-		interfaces::surface->SetFontGlyphSet(font, name, height, weight, 0, 0, flags);
+		HFont font = interfaces::Surface->CreateFont();
+		interfaces::Surface->SetFontGlyphSet(font, name, height, weight, 0, 0, flags);
 		fonts.push_back(font);
 		current = font;
 		return font;

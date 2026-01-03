@@ -56,6 +56,7 @@ public:
 	NETVAR(m_bAlternateSorting, "CBaseEntity->m_bAlternateSorting", bool);
 	NETVAR(m_nModelIndexOverrides, "CBaseEntity->m_nModelIndexOverrides", void*);
 	NETVAR(movetype, "CBaseEntity->movetype", int);
+	NETVAR(m_flNextAttack, "CBaseCombatCharacter->m_flNextAttack", float)
 
 	bool IsPlayer()
 	{

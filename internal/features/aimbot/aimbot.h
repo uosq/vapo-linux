@@ -14,6 +14,7 @@ namespace Aimbot
 	static inline std::vector<Vector> targetPath;
 	static inline Vector angle{0, 0, 0};
 	static bool running = true;
+	static bool shouldSilent = false;
 
 	inline Vector GetAngle()
 	{
@@ -25,9 +26,15 @@ namespace Aimbot
 		return running;
 	}
 
+	inline bool ShouldSilent()
+	{
+		return shouldSilent;
+	}
+
 	inline void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, bool* bSendPacket)
 	{
 		running = false;
+		shouldSilent = false;
 
 		if (!settings.aimbot.enabled)
 			return;
@@ -35,9 +42,9 @@ namespace Aimbot
 		if (helper::engine::IsConsoleVisible() || helper::engine::IsGameUIVisible() || helper::engine::IsTakingScreenshot())
 			return;
 
-		ButtonCode_t key = interfaces::inputsystem->StringToButtonCode(settings.aimbot.key.c_str());
+		ButtonCode_t key = interfaces::InputSystem->StringToButtonCode(settings.aimbot.key.c_str());
 
-		if (key && !interfaces::inputsystem->IsButtonDown(key))
+		if (key && !interfaces::InputSystem->IsButtonDown(key))
 			return;
 
 		switch (pWeapon->GetWeaponType())
@@ -51,9 +58,9 @@ namespace Aimbot
 			case EWeaponType::PROJECTILE:
 			{
 				static AimbotProjectile projectile;
-				projectile.Run(pLocal, pWeapon, pCmd, targetPath, angle, running);
+				projectile.Run(pLocal, pWeapon, pCmd, targetPath, angle, running, shouldSilent);
 
-				if (running)
+				if (shouldSilent)
 					*bSendPacket = false;
 				break;
 			} break;
@@ -65,6 +72,9 @@ namespace Aimbot
 
 	inline void DrawFOVIndicator(CTFPlayer* pLocal, CTFWeaponBase* pWeapon)
 	{
+		if (settings.aimbot.fov >= 90)
+			return;
+
 		float aimFov = DEG2RAD(settings.aimbot.fov);
 		float camFov = DEG2RAD(pLocal->m_iDefaultFOV() * 0.5f);
 
@@ -74,11 +84,26 @@ namespace Aimbot
 		float radius = tan(aimFov)/tan(camFov) * w*0.5f * ((float)3/(float)4);
 
 		helper::draw::SetColor(255, 255, 255, 255);
-		interfaces::surface->DrawOutlinedCircle((int)(w*0.5f), (int)(h*0.5f), (int)(radius), 64);
+		interfaces::Surface->DrawOutlinedCircle((int)(w*0.5f), (int)(h*0.5f), (int)(radius), 64);
+	}
+
+	inline void CleanTargetPath()
+	{
+		static float lastcleartime = 0.0f;
+		if (targetPath.empty())
+			return;
+
+		if (interfaces::GlobalVars && (interfaces::GlobalVars->realtime - lastcleartime) < 5.0f)
+			return;
+
+		targetPath.clear();
+		lastcleartime = interfaces::GlobalVars->realtime;
 	}
 
 	inline void DrawTargetPath()
 	{
+		//CleanTargetPath();
+
 		if (targetPath.size() < 2)
 			return;
 
@@ -94,7 +119,7 @@ namespace Aimbot
 			if (!helper::engine::WorldToScreen(targetPath[i], currScreen))
 				continue;
 
-			interfaces::surface->DrawLine(prevScreen.x, prevScreen.y, currScreen.x, currScreen.y);
+			interfaces::Surface->DrawLine(prevScreen.x, prevScreen.y, currScreen.x, currScreen.y);
 			prevScreen = currScreen;
 		}
 	}

@@ -13,6 +13,6 @@ template <typename T>
 inline T* HandleAs(const CBaseHandle& h)
 {
     return static_cast<T*>(
-        interfaces::entitylist->GetClientEntity(h.GetEntryIndex())
+        interfaces::EntityList->GetClientEntity(h.GetEntryIndex())
     );
 }
