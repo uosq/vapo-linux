@@ -39,14 +39,6 @@ DECLARE_VTABLE_HOOK(FrameStageNotify, void, (IBaseClientDLL* thisptr, int stage)
 inline void HookFrameStageNotify()
 {
 	INSTALL_VTABLE_HOOK(FrameStageNotify, interfaces::BaseClientDLL, 35);
-	//auto vt = vtable::get(interfaces::BaseClientDLL);
-	//originalFrameStage = vtable::hook(vt, 35, &HookedFrameStageNotify);
-	
-	/*
-		reminder to me:
-		if using windows hooks, always add a +1, as (i think)
-		gcc/clang puts the constructor&destructor at the start of the class
-	*/
 
 	Color_t color;
 	color.SetRGB(100, 255, 100, 255);

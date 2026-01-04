@@ -10,9 +10,6 @@
 // Source https://8dcc.github.io/reversing/reversing-tf2-bsendpacket.html#introduction
 #define SENDPACKET_STACK_OFFSET 0xF8
 
-//using CreateMoveFn = bool (*)(IClientMode* thisptr, float sample_frametime, CUserCmd* pCmd);
-//inline CreateMoveFn originalCreateMove = nullptr;
-
 DECLARE_VTABLE_HOOK(CreateMove, bool, (IClientMode* thisptr, float sample_frametime, CUserCmd* pCmd))
 {
 	bool ret = originalCreateMove(thisptr, sample_frametime, pCmd);
@@ -42,7 +39,7 @@ DECLARE_VTABLE_HOOK(CreateMove, bool, (IClientMode* thisptr, float sample_framet
 	if (Aimbot::IsRunning())
 		helper::engine::FixMovement(pCmd, originalAngles, pCmd->viewangles);
 
-	if (bSendPacket)
+	if (*bSendPacket == true)
 		helper::localplayer::LastAngle = pCmd->viewangles;
 
 	// Return false so the engine doesn't apply it to engine->SetViewAngles; (this is stupid)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../sdk/classes/player.h"
+#include "../../../sdk/classes/cbaseobject.h"
 #include "../../../settings.h"
 
 struct PotentialTarget
@@ -14,31 +15,44 @@ struct PotentialTarget
 
 namespace AimbotUtils
 {
-	inline bool IsValidEnemyEntity(CTFPlayer* pLocal, CTFPlayer* entity)
+	inline bool IsValidEntity(CTFPlayer* pLocal, CTFPlayer* entity, bool checkTeam = true)
 	{
-		if (!entity)
+		if (entity == nullptr)
 			return false;
 
 		if (entity == pLocal)
 			return false;
 
-		if (entity->m_iTeamNum() == pLocal->m_iTeamNum())
+		if (checkTeam && entity->m_iTeamNum() == pLocal->m_iTeamNum())
 			return false;
 
 		if (entity->IsDormant())
 			return false;
 
-		if (!entity->IsAlive())
-			return false;
-
 		if (settings.esp.ignorecloaked && entity->InCond(ETFCond::TF_COND_CLOAKED))
 			return false;
 
-		if (entity->IsUbercharged())
-			return false;
+		if (entity->IsPlayer())
+		{
+			if (!entity->IsAlive())
+				return false;
 
-		if (entity->IsGhost())
-			return false;
+			if (entity->IsUbercharged())
+				return false;
+	
+			if (entity->IsGhost())
+				return false;
+		}
+
+		if (entity->IsDispenser() || entity->IsSentry() || entity->IsTeleporter())
+		{
+			auto* building = reinterpret_cast<CBaseObject*>(entity);
+			if (building == nullptr)
+				return false;
+
+			if (building->m_iHealth() <= 0)
+				return false;
+		}
 
 		return true;
 	}

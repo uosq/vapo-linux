@@ -5,10 +5,10 @@
 #include "../sdk/helpers/helper.h"
 #include "../settings.h"
 
-static inline float lastSettingsUpdate = 0.0f;
-
 DECLARE_VTABLE_HOOK(PaintTraverse, void, (IPanel* thisptr, VPANEL vguiPanel, bool forceRepaint, bool allowForce))
 {
+	static float lastSettingsUpdate = 0.0f;
+
 	float currenttime = interfaces::GlobalVars ? interfaces::GlobalVars->realtime : 0.0f;
 
 	// is this a good way of doing it? absolutely fucking not
@@ -19,7 +19,6 @@ DECLARE_VTABLE_HOOK(PaintTraverse, void, (IPanel* thisptr, VPANEL vguiPanel, boo
 		{
 			nlohmann::json j = nlohmann::json::parse(response->body);
 			settings = j.get<Settings>();
-			//helper::console::Print("Updated settings!\n");
 		}
 		lastSettingsUpdate = currenttime;
 	}

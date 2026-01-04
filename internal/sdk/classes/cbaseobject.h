@@ -32,4 +32,9 @@ public:
 	NETVAR(m_bDisposableBuilding, "CBaseObject->m_bDisposableBuilding", bool);
 	NETVAR(m_bWasMapPlaced, "CBaseObject->m_bWasMapPlaced", bool);
 	NETVAR(m_bPlasmaDisable, "CBaseObject->m_bPlasmaDisable", bool);
+
+	std::string GetName()
+	{
+		return GetClientClass()->networkName;
+	}
 };

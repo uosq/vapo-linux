@@ -23,6 +23,46 @@ struct RenderBackend_t;
 
 typedef uint64_t VertexFormat_t;
 
+#define	VERTEX_POSITION					0x0001
+#define	VERTEX_NORMAL					0x0002
+#define	VERTEX_COLOR					0x0004
+#define	VERTEX_SPECULAR					0x0008
+
+#define	VERTEX_TANGENT_S				0x0010
+#define	VERTEX_TANGENT_T				0x0020
+#define	VERTEX_TANGENT_SPACE			( VERTEX_TANGENT_S | VERTEX_TANGENT_T )
+
+// Indicates we're using wrinkle
+#define	VERTEX_WRINKLE					0x0040
+
+// Indicates we're using bone indices
+#define	VERTEX_BONE_INDEX				0x0080
+
+// Indicates this is a vertex shader
+#define	VERTEX_FORMAT_VERTEX_SHADER		0x0100
+
+// Indicates this format shouldn't be bloated to cache align it
+// (only used for VertexUsage)
+#define	VERTEX_FORMAT_USE_EXACT_FORMAT	0x0200
+
+// Indicates that compressed vertex elements are to be used (see also VertexCompressionType_t)
+#define	VERTEX_FORMAT_COMPRESSED		0x400
+
+// Update this if you add or remove bits...
+#define	VERTEX_LAST_BIT					10
+
+#define	VERTEX_BONE_WEIGHT_BIT			(VERTEX_LAST_BIT + 1)
+#define	USER_DATA_SIZE_BIT				(VERTEX_LAST_BIT + 4)
+#define	TEX_COORD_SIZE_BIT				(VERTEX_LAST_BIT + 7)
+
+#define	VERTEX_BONE_WEIGHT_MASK			( 0x7 << VERTEX_BONE_WEIGHT_BIT )
+#define	USER_DATA_SIZE_MASK				( 0x7 << USER_DATA_SIZE_BIT )
+
+#define	VERTEX_FORMAT_FIELD_MASK		0x0FF
+
+// If everything is off, it's an unknown vertex format
+#define	VERTEX_FORMAT_UNKNOWN			0
+
 enum CompiledVtfFlags
 {
 	// flags from the *.txt config file

@@ -30,6 +30,10 @@ DECLARE_VTABLE_HOOK(VGuiPaint, void, (IEngineVGui* thisptr, VGuiPanel_t type))
 		if (!pLocal)
 			return;
 
+		if (interfaces::CInput != nullptr)
+			if (interfaces::CInput->CAM_IsThirdPerson())
+				helper::draw::TextShadow(10, 30, color, "Is Thirdperson");
+
 		Visuals::spectatorlist.Run(pLocal);
 		ESP::Run(pLocal);
 	

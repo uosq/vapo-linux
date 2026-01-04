@@ -26,13 +26,13 @@ struct WindowContext
 inline bool _IsMouseInside(int x, int y, int width, int height)
 {
 	int mouseX, mouseY;
-	interfaces::surface->SurfaceGetCursorPos(mouseX, mouseY);
+	interfaces::Surface->SurfaceGetCursorPos(mouseX, mouseY);
 	return mouseX >= x && mouseX <= (x + width) && mouseY >= y && mouseY <= (y + height);
 }
 
 inline void _DragWindow(WindowContext &ctx, int mouseX, int mouseY)
 {
-	bool isDown = interfaces::inputsystem->IsButtonDown(MOUSE_LEFT);
+	bool isDown = interfaces::InputSystem->IsButtonDown(MOUSE_LEFT);
 	if (!isDown)
 	{
 		ctx.dragging = false;
@@ -42,9 +42,9 @@ inline void _DragWindow(WindowContext &ctx, int mouseX, int mouseY)
 	int hx = ctx.x;
 	int hy = ctx.y - ctx.headerHeight;
 
-	int tickpressed = interfaces::inputsystem->GetButtonPressedTick(MOUSE_LEFT);
+	int tickpressed = interfaces::InputSystem->GetButtonPressedTick(MOUSE_LEFT);
 
-	if (tickpressed >= globalvars->tickcount && isDown && _IsMouseInside(hx, hy, ctx.width, ctx.headerHeight))
+	if (tickpressed >= interfaces::GlobalVars->tickcount && isDown && _IsMouseInside(hx, hy, ctx.width, ctx.headerHeight))
 		ctx.dragging = true;
 
 	if (ctx.dragging)
@@ -57,7 +57,7 @@ inline void _DragWindow(WindowContext &ctx, int mouseX, int mouseY)
 inline void GUI_Window(WindowContext &ctx, BaseStyle &style, std::string title = "")
 {
 	int mouseX, mouseY;
-	interfaces::surface->SurfaceGetCursorPos(mouseX, mouseY);
+	interfaces::Surface->SurfaceGetCursorPos(mouseX, mouseY);
 
 	_DragWindow(ctx, mouseX, mouseY);
 

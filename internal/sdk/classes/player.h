@@ -4,8 +4,6 @@
 #include "../definitions/types.h"
 #include "../defs.h"
 
-struct user_cmd;
-
 #define	FL_ONGROUND (1<<0)
 #define FL_DUCKING (1<<1)
 #define	FL_WATERJUMP (1<<2)
@@ -48,9 +46,6 @@ struct player_info {
 #define	LIFE_DEAD 2
 #define LIFE_RESPAWNABLE 3
 #define LIFE_DISCARDBODY 4
-
-// C_BaseAnimating::UpdateClientSideAnimations()
-// 80 BF D0 0A 00 00 00 75 07 C3 66 0F 1F 44 00 00 55 48 89 E5 41 54 49 89 FC 48 83 EC 08 83 BF 00 0B 00 00 FF
 
 class CTFPlayer : public CBaseEntity {
 public:
@@ -131,17 +126,18 @@ public:
 	{
 		player_info_t info{};
 		if (!interfaces::Engine->GetPlayerInfo(GetIndex(), &info))
-			return {};
+			return "";
 
 		return info.name;
 	}
 
 	void UpdateClientSideAnimation()
 	{
-		using C_BaseAnimating_UpdateClientSidedAnimationFn = void(*)(void*);
-		static auto orig = (C_BaseAnimating_UpdateClientSidedAnimationFn)sigscan_module("client.so", "80 BF D0 0A 00 00 00 75 07 C3 66 0F 1F 44 00 00 55 48 89 E5 41 54 49 89 FC 48 83 EC 08 83 BF 00 0B 00 00 FF");
+		using C_BaseAnimating_UpdateClientSideAnimationFn = void(*)(void*);
+		static auto orig = (C_BaseAnimating_UpdateClientSideAnimationFn)sigscan_module("client.so", "80 BF D0 0A 00 00 00 75 07 C3 66 0F 1F 44 00 00 55 48 89 E5 41 54 49 89 FC 48 83 EC 08 83 BF 00 0B 00 00 FF");
 		if (!orig)
 			return;
+
 		orig((void*)this);
 	}
 };

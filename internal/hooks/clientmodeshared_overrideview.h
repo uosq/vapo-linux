@@ -21,5 +21,6 @@ DECLARE_VTABLE_HOOK(OverrideView, void, (IClientMode *thisptr, CViewSetup *view)
 inline void HookOverrideView()
 {
 	INSTALL_VTABLE_HOOK(OverrideView, interfaces::ClientMode, 17);
+
 	helper::console::ColoredPrint("ClientModeShared::OverrideView hooked\n", (Color_t){100, 255, 100, 255});
 }

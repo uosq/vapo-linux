@@ -15,7 +15,7 @@ struct Thirdperson
 		if (settings.misc.thirdperson)
 			pLocal->m_nForceTauntCam() = 1;
 
-		if (!settings.misc.thirdperson && pLocal->m_nForceTauntCam() && pLocal->IsAlive() && !pLocal->IsGhost())
+		if (!settings.misc.thirdperson && interfaces::CInput->CAM_IsThirdPerson())
 			pLocal->m_nForceTauntCam() = 0;
 	}
 };

@@ -15,6 +15,9 @@ var settings struct {
 	ESP struct {
 		Enabled       bool `json:"enabled"`
 		IgnoreCloaked bool `json:"ignorecloaked"`
+		Buildings     bool `json:"buildings"`
+		Name          bool `json:"name"`
+		Box           bool `json:"box"`
 	} `json:"esp"`
 
 	Aimbot struct {
@@ -78,6 +81,9 @@ func main() {
 				GroupV("ESP",
 					CreateToggle("Enabled", &settings.ESP.Enabled),
 					CreateToggle("Ignore Cloaked Spies", &settings.ESP.IgnoreCloaked),
+					CreateToggle("Buildings", &settings.ESP.Buildings),
+					CreateToggle("Name", &settings.ESP.Name),
+					CreateToggle("Box", &settings.ESP.Box),
 				),
 			),
 

@@ -134,7 +134,7 @@ struct AimbotProjectile
 		{
 			CTFPlayer* entity = (CTFPlayer*)interfaces::EntityList->GetClientEntity(i);
 
-			if (!AimbotUtils::IsValidEnemyEntity(pLocal, entity))
+			if (!AimbotUtils::IsValidEntity(pLocal, entity))
 				continue;
 
 			Vector center = entity->GetCenter();

@@ -2,6 +2,7 @@
 
 #include "ihandleentity.h"
 #include "ivengineclient.h"
+#include "ivmodelrender.h"
 #include "types.h"
 #include "eclassid.h"
 
@@ -18,7 +19,6 @@ class ICollideable;
 class IClientEntity;
 class IClientThinkable;
 class CBaseHandle;
-struct ModelInstanceHandle_t;
 
 class bf_read;
 

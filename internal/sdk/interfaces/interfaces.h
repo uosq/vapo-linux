@@ -22,6 +22,7 @@
 #include "../definitions/cvar.h"
 #include "../definitions/imaterialsystem.h"
 #include "../definitions/iprediction.h"
+#include "../definitions/ivmodelrender.h"
 
 namespace interfaces
 {
@@ -33,13 +34,15 @@ namespace interfaces
 	inline ISurface* Surface = nullptr;
 	inline IClientEntityList* EntityList = nullptr;
 	inline IEngineVGui* EngineVGui = nullptr;
-	//inline IEngineTool* EngineTool = nullptr;
 	inline IVRenderView* RenderView = nullptr;
 	inline IInputSystem* InputSystem = nullptr;
 	inline IEngineTrace* EngineTrace = nullptr;
 	inline IMaterialSystem* MaterialSystem = nullptr;
 	inline CGlobalVars* GlobalVars = nullptr;
 	inline IPrediction* Prediction = nullptr;
+	inline CInput* CInput = nullptr;
+	inline IStudioRender* StudioRender = nullptr;
+	inline IVModelRender* ModelRender = nullptr;
 	inline AttributeManager attributeManager;
 }
 
@@ -162,6 +165,12 @@ inline bool InitializeInterfaces()
 	if (!GetInterface(interfaces::Prediction, factories::client, "VClientPrediction001"))
 		return false;
 
+	/*if (!GetInterface(interfaces::StudioRender, factories::client, "VStudioRender025"))
+		return false;*/
+
+	if (!GetInterface(interfaces::ModelRender, factories::engine, "VEngineModel016"))
+		return false;
+
 	{ // ClientModeShared
 		uintptr_t leaInstr = (uintptr_t)sigscan_module("client.so", "48 8D 05 ? ? ? ? 40 0F B6 F6 48 8B 38");
 		uintptr_t g_pClientMode_addr = vtable::ResolveRIP(leaInstr, 3, 7); // lea rax, [g_pClientMode]
@@ -193,14 +202,13 @@ inline bool InitializeInterfaces()
 		//GetTFWeaponInfo = reinterpret_cast<GetTFWeaponInfoFn>(sigscan_module("client.so", "0F B7 BF 12 0F 00 00 E9 54 15 21"));
 	}
 
-	/*
 	{ // CInput
-	fuck my life, why does this not work??
-		uintptr_t addr = (uintptr_t)(sigscan_module("client.so", "4C 89 E7 4C 8B 65 F8 C9 48 8D 35 E0 12 C1 00"));
-		unsigned int input_addr = *(unsigned int*)(addr + 0x3);
-		uintptr_t instr = (uintptr_t)(addr + 0x7);
-		interfaces::input = (CInput*)(*(void**)(instr + input_addr));
-	}*/
+		uintptr_t leaInstr = (uintptr_t)(sigscan_module("client.so", "48 8D 05 ? ? ? ? 48 8B 38 48 8B 07 FF 90 ? ? ? ? 48 8D 15 ? ? ? ? 84 C0"));
+		uintptr_t g_Input_addr = vtable::ResolveRIP(leaInstr, 3, 7);
+		interfaces::CInput = *reinterpret_cast<CInput**>(g_Input_addr);
+		if (!interfaces::CInput)
+			return false;
+	}
 
 	return true;
 }
