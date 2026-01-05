@@ -64,88 +64,33 @@ struct DrawModelState_t
 	int m_lod;
 };
 
-
 class IVModelRender
 {
 public:
-	virtual int		DrawModel(	int flags,
-								IClientRenderable *pRenderable,
-								ModelInstanceHandle_t instance,
-								int entity_index, 
-								const model_t *model, 
-								Vector const& origin, 
-								QAngle const& angles, 
-								int skin,
-								int body,
-								int hitboxset,
-								const matrix3x4 *modelToWorld = NULL,
-								const matrix3x4 *pLightingOffset = NULL ) = 0;
-
-	// This causes a material to be used when rendering the model instead 
-	// of the materials the model was compiled with
-	virtual void	ForcedMaterialOverride( IMaterial *newMaterial, OverrideType_t nOverrideType = OVERRIDE_NORMAL ) = 0;
-
-	virtual void	SetViewTarget( const CStudioHdr *pStudioHdr, int nBodyIndex, const Vector& target ) = 0;
-
-	// Creates, destroys instance data to be associated with the model
-	virtual ModelInstanceHandle_t CreateInstance( IClientRenderable *pRenderable, void* *pCache = NULL ) = 0;
-	virtual void DestroyInstance( ModelInstanceHandle_t handle ) = 0;
-
-	// Associates a particular lighting condition with a model instance handle.
-	// FIXME: This feature currently only works for static props. To make it work for entities, etc.,
-	// we must clean up the lightcache handles as the model instances are removed.
-	// At the moment, since only the static prop manager uses this, it cleans up all LightCacheHandles 
-	// at level shutdown.
-	virtual void SetStaticLighting( ModelInstanceHandle_t handle, void** pHandle ) = 0;
-	virtual void* GetStaticLighting( ModelInstanceHandle_t handle ) = 0;
-
-	// moves an existing InstanceHandle to a nex Renderable to keep decals etc. Models must be the same
-	virtual bool ChangeInstance( ModelInstanceHandle_t handle, IClientRenderable *pRenderable ) = 0;
-
-	// Creates a decal on a model instance by doing a planar projection
-	// along the ray. The material is the decal material, the radius is the
-	// radius of the decal to create.
-	virtual void AddDecal( ModelInstanceHandle_t handle, Ray_t const& ray, 
-		Vector const& decalUp, int decalIndex, int body, bool noPokeThru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS ) = 0;
-
-	// Removes all the decals on a model instance
-	virtual void RemoveAllDecals( ModelInstanceHandle_t handle ) = 0;
-
-	// Remove all decals from all models
-	virtual void RemoveAllDecalsFromAllModels() = 0;
-
-	// Shadow rendering, DrawModelShadowSetup returns the address of the bone-to-world array, NULL in case of error
-	virtual matrix3x4* DrawModelShadowSetup( IClientRenderable *pRenderable, int body, int skin, DrawModelInfo_t *pInfo, matrix3x4 *pCustomBoneToWorld = NULL ) = 0;
-	virtual void DrawModelShadow(  IClientRenderable *pRenderable, const DrawModelInfo_t &info, matrix3x4 *pCustomBoneToWorld = NULL ) = 0;
-
-	// This gets called when overbright, etc gets changed to recompute static prop lighting.
-	virtual bool RecomputeStaticLighting( ModelInstanceHandle_t handle ) = 0;
-
-	virtual void ReleaseAllStaticPropColorData( void ) = 0;
-	virtual void RestoreAllStaticPropColorData( void ) = 0;
-
-	// Extended version of drawmodel
-	virtual int	DrawModelEx( ModelRenderInfo_t &pInfo ) = 0;
-
-	virtual int	DrawModelExStaticProp( ModelRenderInfo_t &pInfo ) = 0;
-
-	virtual bool DrawModelSetup( ModelRenderInfo_t &pInfo, DrawModelState_t *pState, matrix3x4 *pCustomBoneToWorld, matrix3x4** ppBoneToWorldOut ) = 0;
-	virtual void DrawModelExecute( const DrawModelState_t &state, const ModelRenderInfo_t &pInfo, matrix3x4 *pCustomBoneToWorld = NULL ) = 0;
-
-	// Sets up lighting context for a point in space
-	virtual void SetupLighting( const Vector &vecCenter ) = 0;
-	
-	// doesn't support any debug visualization modes or other model options, but draws static props in the
-	// fastest way possible
-	virtual int DrawStaticPropArrayFast( StaticPropRenderInfo_t *pProps, int count, bool bShadowDepth ) = 0;
-
-	// Allow client to override lighting state
-	virtual void SuppressEngineLighting( bool bSuppress ) = 0;
-
-	virtual void SetupColorMeshes( int nTotalVerts ) = 0;
-
-	virtual void AddColoredDecal( ModelInstanceHandle_t handle, Ray_t const& ray, 
-		Vector const& decalUp, int decalIndex, int body, Color cColor, bool noPokeThru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS ) = 0;
-
-	virtual void GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType ) = 0;
+	virtual int			DrawModel( int flags, IClientRenderable *pRenderable, ModelInstanceHandle_t instance, int entity_index, const model_t *model, Vector const& origin, QAngle const& angles, int skin, int body, int hitboxset, const matrix3x4 *modelToWorld = NULL, const matrix3x4 *pLightingOffset = NULL ) = 0;
+	virtual void			ForcedMaterialOverride( IMaterial *newMaterial, OverrideType_t nOverrideType = OVERRIDE_NORMAL ) = 0;
+	virtual void			SetViewTarget( const CStudioHdr *pStudioHdr, int nBodyIndex, const Vector& target ) = 0;
+	virtual ModelInstanceHandle_t	CreateInstance( IClientRenderable *pRenderable, void* *pCache = NULL ) = 0;
+	virtual void			DestroyInstance( ModelInstanceHandle_t handle ) = 0;
+	virtual void			SetStaticLighting( ModelInstanceHandle_t handle, void** pHandle ) = 0;
+	virtual void*			GetStaticLighting( ModelInstanceHandle_t handle ) = 0;
+	virtual bool			ChangeInstance( ModelInstanceHandle_t handle, IClientRenderable *pRenderable ) = 0;
+	virtual void			AddDecal( ModelInstanceHandle_t handle, Ray_t const& ray, Vector const& decalUp, int decalIndex, int body, bool noPokeThru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS ) = 0;
+	virtual void			RemoveAllDecals( ModelInstanceHandle_t handle ) = 0;
+	virtual void			RemoveAllDecalsFromAllModels() = 0;
+	virtual matrix3x4*		DrawModelShadowSetup( IClientRenderable *pRenderable, int body, int skin, DrawModelInfo_t *pInfo, matrix3x4 *pCustomBoneToWorld = NULL ) = 0;
+	virtual void			DrawModelShadow(  IClientRenderable *pRenderable, const DrawModelInfo_t &info, matrix3x4 *pCustomBoneToWorld = NULL ) = 0;
+	virtual bool			RecomputeStaticLighting( ModelInstanceHandle_t handle ) = 0;
+	virtual void			ReleaseAllStaticPropColorData( void ) = 0;
+	virtual void			RestoreAllStaticPropColorData( void ) = 0;
+	virtual int			DrawModelEx( ModelRenderInfo_t &pInfo ) = 0;
+	virtual int			DrawModelExStaticProp( ModelRenderInfo_t &pInfo ) = 0;
+	virtual bool			DrawModelSetup( ModelRenderInfo_t &pInfo, DrawModelState_t *pState, matrix3x4 *pCustomBoneToWorld, matrix3x4** ppBoneToWorldOut ) = 0;
+	virtual void			DrawModelExecute( const DrawModelState_t &state, const ModelRenderInfo_t &pInfo, matrix3x4 *pCustomBoneToWorld = NULL ) = 0;
+	virtual void			SetupLighting( const Vector &vecCenter ) = 0;
+	virtual int			DrawStaticPropArrayFast( StaticPropRenderInfo_t *pProps, int count, bool bShadowDepth ) = 0;
+	virtual void			SuppressEngineLighting( bool bSuppress ) = 0;
+	virtual void			SetupColorMeshes( int nTotalVerts ) = 0;
+	virtual void			AddColoredDecal( ModelInstanceHandle_t handle, Ray_t const& ray, Vector const& decalUp, int decalIndex, int body, Color cColor, bool noPokeThru = false, int maxLODToDecal = ADDDECAL_TO_ALL_LODS ) = 0;
+	virtual void			GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType ) = 0;
 };

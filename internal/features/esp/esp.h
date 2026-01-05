@@ -70,7 +70,7 @@ namespace ESP
 		if (!entity->IsPlayer())
 			return false;
 
-		if (entity->GetIndex() == pLocal->GetIndex())
+		if (!interfaces::CInput->CAM_IsThirdPerson() && entity->GetIndex() == pLocal->GetIndex())
 			return false;
 
 		CTFPlayer* player = static_cast<CTFPlayer*>(entity);

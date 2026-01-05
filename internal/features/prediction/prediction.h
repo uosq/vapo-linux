@@ -297,7 +297,7 @@ namespace PlayerPrediction
 			velocity.z -= gravity;
 
 			isOnGround = CheckIsOnGround(player, origin, mins, maxs);
-			if (isOnGround)
+			if (!isOnGround)
 				StayOnGround(player, origin, mins, maxs, stepsize);
 
 			path.emplace_back((Vector){origin.x, origin.y, origin.z});

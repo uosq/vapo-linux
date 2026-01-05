@@ -10,8 +10,8 @@
 #include "inputenums.h"
 #include "clientframestage_t.h"
 #include "inetchannelinfo.h"
-#include "keyvalues.h"
 
+class KeyValues;
 class IMaterial;
 class model_t;
 class client_textmessage_t;

@@ -23,6 +23,9 @@
 #include "../definitions/imaterialsystem.h"
 #include "../definitions/iprediction.h"
 #include "../definitions/ivmodelrender.h"
+#include "../definitions/ikeyvaluessystem.h"
+#include "../definitions/igamemovement.h"
+#include "../definitions/imovehelper.h"
 
 namespace interfaces
 {
@@ -39,10 +42,10 @@ namespace interfaces
 	inline IEngineTrace* EngineTrace = nullptr;
 	inline IMaterialSystem* MaterialSystem = nullptr;
 	inline CGlobalVars* GlobalVars = nullptr;
-	inline IPrediction* Prediction = nullptr;
+	inline Prediction* Prediction = nullptr;
 	inline CInput* CInput = nullptr;
-	inline IStudioRender* StudioRender = nullptr;
 	inline IVModelRender* ModelRender = nullptr;
+	inline IKeyValuesSystem* KeyValuesSystem = nullptr;
 	inline AttributeManager attributeManager;
 }
 
@@ -92,6 +95,10 @@ inline bool InitializeInterfaces()
 			return false;
 	
 		factories::vstdlib = reinterpret_cast<CreateInterfaceFn>(dlsym(vstdlib, "CreateInterface"));
+
+		interfaces::KeyValuesSystem = reinterpret_cast<IKeyValuesSystem*>(dlsym(vstdlib, "KeyValuesSystem"));
+		if (!interfaces::KeyValuesSystem)
+			return false;
 	}
 
 	{ // vgui2 factory (paint traverse)
@@ -171,6 +178,9 @@ inline bool InitializeInterfaces()
 	if (!GetInterface(interfaces::ModelRender, factories::engine, "VEngineModel016"))
 		return false;
 
+	//if (!GetInterface(interfaces::GameMovement, factories::client, "GameMovement001"))
+		//return false;
+
 	{ // ClientModeShared
 		uintptr_t leaInstr = (uintptr_t)sigscan_module("client.so", "48 8D 05 ? ? ? ? 40 0F B6 F6 48 8B 38");
 		uintptr_t g_pClientMode_addr = vtable::ResolveRIP(leaInstr, 3, 7); // lea rax, [g_pClientMode]
@@ -195,11 +205,6 @@ inline bool InitializeInterfaces()
 		attribute_hook_value_float_original = (float (*)(float, const char*, CBaseEntity*, void*, bool))sigscan_module("client.so", "55 31 C0 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 49 89 FC 53 89 CB");
 		if (!attribute_hook_value_float_original)
 			return false;
-	}
-
-	{ // hook GetTFWeaponInfo(int weaponID)
-		// 83 FF 6D 77 13 48 8D 05 ? ? ? ? 48 63 FF 48 8B 04 F8 C3 works but gives garbage data
-		//GetTFWeaponInfo = reinterpret_cast<GetTFWeaponInfoFn>(sigscan_module("client.so", "0F B7 BF 12 0F 00 00 E9 54 15 21"));
 	}
 
 	{ // CInput

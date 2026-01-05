@@ -1,7 +1,5 @@
 #pragma once
 
-// sig 83 3d fd 8a 65 00 01 7e 77 80 3d a8 13 66 00 00 75 6e 48 8d 05 af 96 6b
-
 #include "../sdk/interfaces/interfaces.h"
 #include "../settings.h"
 #include "../libdetour/libdetour.h"
@@ -23,7 +21,7 @@ inline void Hooked_CL_CheckForPureServerWhitelist(void*& pFilesToReload)
 
 inline void HookCheckForPure()
 {
-	originalCheckForPureServerWhitelistFn = (CL_CheckForPureServerWhitelistFn)sigscan_module("engine.so", "83 3D FD 8A 65 00 01 7E 77 80 3D A8 13 66 00 00 75 6E 48 8D 05 AF 96 6B");
+	originalCheckForPureServerWhitelistFn = (CL_CheckForPureServerWhitelistFn)sigscan_module("engine.so", "83 3D ? ? ? ? 01 7E ? 80 3D ? ? ? ? 00 75");
 	detour_init(&CL_CheckForPureServerWhitelist_ctx, (void*)originalCheckForPureServerWhitelistFn, (void*)&Hooked_CL_CheckForPureServerWhitelist);
 	detour_enable(&CL_CheckForPureServerWhitelist_ctx);
 

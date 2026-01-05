@@ -18,6 +18,7 @@ var settings struct {
 		Buildings     bool `json:"buildings"`
 		Name          bool `json:"name"`
 		Box           bool `json:"box"`
+		Chams         bool `json:"chams"`
 	} `json:"esp"`
 
 	Aimbot struct {
@@ -84,6 +85,7 @@ func main() {
 					CreateToggle("Buildings", &settings.ESP.Buildings),
 					CreateToggle("Name", &settings.ESP.Name),
 					CreateToggle("Box", &settings.ESP.Box),
+					CreateToggle("Chams", &settings.ESP.Chams),
 				),
 			),
 

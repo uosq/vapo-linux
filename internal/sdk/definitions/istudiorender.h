@@ -313,5 +313,3 @@ public:
 
 	virtual void GetMaterialOverride( IMaterial** ppOutForcedMaterial, OverrideType_t* pOutOverrideType ) = 0;
 };
-
-extern IStudioRender *g_pStudioRender;
