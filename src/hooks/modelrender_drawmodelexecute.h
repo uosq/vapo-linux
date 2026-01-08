@@ -8,6 +8,7 @@
 #include "../sdk/definitions/keyvalues.h"
 
 #include "../features/chams/chams.h"
+#include "../features/glow/glow.h"
 
 DECLARE_VTABLE_HOOK(DrawModelExecute, void, (IVModelRender* thisptr, const DrawModelState_t &state, const ModelRenderInfo_t &pInfo, matrix3x4 *pCustomBoneToWorld))
 {
@@ -22,6 +23,12 @@ DECLARE_VTABLE_HOOK(DrawModelExecute, void, (IVModelRender* thisptr, const DrawM
 		if (Chams::ShouldHide(pInfo.entity_index))
 			return;
 	}
+
+	/*if (settings.esp.blur || settings.esp.stencil)
+	{
+		if (Glow::m_bRunning)
+			return originalDrawModelExecute(thisptr, state, pInfo, pCustomBoneToWorld);
+	}*/
 
 	originalDrawModelExecute(thisptr, state, pInfo, pCustomBoneToWorld);
 }

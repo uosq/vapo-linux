@@ -89,6 +89,20 @@ public:
 		return GetClassID() == ETFClassID::CObjectTeleporter;
 	}
 
+	bool IsBuilding()
+	{
+		switch(GetClassID())
+		{
+			case ETFClassID::CObjectDispenser:
+			case ETFClassID::CObjectSentrygun:
+			case ETFClassID::CObjectTeleporter:
+				return true;
+			default: break;
+		}
+
+		return false;
+	}
+
 	CBaseEntity* GetMoveParent()
 	{
 		static int offset = netvars[fnv::HashConst("CBaseEntity->moveparent")] - 8;

@@ -47,6 +47,14 @@ struct player_info {
 #define LIFE_RESPAWNABLE 3
 #define LIFE_DISCARDBODY 4
 
+enum
+{
+	WL_NotInWater=0,
+	WL_Feet,
+	WL_Waist,
+	WL_Eyes
+};
+
 class CTFPlayer : public CBaseEntity {
 public:
 	NETVAR(GetActiveWeapon, "CBaseCombatCharacter->m_hActiveWeapon", EHANDLE)
@@ -77,6 +85,7 @@ public:
 	NETVAR(m_iObserverMode, "CBasePlayer->m_iObserverMode", int)
 	NETVAR(m_iClass, "CTFPlayer->m_iClass", int)
 	NETVAR(m_hGroundEntity, "CBasePlayer->m_hGroundEntity", EHANDLE)
+	NETVAR(m_nWaterLevel, "CTFPlayer->m_nWaterLevel", int)
 
 	bool IsAlive()
 	{
@@ -135,7 +144,7 @@ public:
 	void UpdateClientSideAnimation()
 	{
 		using C_BaseAnimating_UpdateClientSideAnimationFn = void(*)(void*);
-		static auto orig = (C_BaseAnimating_UpdateClientSideAnimationFn)sigscan_module("client.so", "80 BF D0 0A 00 00 00 75 07 C3 66 0F 1F 44 00 00 55 48 89 E5 41 54 49 89 FC 48 83 EC 08 83 BF 00 0B 00 00 FF");
+		static auto orig = (C_BaseAnimating_UpdateClientSideAnimationFn)sigscan_module("client.so", "80 BF D0 0A 00 00 00 75");
 		if (!orig)
 			return;
 

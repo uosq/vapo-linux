@@ -25,13 +25,12 @@ DECLARE_VTABLE_HOOK(VGuiPaint, void, (IEngineVGui* thisptr, PaintMode_t paint))
 		HFont font = helper::draw::GetCurrentFont();
 		helper::draw::SetFont(font);
 	
-		Color color{255, 255, 255, 255};
-		helper::draw::TextShadow(10, 10, color, "Vapo Linux");
+		//Color color{255, 255, 255, 255};
+		//helper::draw::TextShadow(10, 10, color, "Vapo Linux");
 	
 		CTFPlayer* pLocal = helper::engine::GetLocalPlayer();
 		if (pLocal)
 		{
-			//Visuals::spectatorlist.Run(pLocal);
 			ESP::Run(pLocal);
 		
 			CTFWeaponBase* pWeapon = HandleAs<CTFWeaponBase>(pLocal->GetActiveWeapon());

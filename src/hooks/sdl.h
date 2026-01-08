@@ -11,9 +11,10 @@
 #include "../imgui/imgui_impl_sdl2.h"
 #include "../imgui/imgui_impl_opengl3.h"
 #include "GL/glew.h"
-#include "../settings.h"
 
+#include "../settings.h"
 #include "../gui/gui.h"
+#include "../features/esp/esp.h"
 
 using SwapWindowFn = void(*)(SDL_Window* window);
 static SwapWindowFn original_SwapWindow = nullptr;
@@ -102,7 +103,7 @@ inline int Hooked_PollEvent(SDL_Event* event)
 	if (tfwindow && ImGui::GetCurrentContext())
 		ImGui_ImplSDL2_ProcessEvent(event);
 
-	if (settings.menu_open && (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP))
+	if (settings.menu_open)
 		event->type = 0;
 
 	return ret;

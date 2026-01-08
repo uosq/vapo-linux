@@ -8,11 +8,13 @@ namespace helper
 {
 	namespace material
 	{
-		inline void CreateMaterial(std::string name, std::string type, std::string vmt)
+		inline IMaterial* CreateMaterial(std::string name, std::string vmt)
 		{
-			KeyValues *kv = new KeyValues(type.c_str());
-			kv->LoadFromBuffer(name.c_str(), vmt.c_str());
-			interfaces::MaterialSystem->CreateMaterial(name.c_str(), kv);
+			// Im probably corrupting the heap doing this
+			// But fuck you Valve! KeyValuesSystem crashes my game
+			KeyValues *kv = new KeyValues("");
+			kv->LoadFromBuffer("", vmt.c_str());
+			return interfaces::MaterialSystem->CreateMaterial(name.c_str(), kv);
 		}
 	}
 }

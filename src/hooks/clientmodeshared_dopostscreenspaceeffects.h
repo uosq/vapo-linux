@@ -6,10 +6,12 @@
 #include "../sdk/helpers/helper.h"
 
 #include "../features/chams/chams.h"
+#include "../features/glow/glow.h"
 
 DECLARE_VTABLE_HOOK(DoPostScreenSpaceEffects, bool, (IClientMode* thisptr, CViewSetup* setup))
 {
 	Chams::Run();
+	Glow::Run();
 
 	//helper::console::Print("DoPost\n");
 

@@ -11,6 +11,8 @@ struct Settings_ESP
 	bool name = false;
 	bool box = false;
 	bool chams = false;
+	int stencil = 0;
+	int blur = 0;
 };
 
 struct Settings_Aimbot
@@ -27,6 +29,7 @@ struct Settings_Aimbot
 struct Settings_Misc
 {
 	bool thirdperson = false;
+	std::string thirdperson_key = "";
 	bool customfov_enabled = false;
 	float customfov = 0.0f;
 	bool spectatorlist = false;
@@ -34,6 +37,8 @@ struct Settings_Misc
 	bool sv_pure_bypass = false;
 	bool streamer_mode = false;
 	bool bhop = false;
+
+	float viewmodel_offset[3] = {0.0, 0.0, 0.0};
 };
 
 struct Settings

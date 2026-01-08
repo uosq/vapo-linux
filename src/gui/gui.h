@@ -47,12 +47,21 @@ static void DrawESPTab()
 {
 	ImGui::BeginGroup();
 
-	ImGui::Checkbox("Enabled", &settings.esp.enabled);
+	ImGui::Checkbox("ESP Enabled", &settings.esp.enabled);
 	ImGui::Checkbox("Name", &settings.esp.name);
 	ImGui::Checkbox("Box", &settings.esp.box);
 	ImGui::Checkbox("Ignore Cloakeds", &settings.esp.ignorecloaked);
 	ImGui::Checkbox("Buildings", &settings.esp.buildings);
+
+	ImGui::Separator();
+
 	ImGui::Checkbox("Chams", &settings.esp.chams);
+
+	ImGui::Separator();
+
+	ImGui::TextUnformatted("Glow");
+	ImGui::SliderInt("Stencil", &settings.esp.stencil, 0, 10);
+	ImGui::SliderInt("Blur", &settings.esp.blur, 0, 10);
 
 	ImGui::EndGroup();
 }
@@ -62,14 +71,24 @@ static void DrawMiscTab()
 	ImGui::BeginGroup();
 
 	ImGui::Checkbox("Third person", &settings.misc.thirdperson);
+	ImGui::InputText("Third Person Key", &settings.misc.thirdperson_key);
+
+	ImGui::Separator();
+
 	ImGui::Checkbox("Spectator List", &settings.misc.spectatorlist);
 	ImGui::Checkbox("sv_pure bypass", &settings.misc.sv_pure_bypass);
 	ImGui::Checkbox("Streamer Mode", &settings.misc.streamer_mode);
 	ImGui::Checkbox("Bhop", &settings.misc.bhop);
 	ImGui::Checkbox("Backpack Expander", &settings.misc.backpack_expander);
 
+	ImGui::Separator();
+
 	ImGui::Checkbox("Custom Fov Enabled", &settings.misc.customfov_enabled);
 	ImGui::SliderFloat("Custom Fov", &settings.misc.customfov, 0, 140);
+
+	ImGui::Separator();
+
+	ImGui::SliderFloat3("Viewmodel Offset", settings.misc.viewmodel_offset, -20, 20.0f );
 
 	ImGui::EndGroup();
 }

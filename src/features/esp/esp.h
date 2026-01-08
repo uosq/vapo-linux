@@ -7,17 +7,6 @@
 #include "../../sdk/definitions/eteam.h"
 #include "../../settings.h"
 
-/*
-enum TextAlignment {
-	TEXTALIGN_NONE = 0,
-	TEXTALIGN_LEFT,
-	TEXTALIGN_RIGHT,
-	TEXTALIGN_BOTTOM,
-	TEXTALIGN_TOP,
-	TEXTALIGN_COUNT,
-};
-*/
-
 namespace ESP
 {
 	inline Color GetPlayerColor(CBaseEntity* player)
@@ -107,19 +96,18 @@ namespace ESP
 
 	inline void PaintName(Color color, Vector top, int w, int h, std::string name)
 	{
-		helper::draw::TextShadow(top.x + w + 2, top.y, color, name);
+		int textw, texth;
+		helper::draw::GetTextSize(name, textw, texth);
+		helper::draw::TextShadow(top.x - (textw*0.5f), top.y - texth - 2, color, name);
 	}
 
 	inline void Run(CTFPlayer* pLocal)
 	{
-		if (!settings.esp.enabled)
-			return;
-
-		if (!pLocal)
+		if (!helper::engine::IsInMatch() || !settings.esp.enabled)
 			return;
 
 		Color white {255, 255, 255, 255};
-		helper::draw::SetColor(white);
+		helper::draw::SetFont(fontManager.GetCurrentFont());
 
 		int maxclients = helper::engine::GetMaxClients();
 
@@ -174,7 +162,7 @@ namespace ESP
 				if (baseEnt == nullptr)
 					continue;
 
-				if (!(baseEnt->IsSentry() || baseEnt->IsTeleporter() || baseEnt->IsDispenser()))
+				if (!baseEnt->IsBuilding())
 					continue;
 
 				// fucking stupid c++

@@ -31,9 +31,8 @@ struct ProjectileInfo_t
 
 inline FileWeaponInfo_t* Rebuild_GetFileWeaponInfoFromHandle(void* handle)
 {
-	// GetFileWeaponInfoFromHandle 66 3B 3D D3 03 77 01 48 8D 05 72 FC 76 01 ? ? 48 8B 15 B1 03 77 01
 	using GetFileWeaponInfoFromHandleFn = FileWeaponInfo_t*(*)(void*);
-	static auto orig = (GetFileWeaponInfoFromHandleFn)sigscan_module("client.so", "66 3B 3D D3 03 77 01 48 8D 05 72 FC 76 01 ? ? 48 8B 15 B1 03 77 01");
+	static auto orig = (GetFileWeaponInfoFromHandleFn)sigscan_module("client.so", "66 3B 3D ? ? ? ? 48 8D 05");
 	return orig(handle);
 }
 

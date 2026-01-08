@@ -23,17 +23,32 @@ inline detour_ctx_t calcViewModel_ctx;
 inline void HookedCalcViewModelView(void* thisptr, CBaseEntity* owner, const Vector& eyePosition, const QAngle& eyeAngles)
 {
 	Vector angle = eyeAngles;
+	Vector position = eyePosition;
 
-	if (owner && settings.aimbot.viewmodelaim)
-	{	// viewmodel aim
-		if (Aimbot::IsRunning() && interfaces::GlobalVars && interfaces::GlobalVars->curtime)
-			stoptime = interfaces::GlobalVars->curtime + VIEWMODELAIM_INTERVAL;
-	
-		if (interfaces::GlobalVars && interfaces::GlobalVars->curtime && interfaces::GlobalVars->curtime < stoptime)
-			angle = Aimbot::GetAngle();
+	if (owner)
+	{
+		if (settings.aimbot.viewmodelaim)
+		{
+			if (Aimbot::IsRunning() && interfaces::GlobalVars && interfaces::GlobalVars->curtime)
+				stoptime = interfaces::GlobalVars->curtime + VIEWMODELAIM_INTERVAL;
+		
+			if (interfaces::GlobalVars && interfaces::GlobalVars->curtime && interfaces::GlobalVars->curtime < stoptime)
+				angle = Aimbot::GetAngle();
+		}
+
+		Vector offset = {settings.misc.viewmodel_offset[0], settings.misc.viewmodel_offset[1], settings.misc.viewmodel_offset[2]};
+		if (!offset.IsZero())
+		{
+			Vector forward, right, up;
+			Math::AngleVectors(angle, &forward, &right, &up);
+
+			position += forward * offset.x;
+			position += right * offset.y;
+			position += up * offset.z;
+		}
 	}
 
-	DETOUR_ORIG_CALL(&calcViewModel_ctx, originalCalcViewModelView, thisptr, owner, eyePosition, angle);
+	DETOUR_ORIG_CALL(&calcViewModel_ctx, originalCalcViewModelView, thisptr, owner, position, angle);
 }
 
 inline void HookCalcViewModelView()

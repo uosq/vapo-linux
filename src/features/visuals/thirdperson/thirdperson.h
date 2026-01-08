@@ -6,9 +6,20 @@
 
 struct Thirdperson
 {
+	void RunHotkey()
+	{
+		if (settings.misc.thirdperson_key == "")
+			return;
+
+		if (helper::input::IsKeyPressed(settings.misc.thirdperson_key))
+			settings.misc.thirdperson = !settings.misc.thirdperson;
+	}
+
 	// Call in FrameStageNotify -> FRAME_NET_UPDATE_END
 	void Run(CTFPlayer* pLocal)
 	{
+		RunHotkey();
+
 		if (!pLocal || !pLocal->IsAlive())
 			return;
 

@@ -16,18 +16,12 @@ namespace Chams
 	{
 		if (m_mFlatMat == nullptr)
 		{
-			// Im probably corrupting the heap doing this
-			// But fuck you Valve! KeyValuesSystem crashes my game
-			KeyValues* kv = new KeyValues("UnlitGeneric");
-			kv->LoadFromBuffer(
-				"vapoo",
+			m_mFlatMat = helper::material::CreateMaterial("CoolFlatMat",
 				"UnlitGeneric\n"
 				"{\n"
 				"	$basetexture \"white\"\n"
 				"}"
 			);
-
-			m_mFlatMat = interfaces::MaterialSystem->CreateMaterial("vapoo", kv);
 			m_bMatLoaded = true;
 			helper::console::Print("Material vapooo created!\n");
 		}

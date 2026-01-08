@@ -45,7 +45,7 @@ namespace Aimbot
 
 		ButtonCode_t key = interfaces::InputSystem->StringToButtonCode(settings.aimbot.key.c_str());
 
-		if (key && !interfaces::InputSystem->IsButtonDown(key))
+		if (key != BUTTON_CODE_INVALID && !interfaces::InputSystem->IsButtonDown(key))
 			return;
 
 		switch (pWeapon->GetWeaponType())
@@ -73,7 +73,7 @@ namespace Aimbot
 
 	inline void DrawFOVIndicator(CTFPlayer* pLocal, CTFWeaponBase* pWeapon)
 	{
-		if (settings.aimbot.fov >= 90 || !settings.aimbot.draw_fov_indicator)
+		if (settings.aimbot.fov >= 90 || !settings.aimbot.draw_fov_indicator || helper::engine::IsTakingScreenshot())
 			return;
 
 		float aimFov = DEG2RAD(settings.aimbot.fov);
