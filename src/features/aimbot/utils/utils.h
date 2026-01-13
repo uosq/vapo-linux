@@ -28,7 +28,7 @@ struct AimbotState
 
 static void ClearAimbotState(AimbotState& state)
 {
-	state.angle.Set(0, 0, 0);
+	//state.angle.Set(0, 0, 0);
 	state.shouldSilent = false;
 	state.running = false;
 	state.targetPath.clear();
