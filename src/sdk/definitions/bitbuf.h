@@ -1,20 +1,14 @@
 #pragma once
 
 #include <cstddef>
-#pragma warning (disable : 4244)
-#pragma warning (disable : 4002)
+#include <sys/cdefs.h>
 class Vec3;
 
 #include <stdint.h>
 #include <cassert>
 
 #define nullAssert assert
-
-#if _DEBUG
-#define BITBUF_INLINE inline
-#else
-#define BITBUF_INLINE FORCEINLINE
-#endif
+#define BITBUF_INLINE __always_inline
 
 #define RESTRICT
 
@@ -37,14 +31,6 @@ typedef enum
 
 
 typedef void(*BitBufErrorHandler)(BitBufErrorType errorType, const char* pDebugName);
-
-
-#if defined( _DEBUG )
-extern void InternalBitBufErrorHandler(BitBufErrorType errorType, const char* pDebugName);
-#define CallErrorHandler( errorType, pDebugName ) InternalBitBufErrorHandler( errorType, pDebugName );
-#else
-#define CallErrorHandler( errorType, pDebugName )
-#endif
 
 
 // Use this to install the error handler. Call with NULL to uninstall your error handler.
@@ -107,27 +93,22 @@ inline int BitByte(int bits)
 	return (bits + 7) >> 3;
 }
 
+#undef LittleLong
 
-
-#define WordSwap  WordSwapC
-#define DWordSwap DWordSwapC
-#define QWordSwap QWordSwapC
-
-
-#define SafeSwapFloat( pOut, pIn )	(*((unsigned int*)pOut) = DWordSwap( *((unsigned int*)pIn) ))
-inline short BigShort(short val) { int test = 1; return (*(char*)&test == 1) ? WordSwap(val) : val; }
-inline uint16_t BigWord(uint16_t val) { int test = 1; return (*(char*)&test == 1) ? WordSwap(val) : val; }
-inline long BigLong(long val) { int test = 1; return (*(char*)&test == 1) ? DWordSwap(val) : val; }
-inline uint32_t BigDWord(uint32_t val) { int test = 1; return (*(char*)&test == 1) ? DWordSwap(val) : val; }
-inline short LittleShort(short val) { int test = 1; return (*(char*)&test == 1) ? val : WordSwap(val); }
-inline uint16_t LittleWord(uint16_t val) { int test = 1; return (*(char*)&test == 1) ? val : WordSwap(val); }
-inline long LittleLong(long val) { int test = 1; return (*(char*)&test == 1) ? val : DWordSwap(val); }
-inline uint32_t LittleDWord(uint32_t val) { int test = 1; return (*(char*)&test == 1) ? val : DWordSwap(val); }
-inline uint64_t LittleQWord(uint64_t val) { int test = 1; return (*(char*)&test == 1) ? val : QWordSwap(val); }
-inline short SwapShort(short val) { return WordSwap(val); }
-inline uint16_t SwapWord(uint16_t val) { return WordSwap(val); }
-inline long SwapLong(long val) { return DWordSwap(val); }
-inline uint32_t SwapDWord(uint32_t val) { return DWordSwap(val); }
+#define SafeSwapFloat( pOut, pIn )	(*((unsigned int*)pOut) = DWordSwapC( *((unsigned int*)pIn) ))
+inline short BigShort(short val) { int test = 1; return (*(char*)&test == 1) ? WordSwapC(val) : val; }
+inline uint16_t BigWord(uint16_t val) { int test = 1; return (*(char*)&test == 1) ? WordSwapC(val) : val; }
+inline long BigLong(long val) { int test = 1; return (*(char*)&test == 1) ? DWordSwapC(val) : val; }
+inline uint32_t BigDWord(uint32_t val) { int test = 1; return (*(char*)&test == 1) ? DWordSwapC(val) : val; }
+inline short LittleShort(short val) { int test = 1; return (*(char*)&test == 1) ? val : WordSwapC(val); }
+inline uint16_t LittleWord(uint16_t val) { int test = 1; return (*(char*)&test == 1) ? val : WordSwapC(val); }
+inline long LittleLong(long val) { int test = 1; return (*(char*)&test == 1) ? val : DWordSwapC(val); }
+inline uint32_t LittleDWord(uint32_t val) { int test = 1; return (*(char*)&test == 1) ? val : DWordSwapC(val); }
+inline uint64_t LittleQWord(uint64_t val) { int test = 1; return (*(char*)&test == 1) ? val : QWordSwapC(val); }
+inline short SwapShort(short val) { return WordSwapC(val); }
+inline uint16_t SwapWord(uint16_t val) { return WordSwapC(val); }
+inline long SwapLong(long val) { return DWordSwapC(val); }
+inline uint32_t SwapDWord(uint32_t val) { return DWordSwapC(val); }
 
 // Pass floats by pointer for swapping to avoid truncation in the fpu
 inline void BigFloat(float* pOut, const float* pIn) { int test = 1; (*(char*)&test == 1) ? SafeSwapFloat(pOut, pIn) : (*pOut = *pIn); }
@@ -317,7 +298,7 @@ BITBUF_INLINE bool bf_write::CheckForOverflow(int nBits)
 	if (m_iCurBit + nBits > m_nDataBits)
 	{
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 	}
 
 	return m_bOverflow;
@@ -357,7 +338,7 @@ inline void bf_write::WriteOneBit(int nValue)
 	if (m_iCurBit >= m_nDataBits)
 	{
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 		return;
 	}
 	WriteOneBitNoCheck(nValue);
@@ -369,7 +350,7 @@ inline void	bf_write::WriteOneBitAt(int iBit, int nValue)
 	if (iBit >= m_nDataBits)
 	{
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 		return;
 	}
 
@@ -395,7 +376,7 @@ BITBUF_INLINE void bf_write::WriteUBitLong(unsigned int curData, int numbits, bo
 	{
 		if (curData >= (unsigned long)(1 << numbits))
 		{
-			CallErrorHandler(BITBUFERROR_VALUE_OUT_OF_RANGE, GetDebugName());
+			//CallErrorHandler(BITBUFERROR_VALUE_OUT_OF_RANGE, GetDebugName());
 		}
 	}
 	nullAssert(numbits >= 0 && numbits <= 32);
@@ -405,7 +386,7 @@ BITBUF_INLINE void bf_write::WriteUBitLong(unsigned int curData, int numbits, bo
 	{
 		m_iCurBit = m_nDataBits;
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 		return;
 	}
 
@@ -619,7 +600,7 @@ inline bool bf_read::CheckForOverflow(int nBits)
 	if (m_iCurBit + nBits > m_nDataBits)
 	{
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 	}
 
 	return m_bOverflow;
@@ -641,7 +622,7 @@ inline int bf_read::ReadOneBit()
 	if (GetNumBitsLeft() <= 0)
 	{
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 		return 0;
 	}
 	return ReadOneBitNoCheck();
@@ -674,7 +655,7 @@ BITBUF_INLINE unsigned int bf_read::ReadUBitLong(int numbits) RESTRICT
 	{
 		m_iCurBit = m_nDataBits;
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 		return 0;
 	}
 

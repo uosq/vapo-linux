@@ -9,6 +9,7 @@
 #include "../features/bhop/bhop.h"
 #include "../features/triggerbot/triggerbot.h"
 #include "../features/entitylist/entitylist.h"
+#include "../features/antiaim/antiaim.h"
 
 // Source https://8dcc.github.io/reversing/reversing-tf2-bsendpacket.html#introduction
 #define SENDPACKET_STACK_OFFSET 0xF8
@@ -38,15 +39,14 @@ DECLARE_VTABLE_HOOK(CreateMove, bool, (IClientMode* thisptr, float sample_framet
     	bool* bSendPacket = (bool*)(current_stack_address + SENDPACKET_STACK_OFFSET);
 
 	Bhop::Run(pLocal, pCmd);
+	Antiaim::Run(pLocal, pWeapon, pCmd, bSendPacket);
 	Aimbot::Run(pLocal, pWeapon, pCmd, bSendPacket);
 	Triggerbot::Run(pLocal, pWeapon, pCmd);
-
-	if (Aimbot::IsRunning())
-		helper::engine::FixMovement(pCmd, originalAngles, pCmd->viewangles);
 
 	if (*bSendPacket == true)
 		helper::localplayer::LastAngle = pCmd->viewangles;
 
+	helper::engine::FixMovement(pCmd, originalAngles, pCmd->viewangles);
 	// Return false so the engine doesn't apply it to engine->SetViewAngles; (this is stupid)
 	return false;
 }

@@ -21,6 +21,14 @@ DECLARE_VTABLE_HOOK(DrawModelExecute, void, (IVModelRender* thisptr, const DrawM
 	if (Chams::ShouldHide(pInfo.entity_index))
 		return;
 
+	if (pInfo.entity_index == interfaces::Engine->GetLocalPlayer())
+	{
+		if (settings.antiaim.enabled)
+		{
+			// todo
+		}
+	}
+
 	/*if (settings.esp.chams)
 	{
 		if (Chams::m_bRunning)

@@ -74,3 +74,15 @@ public:
     const char* mapClassname;
 };
  
+class ServerClass
+{
+public:
+	const char* GetName() { return m_pNetworkName; }
+
+public:
+	const char* m_pNetworkName;
+	RecvTable* m_pTable;
+	ServerClass* m_pNext;
+	int m_ClassID;
+	int	m_InstanceBaselineIndex;
+};

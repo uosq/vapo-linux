@@ -3,6 +3,31 @@
 #include <string>
 #include <unistd.h>
 
+enum class PitchMode
+{
+	NONE = 0,
+	UP, DOWN,
+	FAKEUP, FAKEDOWN,
+	RANDOM,
+};
+
+enum class YawMode
+{
+	NONE = 0,
+	LEFT, RIGHT,
+	BACK, FORWARD,
+	SPIN_LEFT, SPIN_RIGHT,
+	JITTER,
+};
+
+struct Settings_Antiaim
+{
+	bool enabled = false;
+	PitchMode pitch_mode = PitchMode::NONE;
+	YawMode real_yaw_mode = YawMode::NONE;
+	YawMode fake_yaw_mode = YawMode::NONE;
+};
+
 struct Settings_ESP
 {
 	bool enabled = false;
@@ -57,6 +82,7 @@ struct Settings
 	Settings_Aimbot aimbot;
 	Settings_ESP esp;
 	Settings_Triggerbot triggerbot;
+	Settings_Antiaim antiaim;
 
 	bool menu_open = false;
 };

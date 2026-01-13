@@ -510,10 +510,6 @@ void bf_write::WriteBitLong(unsigned int data, int numbits, bool bSigned)
 
 bool bf_write::WriteBits(const void* pInData, int nBits)
 {
-#if defined( BB_PROFILING )
-	VPROF("bf_write::WriteBits");
-#endif
-
 	unsigned char* pOut = (unsigned char*)pInData;
 	int nBitsLeft = nBits;
 
@@ -521,7 +517,7 @@ bool bf_write::WriteBits(const void* pInData, int nBits)
 	if ((m_iCurBit + nBits) > m_nDataBits)
 	{
 		SetOverflowFlag();
-		CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
+		//CallErrorHandler(BITBUFERROR_BUFFER_OVERRUN, GetDebugName());
 		return false;
 	}
 

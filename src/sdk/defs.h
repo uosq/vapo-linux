@@ -3339,3 +3339,6 @@ enum MinigunState_t
 
 // Not a studio flag, but used to flag model as a non-sorting brush model
 #define STUDIO_TRANSPARENCY                0x80000000
+
+#define	MAX_EDICT_BITS 11
+#define	MAX_EDICTS (1 << MAX_EDICT_BITS)

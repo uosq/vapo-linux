@@ -4,13 +4,19 @@
 #include "../imgui/imgui_stdlib.h"
 #include "../settings.h"
 #include "../sdk/helpers/helper.h"
+#include "../features/antiaim/antiaim.h"
+#include "../imgui/TextEditor.h"
+
+static TextEditor editor;
 
 enum TabMenu
 {
 	TAB_AIMBOT = 0,
 	TAB_ESP,
 	TAB_MISC,
-	TAB_TRIGGER
+	TAB_TRIGGER,
+	TAB_ANTIAIM,
+	TAB_LUA,
 };
 
 static void DrawTabButtons(int &tab)
@@ -28,6 +34,12 @@ static void DrawTabButtons(int &tab)
 
 	if (ImGui::Button("Misc", ImVec2(-1, 0)))
 		tab = TAB_MISC;
+
+	if (ImGui::Button("Antiaim", ImVec2(-1, 0)))
+		tab = TAB_ANTIAIM;
+
+	//if (ImGui::Button("Lua", ImVec2(-1, 0)))
+		//tab = TAB_LUA;
 
 	ImGui::EndGroup();
 }
@@ -113,6 +125,122 @@ static void DrawTriggerTab()
 	ImGui::EndGroup();
 }
 
+static void DrawAntiaimTab()
+{
+	ImGui::BeginGroup();
+
+	ImGui::Checkbox("Enabled", &settings.antiaim.enabled);
+
+	if (ImGui::BeginCombo("Pitch Mode", Antiaim::GetPitchModeName(settings.antiaim.pitch_mode).c_str()))
+	{
+		if (ImGui::Selectable("None"))
+			settings.antiaim.pitch_mode = PitchMode::NONE;
+
+		if (ImGui::Selectable("Up"))
+			settings.antiaim.pitch_mode = PitchMode::UP;
+
+		if (ImGui::Selectable("Down"))
+			settings.antiaim.pitch_mode = PitchMode::DOWN;
+
+		if (ImGui::Selectable("Fake Up"))
+			settings.antiaim.pitch_mode = PitchMode::FAKEUP;
+
+		if (ImGui::Selectable("Fake Down"))
+			settings.antiaim.pitch_mode = PitchMode::FAKEDOWN;
+
+		if (ImGui::Selectable("Random"))
+			settings.antiaim.pitch_mode = PitchMode::RANDOM;
+
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::BeginCombo("Real Yaw Mode", Antiaim::GetYawModeName(settings.antiaim.real_yaw_mode).c_str()))
+	{
+		if (ImGui::Selectable("None"))
+			settings.antiaim.real_yaw_mode = YawMode::NONE;
+
+		if (ImGui::Selectable("Left"))
+			settings.antiaim.real_yaw_mode = YawMode::LEFT;
+
+		if (ImGui::Selectable("Right"))
+			settings.antiaim.real_yaw_mode = YawMode::RIGHT;
+
+		if (ImGui::Selectable("Spin Left"))
+			settings.antiaim.real_yaw_mode = YawMode::SPIN_LEFT;
+
+		if (ImGui::Selectable("Spin Right"))
+			settings.antiaim.real_yaw_mode = YawMode::SPIN_RIGHT;
+
+		if (ImGui::Selectable("Jitter"))
+			settings.antiaim.real_yaw_mode = YawMode::JITTER;
+
+		if (ImGui::Selectable("Back"))
+			settings.antiaim.real_yaw_mode = YawMode::BACK;
+
+		if (ImGui::Selectable("Forward"))
+			settings.antiaim.real_yaw_mode = YawMode::FORWARD;
+
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::BeginCombo("Fake Yaw Mode", Antiaim::GetYawModeName(settings.antiaim.fake_yaw_mode).c_str()))
+	{
+		if (ImGui::Selectable("None"))
+			settings.antiaim.fake_yaw_mode = YawMode::NONE;
+
+		if (ImGui::Selectable("Left"))
+			settings.antiaim.fake_yaw_mode = YawMode::LEFT;
+
+		if (ImGui::Selectable("Right"))
+			settings.antiaim.fake_yaw_mode = YawMode::RIGHT;
+
+		if (ImGui::Selectable("Spin Left"))
+			settings.antiaim.fake_yaw_mode = YawMode::SPIN_LEFT;
+
+		if (ImGui::Selectable("Spin Right"))
+			settings.antiaim.fake_yaw_mode = YawMode::SPIN_RIGHT;
+
+		if (ImGui::Selectable("Jitter"))
+			settings.antiaim.fake_yaw_mode = YawMode::JITTER;
+
+		if (ImGui::Selectable("Back"))
+			settings.antiaim.fake_yaw_mode = YawMode::BACK;
+
+		if (ImGui::Selectable("Forward"))
+			settings.antiaim.fake_yaw_mode = YawMode::FORWARD;
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::EndGroup();
+}
+
+static void DrawLuaTab()
+{
+	static bool init = false;
+	if (!init)
+	{
+		editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+		editor.SetPalette(TextEditor::GetDarkPalette());
+		init = true;
+	}
+
+	ImGui::BeginGroup();
+
+	editor.Render("Editor", ImVec2(0, -20));
+
+	ImGui::Spacing();
+
+	ImGui::Button("Run Code");
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Clear"))
+		editor.SetText("");
+
+	ImGui::EndGroup();
+}
+
 static void DrawSpectatorList()
 {
 	if (helper::engine::IsTakingScreenshot())
@@ -123,7 +251,7 @@ static void DrawSpectatorList()
         	ImVec2(FLT_MAX, FLT_MAX)
     	);
 
-	int flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize;
+	int flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
 	if (!settings.menu_open)
 		flags |= ImGuiWindowFlags_NoMove;
 
@@ -173,7 +301,7 @@ static void DrawMainWindow()
 
 	static int tab = 0;
 
-	if (ImGui::Begin("Vapo Linux", nullptr, 0))
+	if (ImGui::Begin("Vapo Linux", nullptr, ImGuiWindowFlags_NoCollapse))
 	{
 		if (ImGui::BeginTable("MainTable", 2, 0))
 		{
@@ -192,6 +320,8 @@ static void DrawMainWindow()
 				case TAB_ESP: DrawESPTab(); break;
 				case TAB_MISC: DrawMiscTab(); break;
 				case TAB_TRIGGER: DrawTriggerTab(); break;
+				case TAB_ANTIAIM: DrawAntiaimTab(); break;
+				//case TAB_LUA: DrawLuaTab(); break;
 				default: break;
 			}
 			

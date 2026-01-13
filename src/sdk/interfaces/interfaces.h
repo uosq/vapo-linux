@@ -50,6 +50,7 @@ namespace interfaces
 	static IVModelRender* ModelRender = nullptr;
 	static IKeyValuesSystem* KeyValuesSystem = nullptr;
 	static IVModelInfoClient* ModelInfoClient = nullptr;
+	static void* ClientState = nullptr; // fuck C++
 	static AttributeManager attributeManager;
 }
 
@@ -220,6 +221,15 @@ static bool InitializeInterfaces()
 		interfaces::CInput = *reinterpret_cast<CInput**>(g_Input_addr);
 		if (!interfaces::CInput)
 			return false;
+	}
+
+	{ // ClientState
+		// xref: Setting rcon_address %s:%d\n
+		// then scroll down a bit until you find
+		// 4C 8B 40 20     MOV        R8,qword ptr [RAX + 0x20]=>clientstate_cl
+		uintptr_t movInstr = reinterpret_cast<uintptr_t>(sigscan_module("engine.so", "48 8D 05 ? ? ? ? 4C 8B 40"));
+		uintptr_t g_ClientState = vtable::ResolveRIP(movInstr, 3, 7);
+		interfaces::ClientState = reinterpret_cast<void*>(g_ClientState); // fuck c++
 	}
 
 	return true;
