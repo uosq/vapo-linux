@@ -44,6 +44,9 @@ namespace AimbotUtils
 		if (entity->IsDormant())
 			return false;
 
+		if (checkTeam && entity->m_iTeamNum() == localTeam)
+			return false;
+
 		if (entity->IsPlayer())
 		{
 			CTFPlayer* player = static_cast<CTFPlayer*>(entity);
@@ -76,9 +79,6 @@ namespace AimbotUtils
 
 			return true;
 		}
-
-		if (entity->m_iTeamNum() == localTeam && checkTeam)
-			return false;
 
 		return false;
 	}
