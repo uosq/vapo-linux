@@ -73,7 +73,14 @@ bool InitializeInterfaces()
 	
 		factories::vstdlib = reinterpret_cast<CreateInterfaceFn>(dlsym(vstdlib, "CreateInterface"));
 
-		interfaces::KeyValuesSystem = reinterpret_cast<IKeyValuesSystem*>(dlsym(vstdlib, "KeyValuesSystem"));
+		typedef IKeyValuesSystem* (*KeyValuesSystemFn)();
+		KeyValuesSystemFn GetKeyValuesSystem = reinterpret_cast<KeyValuesSystemFn>(dlsym(vstdlib, "KeyValuesSystem"));
+
+		if (!GetKeyValuesSystem)
+			return false;
+
+		interfaces::KeyValuesSystem = GetKeyValuesSystem();
+
 		if (!interfaces::KeyValuesSystem)
 			return false;
 	}

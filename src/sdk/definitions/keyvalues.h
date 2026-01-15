@@ -86,7 +86,7 @@ public:
 		Initialize(name);
 	}
 
-	/*void* operator new(size_t iAllocSize)
+	void* operator new(size_t iAllocSize)
 	{
 		return interfaces::KeyValuesSystem->AllocKeyValuesMemory((int)iAllocSize);
 	}
@@ -105,7 +105,7 @@ public:
 	void operator delete(void* pMem, int nBlockUse, const char* pFileName, int nLine)
 	{
 		interfaces::KeyValuesSystem->FreeKeyValuesMemory(pMem);
-	}*/
+	}
 
 	void DeleteThis()
 	{
