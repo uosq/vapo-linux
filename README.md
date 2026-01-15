@@ -26,11 +26,13 @@ sudo ./attach.sh
   * Linux
   * GCC/G++ (compiled with atleast standard C++17)
   * Glew
+  * Lua 5.4
 
 Run `build.sh` to build the .so file
 
 ```bash
 mkdir build
 cp /usr/lib64/libGLEW.so.2.2 build/
+cp /usr/lib64/liblua5.4.so.0 build/
 ./build.sh
 ```

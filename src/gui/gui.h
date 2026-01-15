@@ -6,6 +6,8 @@
 #include "../sdk/helpers/helper.h"
 #include "../features/antiaim/antiaim.h"
 #include "../imgui/TextEditor.h"
+#include "../features/lua/api.h"
+#include "console.h"
 
 static TextEditor editor;
 
@@ -38,8 +40,8 @@ static void DrawTabButtons(int &tab)
 	if (ImGui::Button("Antiaim", ImVec2(-1, 0)))
 		tab = TAB_ANTIAIM;
 
-	//if (ImGui::Button("Lua", ImVec2(-1, 0)))
-		//tab = TAB_LUA;
+	if (ImGui::Button("Lua", ImVec2(-1, 0)))
+		tab = TAB_LUA;
 
 	ImGui::EndGroup();
 }
@@ -222,21 +224,45 @@ static void DrawLuaTab()
 	{
 		editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
 		editor.SetPalette(TextEditor::GetDarkPalette());
+		editor.SetShowWhitespaces(false);
 		init = true;
 	}
 
 	ImGui::BeginGroup();
 
-	editor.Render("Editor", ImVec2(0, -20));
+	if (ImGui::BeginTabBar("LuaTab"))
+	{
+		if (ImGui::BeginTabItem("Console Tab"))
+		{
+			ImGui::InputTextMultiline(
+				"##ConsoleText",
+				&consoleText,
+				ImGui::GetContentRegionAvail(),
+				ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_WordWrap
+			);
 
-	ImGui::Spacing();
+			ImGui::EndTabItem();
+		}
 
-	ImGui::Button("Run Code");
+		if (ImGui::BeginTabItem("Editor Tab"))
+		{
+			editor.Render("Editor", ImVec2(0, -25));
+	
+			ImGui::Spacing();
+	
+			if (ImGui::Button("Run Code"))
+				Lua::RunCode(editor.GetText());
+	
+			ImGui::SameLine();
+	
+			if (ImGui::Button("Clear"))
+				editor.SetText("");
 
-	ImGui::SameLine();
+			ImGui::EndTabItem();
+		}
 
-	if (ImGui::Button("Clear"))
-		editor.SetText("");
+		ImGui::EndTabBar();
+	}
 
 	ImGui::EndGroup();
 }
@@ -321,7 +347,7 @@ static void DrawMainWindow()
 				case TAB_MISC: DrawMiscTab(); break;
 				case TAB_TRIGGER: DrawTriggerTab(); break;
 				case TAB_ANTIAIM: DrawAntiaimTab(); break;
-				//case TAB_LUA: DrawLuaTab(); break;
+				case TAB_LUA: DrawLuaTab(); break;
 				default: break;
 			}
 			

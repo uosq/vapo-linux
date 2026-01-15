@@ -14,24 +14,26 @@
 #include "hooks/sdl.h"
 #include "hooks/vulkan.h"
 #include "sdk/interfaces/interfaces.h"
-#include <pthread.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <dlfcn.h>
 #include "sdk/helpers/fonts.h"
 #include "sdk/netvars/netvar.h"
+#include "features/lua/api.h"
 
-void *MainThread(void*)
+__attribute__((constructor))
+void init(void)
 {
 	if (!InitializeInterfaces())
-		return nullptr;
+		return;
 
 	fontManager.Init();
 
 	HookSDL();
 	HookVulkan();
+
 	SetupNetVars();
 	//SetupNetVarsToFile();
+
 	HookCreateMove();
 	HookEngineVGuiPaint();
 	HookFrameStageNotify();
@@ -45,12 +47,12 @@ void *MainThread(void*)
 	HookLockCursor();
 	HookLevelShutdown();
 	HookShowItemsPickedUp();
-	return nullptr;
+
+	Lua::InitLua();
 }
 
-__attribute__((constructor))
-void init(void)
+__attribute__((destructor))
+void uninit(void)
 {
-	pthread_t thread;
-	pthread_create(&thread, nullptr, MainThread, nullptr);
+	Lua::CloseLua();
 }
