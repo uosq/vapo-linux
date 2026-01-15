@@ -5,6 +5,7 @@
 #include "../defs.h"
 #include "../definitions/bspflags.h"
 #include "playerresource.h"
+#include "../definitions/classdata.h"
 
 #define	FL_ONGROUND (1<<0)
 #define FL_DUCKING (1<<1)
@@ -186,29 +187,6 @@ public:
 		}
 
 		return level;
-	}
-
-	int GetMaxBuffedHealth()
-	{
-		CTFPlayerResource *resource = nullptr;
-
-		for (int i = interfaces::Engine->GetMaxClients(); i < interfaces::EntityList->GetHighestEntityIndex(); i++)
-		{
-			CBaseEntity* entity = static_cast<CBaseEntity*>(interfaces::EntityList->GetClientEntity(i));
-			if (entity == nullptr)
-				continue;
-
-			if (entity->GetClassID() != ETFClassID::CPlayerResource)
-				continue;
-
-			resource = reinterpret_cast<CTFPlayerResource*>(entity);
-			break;
-		}
-
-		if (resource == nullptr)
-			return 0;
-
-		return resource->m_iMaxBuffedHealth()[GetIndex()];
 	}
 
 	float GetEffectiveInvisibilityLevel()

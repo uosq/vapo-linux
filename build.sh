@@ -47,6 +47,10 @@ if [ ! -f build/libGLEW.a ]; then
 	rm build/glew-2.3.0
 fi
 
+if [ ! -f build/netvars.txt ]; then
+	cp netvars.txt build/
+fi
+
 g++ -shared -fPIC \
 	-Wl,--whole-archive \
 	build/libGLEW.a \
@@ -60,6 +64,7 @@ g++ -shared -fPIC \
 	src/features/lua/*.cpp \
 	src/sdk/interfaces/*.cpp \
 	src/gui/*.cpp \
+	src/features/entitylist/*.cpp \
 	-o build/libvapo.so \
 	-O2 -std=c++17 -lSDL2 -lvulkan -lm -ldl \
 	-Werror -flto=auto

@@ -8,6 +8,7 @@
 #include "../imgui/TextEditor.h"
 #include "../features/lua/api.h"
 #include "console.h"
+#include "netvar_parser.h"
 
 static TextEditor editor;
 
@@ -19,6 +20,7 @@ enum TabMenu
 	TAB_TRIGGER,
 	TAB_ANTIAIM,
 	TAB_LUA,
+	TAB_NETVARS,
 };
 
 static void DrawTabButtons(int &tab)
@@ -42,6 +44,9 @@ static void DrawTabButtons(int &tab)
 
 	if (ImGui::Button("Lua", ImVec2(-1, 0)))
 		tab = TAB_LUA;
+
+	if (ImGui::Button("Netvars", ImVec2(-1, 0)))
+		tab = TAB_NETVARS;
 
 	ImGui::EndGroup();
 }
@@ -223,7 +228,7 @@ static void DrawLuaTab()
 	if (!init)
 	{
 		auto def = TextEditor::LanguageDefinition::Lua();
-		const char* myIdentifiers[] = {"globals", "engine", "hooks", "Vector3"};
+		const char* myIdentifiers[] = {"globals", "engine", "hooks", "Vector3", "entities"};
 
 		TextEditor::Identifier id;
 		id.mDeclaration = "Custom Function";
@@ -274,6 +279,34 @@ static void DrawLuaTab()
 	}
 
 	ImGui::EndGroup();
+}
+
+static void DrawParsedData(const std::vector<ClassEntry>& classes)
+{
+	for (const auto& cls : classes)
+	{
+		if (ImGui::TreeNode(cls.className.c_str()))
+		{
+			if (cls.members.empty())
+				ImGui::TextDisabled("No members");
+			else
+				for (const auto& name : cls.members)
+					ImGui::BulletText("%s", name.c_str());
+
+			ImGui::TreePop();
+		}
+	}
+}
+
+static void DrawNetVarsTab()
+{
+	static auto path = GetLocalFilePath("netvars.txt");
+	static auto data = ParseFile(path);
+
+	if (ImGui::BeginChild("NetvarContent"))
+		DrawParsedData(data);
+	ImGui::EndChild();
+
 }
 
 static void DrawSpectatorList()
@@ -357,6 +390,7 @@ static void DrawMainWindow()
 				case TAB_TRIGGER: DrawTriggerTab(); break;
 				case TAB_ANTIAIM: DrawAntiaimTab(); break;
 				case TAB_LUA: DrawLuaTab(); break;
+				case TAB_NETVARS: DrawNetVarsTab(); break;
 				default: break;
 			}
 			

@@ -15,6 +15,9 @@
 #include "../features/visuals/visuals.h"
 #include "../features/entitylist/entitylist.h"
 
+#include "../features/lua/hooks.h"
+#include "../features/lua/api.h"
+
 DECLARE_VTABLE_HOOK(VGuiPaint, void, (IEngineVGui* thisptr, PaintMode_t paint))
 {
 	originalVGuiPaint(thisptr, paint);
@@ -22,6 +25,8 @@ DECLARE_VTABLE_HOOK(VGuiPaint, void, (IEngineVGui* thisptr, PaintMode_t paint))
 	if (paint & PAINT_UIPANELS)
 	{
 		interfaces::Surface->StartDrawing();
+
+		LuaHookManager::Call(Lua::m_luaState, "Draw", 0);
 
 		HFont font = helper::draw::GetCurrentFont();
 		helper::draw::SetFont(font);

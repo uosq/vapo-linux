@@ -2,6 +2,7 @@
 #include "../../gui/console.h"
 #include "classes.h"
 #include "funcs.h"
+#include "constants.h"
 
 namespace Lua
 {
@@ -16,8 +17,13 @@ namespace Lua
 		LuaFuncs::globalvars::luaopen_globalvars(m_luaState);
 		LuaFuncs::hooks::luaopen_hooks(m_luaState);
 		LuaFuncs::engine::luaopen_engine(m_luaState);
+		LuaFuncs::entitylist::luaopen_entitylist(m_luaState);
+		LuaFuncs::draw::luaopen_draw(m_luaState);
 
 		LuaClasses::VectorLua::luaopen_vector(m_luaState);
+		LuaClasses::EntityLua::luaopen_entity(m_luaState);
+
+		luaregister_constants(m_luaState);
 
 		consoleText += "Lua initialized\n";
 	}

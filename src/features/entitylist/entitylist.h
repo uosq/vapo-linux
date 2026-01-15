@@ -6,63 +6,15 @@
 
 namespace EntityList
 {
-	static std::vector<CBaseObject*> m_vecBuildings;
-	static std::vector<CTFPlayer*> m_vecPlayers;
-	static CTFPlayer* m_pLocalPlayer = nullptr;
+	extern std::vector<CBaseObject*> m_vecBuildings;
+	extern std::vector<CTFPlayer*> m_vecPlayers;
+	extern CTFPlayer* m_pLocalPlayer;
+	extern CTFPlayerResource *m_pPlayerResource;
 
-	static void Clear()
-	{
-		m_vecBuildings.clear();
-		m_vecPlayers.clear();
-		m_pLocalPlayer = nullptr;
-	}
-
-	// Call in FrameStageNotify -> FRAME_NET_UPDATE_END
-	static void Store()
-	{
-		Clear();
-
-		m_pLocalPlayer = helper::engine::GetLocalPlayer();
-
-		for (int i = 1; i < interfaces::EntityList->GetHighestEntityIndex(); i++)
-		{
-			IClientEntity* entity = interfaces::EntityList->GetClientEntity(i);
-			if (entity == nullptr)
-				continue;
-
-			switch (entity->GetClassID())
-			{
-				case ETFClassID::CTFPlayer:
-				{
-					m_vecPlayers.emplace_back(static_cast<CTFPlayer*>(entity));
-					break;
-				}
-
-				case ETFClassID::CObjectSentrygun:
-				case ETFClassID::CObjectDispenser:
-				case ETFClassID::CObjectTeleporter:
-				{
-					m_vecBuildings.emplace_back(static_cast<CBaseObject*>(entity));
-					break;
-				}
-
-				default: break;
-			}
-		}
-	}
-
-	static std::vector<CTFPlayer*> GetPlayers()
-	{
-		return m_vecPlayers;
-	}
-
-	static std::vector<CBaseObject*> GetBuildings()
-	{
-		return m_vecBuildings;
-	}
-
-	static CTFPlayer* GetLocal()
-	{
-		return m_pLocalPlayer;
-	}
+	void Clear();
+	void Store(); // Call in FrameStageNotify -> FRAME_NET_UPDATE_END
+	std::vector<CTFPlayer*> GetPlayers();
+	std::vector<CBaseObject*> GetBuildings();
+	CTFPlayer* GetLocal();
+	CTFPlayerResource* GetPlayerResources();
 }

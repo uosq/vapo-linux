@@ -40,6 +40,7 @@ namespace LuaFuncs
 		int IsConsoleVisible(lua_State* L);
 		int SetViewAngles(lua_State* L);
 		int GetViewAngles(lua_State* L);
+		int WorldToScreen(lua_State* L);
 
 		extern const luaL_Reg enginelib[];
 	}
@@ -51,5 +52,37 @@ namespace LuaFuncs
 		int Unregister(lua_State* L);
 
 		extern const luaL_Reg hooklib[];
+	}
+
+	namespace entitylist
+	{
+		extern const luaL_Reg entitylistlib[];
+
+		void luaopen_entitylist(lua_State* L);
+		int GetEntityAtIndex(lua_State* L);
+		int GetLocalPlayer(lua_State* L);
+		int GetHighestEntityIndex(lua_State* L);
+		int GetPlayers(lua_State* L);
+		int GetPlayerResources(lua_State* L);
+	}
+
+	namespace draw
+	{
+		extern const luaL_Reg drawlib[];
+		extern HFont currentFont;
+
+		void luaopen_draw(lua_State* L);
+		int Line(lua_State* L);
+		int FilledRect(lua_State* L);
+		int FilledRectFade(lua_State* L);
+		int FilledRectFadeFast(lua_State* L);
+		int OutlinedRect(lua_State* L);
+		int SetColor(lua_State* L);
+		int SetTextColor(lua_State* L);
+		int GetTextSize(lua_State* L);
+		int OutlinedCircle(lua_State* L);
+		int Text(lua_State* L);
+		int CreateFont(lua_State* L);
+		int SetFont(lua_State* L);
 	}
 }

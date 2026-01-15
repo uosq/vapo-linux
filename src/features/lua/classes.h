@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../sdk/definitions/types.h"
+#include "../../sdk/classes/entity.h"
 
 extern "C"
 {
@@ -8,6 +9,11 @@ extern "C"
 	#include <lua5.4/lua.hpp>
 	#include <lua5.4/lualib.h>
 }
+
+struct LuaEntity
+{
+    CBaseEntity* ent;
+};
 
 namespace LuaClasses
 {
@@ -37,5 +43,48 @@ namespace LuaClasses
 		int DistTo2D(lua_State* L);
 		int ToAngle(lua_State* L);
 		int Angles(lua_State* L);
+	};
+
+	namespace EntityLua
+	{
+		extern const luaL_Reg methods[];
+		void luaopen_entity(lua_State* L);
+		LuaEntity* push_entity(lua_State* L, CBaseEntity* entity);
+		LuaEntity* CheckEntity(lua_State* L, int idx);
+
+		int GC(lua_State* L);
+		int EQ(lua_State* L);
+
+		int IsValid(lua_State* L);
+
+		int GetName(lua_State* L);
+		int GetClassName(lua_State* L);
+
+		int GetAbsOrigin(lua_State* L);
+		int GetAbsAngles(lua_State* L);
+
+		int GetNetvarInt(lua_State* L);
+		int GetNetvarFloat(lua_State* L);
+		int GetNetvarVector(lua_State* L);
+		int GetNetvarEntity(lua_State* L);
+
+		int SetNetvarInt(lua_State* L);
+		int SetNetvarFloat(lua_State* L);
+		int SetNetvarVector(lua_State* L);
+		int SetNetvarEntity(lua_State* L);
+
+		int GetHealth(lua_State* L);
+		int GetMaxHealth(lua_State* L);
+
+		int GetMins(lua_State* L);
+		int GetMaxs(lua_State* L);
+
+		int GetTeamNumber(lua_State* L);
+
+		int IsWeapon(lua_State* L);
+		int IsDormant(lua_State* L);
+		int IsAlive(lua_State* L);
+
+		int GetPlayerResources(lua_State* L);
 	};
 }
