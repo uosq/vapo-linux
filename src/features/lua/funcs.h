@@ -115,5 +115,9 @@ namespace LuaFuncs
 		extern const luaL_Reg clientlib[];
 		void luaopen_client(lua_State* L);
 		int GetNetChannel(lua_State* L);
+		int GetConVar(lua_State* L);
+		int SetConVar(lua_State* L);
+		int ChatSay(lua_State* L);
+		int Command(lua_State* L);
 	}
 }

@@ -37,7 +37,7 @@ static void ClearAimbotState(AimbotState& state)
 
 namespace AimbotUtils
 {
-	inline bool IsValidEntity(CBaseEntity* entity, int localTeam, bool checkTeam = true)
+	inline bool IsValidEntity(CBaseEntity* entity, int localTeam, bool ignoreTeammate = true)
 	{
 		if (entity == nullptr)
 			return false;
@@ -45,7 +45,7 @@ namespace AimbotUtils
 		if (entity->IsDormant())
 			return false;
 
-		if (checkTeam && entity->m_iTeamNum() == localTeam)
+		if (ignoreTeammate && entity->m_iTeamNum() == localTeam)
 			return false;
 
 		if (entity->IsPlayer())

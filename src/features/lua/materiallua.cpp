@@ -41,8 +41,6 @@ namespace LuaClasses
 
 		int Index(lua_State* L)
 		{
-			IMaterial* v = static_cast<IMaterial*>(luaL_checkudata(L, 1, "Material"));
-
 			luaL_getmetatable(L, "Material");
 			lua_pushvalue(L, 2);
 			lua_rawget(L, -2);

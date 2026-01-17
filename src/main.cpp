@@ -11,6 +11,7 @@
 #include "hooks/clientmodeshared_dopostscreenspaceeffects.h"
 #include "hooks/chlclient_levelshutdown.h"
 #include "hooks/ipanel_paint_traverse.h"
+#include "hooks/netchan_sendnetmsg.h"
 #include "hooks/sdl.h"
 #include "hooks/vulkan.h"
 #include "sdk/interfaces/interfaces.h"
@@ -47,6 +48,7 @@ void init(void)
 	HookLockCursor();
 	HookLevelShutdown();
 	HookShowItemsPickedUp();
+	HookSendNetMsg();
 
 	Lua::InitLua();
 }

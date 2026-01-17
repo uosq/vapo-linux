@@ -55,7 +55,7 @@ struct AimbotProjectile
 		return true;
 	}
 
-	bool CheckTrajectory(CTFPlayer* target, Vector startPos, Vector targetPos, Vector angle, ProjectileInfo_t info, float gravity)
+	bool CheckTrajectory(CBaseEntity* target, Vector startPos, Vector targetPos, Vector angle, ProjectileInfo_t info, float gravity)
 	{
 		if (!target)
 			return false;
@@ -166,9 +166,6 @@ struct AimbotProjectile
 
 		for (const auto& target : targets)
 		{
-			if (target.entity == nullptr)
-				continue;
-
 			float time = (target.distance/info.speed);
 
 			if (time > settings.aimbot.max_sim_time)
@@ -180,7 +177,11 @@ struct AimbotProjectile
 
 			if (target.entity->IsPlayer())
 			{
-				PlayerPrediction::Predict((CTFPlayer*)target.entity, time, path);
+				CTFPlayer* player = static_cast<CTFPlayer*>(target.entity);
+				if (player == nullptr)
+					continue;
+
+				PlayerPrediction::Predict(player, time, path);
 	
 				// something went wrong
 				if (path.empty())
@@ -188,7 +189,7 @@ struct AimbotProjectile
 	
 				lastPos = path.back();
 	
-				float aimOffset = GetInitialOffset((CTFPlayer*)target.entity, pWeapon);
+				float aimOffset = GetInitialOffset(player, pWeapon);
 				if (aimOffset > 0)
 					lastPos.z += aimOffset;
 			}
@@ -208,14 +209,14 @@ struct AimbotProjectile
 				dir.Normalize();
 				angle = dir.ToAngle();
 
-				if (!CheckTrajectory((CTFPlayer*)target.entity, shootPos, lastPos, angle, info, 0))
+				if (!CheckTrajectory(target.entity, shootPos, lastPos, angle, info, 0))
 					continue;
 			} else
 			{
 				if (!SolveBallisticArc(angle, shootPos, lastPos, info.speed, gravity))
 					continue;
 
-				if (!CheckTrajectory((CTFPlayer*)target.entity, shootPos, lastPos, angle, info, gravity))
+				if (!CheckTrajectory(target.entity, shootPos, lastPos, angle, info, gravity))
 					continue;
 			}
 
@@ -251,6 +252,7 @@ struct AimbotProjectile
 				state.shouldSilent = true;
 			}
 
+			EntityList::m_pAimbotTarget = target.entity;
 			state.running = true;
 			return;
 		}

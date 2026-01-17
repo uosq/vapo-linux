@@ -2,6 +2,7 @@
 
 #include "../../sdk/definitions/types.h"
 #include "../../sdk/classes/entity.h"
+#include "../../sdk/definitions/inetmessage.h"
 
 extern "C"
 {
@@ -10,6 +11,8 @@ extern "C"
 	#include <lua5.4/lualib.h>
 }
 
+// Reference instead of the real ones
+// Or else lua might cook us
 struct LuaEntity
 {
     CBaseEntity* ent;
@@ -18,6 +21,20 @@ struct LuaEntity
 struct LuaMaterial
 {
 	IMaterial* mat;
+};
+
+struct LuaBuffer
+{
+	bf_write* writer;
+	bf_read* reader;
+
+	unsigned char* data;
+	int curbitpos = 0;
+};
+
+struct LuaNetMessage
+{
+	INetMessage* msg;
 };
 
 namespace LuaClasses
@@ -113,5 +130,56 @@ namespace LuaClasses
 
 		int GetTextureGroupName(lua_State* L);
 		int GetName(lua_State* L);
+	}
+
+	namespace BitBufferLua
+	{
+		extern const luaL_Reg methods[];
+		void luaopen_buffer(lua_State* L);
+		LuaBuffer* push_buffer(lua_State* L, bf_write* writer, bf_read* reader);
+		int BitBuffer(lua_State* L);
+
+		int Index(lua_State* L);
+		int GC(lua_State* L);
+
+		int SetCurBitPos(lua_State* L);
+		int GetCurBitPos(lua_State* L);
+
+		/*int Reset(lua_State* L);
+		int ReadBit(lua_State* L);
+		int ReadByte(lua_State* L);
+		int ReadFloat(lua_State* L);
+		int ReadString(lua_State* L);
+		int ReadInt(lua_State* L);
+
+		int WriteBit(lua_State* L);
+		int WriteByte(lua_State* L);
+		int WriteString(lua_State* L);
+		int WriteFloat(lua_State* L);
+		int WriteInt(lua_State* L);*/
+
+		int WriteInt(lua_State* L);
+		int ReadInt(lua_State* L);
+		
+		int Delete(lua_State* L);
+	}
+
+	namespace NetMessageLua
+	{
+		extern const luaL_Reg methods[];
+		void luaopen_netmessage(lua_State* L);
+		LuaNetMessage* push_netmessage(lua_State* L, INetMessage* msg);
+
+		int Index(lua_State* L);
+		int GC(lua_State* L);
+
+		int GetType(lua_State* L);
+		int GetName(lua_State* L);
+		int ToString(lua_State* L);
+		int WriteToBitBuffer(lua_State* L);
+		int ReadFromBitBuffer(lua_State* L);
+		int IsReliable(lua_State* L);
+		int SetReliable(lua_State* L);
+		int GetGroup(lua_State* L);
 	}
 }

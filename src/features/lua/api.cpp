@@ -29,6 +29,8 @@ namespace Lua
 		LuaClasses::VectorLua::luaopen_vector(m_luaState);
 		LuaClasses::EntityLua::luaopen_entity(m_luaState);
 		LuaClasses::MaterialLua::luaopen_material(m_luaState);
+		LuaClasses::BitBufferLua::luaopen_buffer(m_luaState);
+		LuaClasses::NetMessageLua::luaopen_netmessage(m_luaState);
 
 		luaregister_constants(m_luaState);
 
