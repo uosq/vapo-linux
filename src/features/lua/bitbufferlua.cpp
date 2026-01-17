@@ -17,7 +17,7 @@ namespace LuaClasses
 		{
 			{"SetCurBitPos", SetCurBitPos},
 			{"GetCurBitPos", GetCurBitPos},
-			/*{"Reset", Reset},
+			{"Reset", Reset},
 			{"ReadBit", ReadBit},
 			{"ReadByte", ReadByte},
 			{"ReadFloat", ReadFloat},
@@ -25,7 +25,7 @@ namespace LuaClasses
 			{"WriteBit", WriteBit},
 			{"WriteByte", WriteByte},
 			{"WriteString", WriteString},
-			{"WriteFloat", WriteFloat},*/
+			{"WriteFloat", WriteFloat},
 			{"Delete", Delete},
 			{"ReadInt", ReadInt},
 			{"WriteInt", WriteInt},
@@ -98,6 +98,7 @@ namespace LuaClasses
 
 			lbf->writer->Reset();
 			lbf->reader->Reset();
+			lbf->curbitpos = 0;
 			return 0;
 		}
 
@@ -133,6 +134,154 @@ namespace LuaClasses
 
 			lbf->reader->Seek(lbf->curbitpos);
 			int value = lbf->reader->ReadBitLong(numbits, true);
+
+			lbf->curbitpos = lbf->reader->GetNumBitsRead();
+
+			lua_pushinteger(L, value);
+			return 1;
+		}
+
+		int WriteFloat(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->writer == nullptr)
+			{
+				luaL_error(L, "BitBuffer writer is not initialized");
+				return 0;
+			}
+
+			float val = luaL_checknumber(L, 2);
+
+			lbf->writer->SeekToBit(lbf->curbitpos);
+			lbf->writer->WriteFloat(val);
+			
+			lbf->curbitpos = lbf->writer->GetNumBitsWritten();
+			return 0;
+		}
+
+		int ReadFloat(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->reader == nullptr)
+			{
+				luaL_error(L, "BitBuffer reader is not initialized");
+				return 0;
+			}
+
+			lbf->reader->Seek(lbf->curbitpos);
+			float value = lbf->reader->ReadFloat();
+
+			lbf->curbitpos = lbf->reader->GetNumBitsRead();
+
+			lua_pushnumber(L, value);
+			return 1;
+		}
+
+		int WriteString(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->writer == nullptr)
+			{
+				luaL_error(L, "BitBuffer writer is not initialized");
+				return 0;
+			}
+
+			const char* val = luaL_checkstring(L, 2);
+
+			lbf->writer->SeekToBit(lbf->curbitpos);
+			lbf->writer->WriteString(val);
+			
+			lbf->curbitpos = lbf->writer->GetNumBitsWritten();
+			return 0;
+		}
+
+		int ReadString(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->reader == nullptr)
+			{
+				luaL_error(L, "BitBuffer reader is not initialized");
+				return 0;
+			}
+
+			int maxlength = luaL_optinteger(L, 2, 256);
+			maxlength = std::clamp(maxlength, 0, 256);
+
+			char str[maxlength];
+			lbf->reader->Seek(lbf->curbitpos);
+			lbf->reader->ReadString(str, maxlength);
+
+			lbf->curbitpos = lbf->reader->GetNumBitsRead();
+
+			lua_pushstring(L, str);
+			return 1;
+		}
+
+		int WriteByte(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->writer == nullptr)
+			{
+				luaL_error(L, "BitBuffer writer is not initialized");
+				return 0;
+			}
+
+			unsigned int val = luaL_checkinteger(L, 2);
+
+			lbf->writer->SeekToBit(lbf->curbitpos);
+			lbf->writer->WriteByte(val);
+			
+			lbf->curbitpos = lbf->writer->GetNumBitsWritten();
+			return 0;
+		}
+
+		int ReadByte(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->reader == nullptr)
+			{
+				luaL_error(L, "BitBuffer reader is not initialized");
+				return 0;
+			}
+
+			lbf->reader->Seek(lbf->curbitpos);
+			int value = lbf->reader->ReadByte();
+
+			lbf->curbitpos = lbf->reader->GetNumBitsRead();
+
+			lua_pushinteger(L, value);
+			return 1;
+		}
+
+		int WriteBit(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->writer == nullptr)
+			{
+				luaL_error(L, "BitBuffer writer is not initialized");
+				return 0;
+			}
+
+			unsigned int val = luaL_checkinteger(L, 2);
+
+			lbf->writer->SeekToBit(lbf->curbitpos);
+			lbf->writer->WriteOneBit(val);
+			
+			lbf->curbitpos = lbf->writer->GetNumBitsWritten();
+			return 0;
+		}
+
+		int ReadBit(lua_State* L)
+		{
+			LuaBuffer* lbf = static_cast<LuaBuffer*>(luaL_checkudata(L, 1, "BitBuffer"));
+			if (lbf->reader == nullptr)
+			{
+				luaL_error(L, "BitBuffer reader is not initialized");
+				return 0;
+			}
+
+			lbf->reader->Seek(lbf->curbitpos);
+			int value = lbf->reader->ReadOneBit();
 
 			lbf->curbitpos = lbf->reader->GetNumBitsRead();
 

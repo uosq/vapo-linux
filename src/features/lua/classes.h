@@ -145,18 +145,19 @@ namespace LuaClasses
 		int SetCurBitPos(lua_State* L);
 		int GetCurBitPos(lua_State* L);
 
-		/*int Reset(lua_State* L);
-		int ReadBit(lua_State* L);
-		int ReadByte(lua_State* L);
-		int ReadFloat(lua_State* L);
-		int ReadString(lua_State* L);
-		int ReadInt(lua_State* L);
-
+		int Reset(lua_State* L);
+		
 		int WriteBit(lua_State* L);
+		int ReadBit(lua_State* L);
+
 		int WriteByte(lua_State* L);
+		int ReadByte(lua_State* L);
+
 		int WriteString(lua_State* L);
+		int ReadString(lua_State* L);
+
 		int WriteFloat(lua_State* L);
-		int WriteInt(lua_State* L);*/
+		int ReadFloat(lua_State* L);
 
 		int WriteInt(lua_State* L);
 		int ReadInt(lua_State* L);
