@@ -111,6 +111,7 @@ namespace LuaClasses
 		int GetPlayerResources(lua_State* L);
 
 		int GetWeaponID(lua_State *L);
+		int GetClassID(lua_State* L);
 	};
 
 	namespace MaterialLua

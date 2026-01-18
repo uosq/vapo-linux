@@ -234,7 +234,7 @@ static void DrawLuaTab()
 			"hooks", "Vector3",
 			"entities", "draw",
 			"render", "materials",
-			"client"
+			"client", "BitBuffer"
 		};
 
 		TextEditor::Identifier id;

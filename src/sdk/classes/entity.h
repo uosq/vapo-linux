@@ -68,7 +68,77 @@ public:
 
 	bool IsWeapon()
 	{
-		return true;
+		// I think I got every one of them
+		switch(GetClassID())
+		{
+			case ETFClassID::CTFWeaponInvis:
+			case ETFClassID::CTFWeaponPDA:
+			case ETFClassID::CWeaponMedigun:
+			case ETFClassID::CTFWeaponPDA_Spy: // wtf is this?
+			case ETFClassID::CTFWeaponBuilder:
+			case ETFClassID::CTFWeaponSapper:
+			case ETFClassID::CTFMinigun:
+			case ETFClassID::CTFSniperRifleClassic:
+			case ETFClassID::CTFSniperRifle:
+			case ETFClassID::CTFSniperRifleDecap:
+			case ETFClassID::CTFBaseProjectile:
+			case ETFClassID::CTFBat:
+			case ETFClassID::CTFBat_Giftwrap:
+			case ETFClassID::CTFBat_Fish:
+			case ETFClassID::CTFBat_Wood:
+			case ETFClassID::CTFBonesaw:
+			case ETFClassID::CTFBottle:
+			case ETFClassID::CTFBuffBanner:
+			case ETFClassID::CTFCannon:
+			case ETFClassID::CTFSMG:
+			case ETFClassID::CTFChargedSMG:
+			case ETFClassID::CTFCleaver:
+			case ETFClassID::CTFClub:
+			case ETFClassID::CTFCompoundBow:
+			case ETFClassID::CTFCrossbow:
+			case ETFClassID::CTFDRGPomson:
+			case ETFClassID::CTFFireAxe:
+			case ETFClassID::CTFFists:
+			case ETFClassID::CTFFlameRocket:
+			case ETFClassID::CTFFlameThrower:
+			case ETFClassID::CTFWeaponFlameBall:
+			case ETFClassID::CTFFlareGun:
+			case ETFClassID::CTFFlareGun_Revenge:
+			case ETFClassID::CTFGrenadeLauncher:
+			case ETFClassID::CTFJar:
+			case ETFClassID::CTFJarGas:
+			case ETFClassID::CTFJarMilk:
+			case ETFClassID::CTFKatana:
+			case ETFClassID::CTFKnife:
+			case ETFClassID::CTFLaserPointer:
+			case ETFClassID::CTFLunchBox_Drink:
+			case ETFClassID::CTFMechanicalArm:
+			case ETFClassID::CTFParachute:
+			case ETFClassID::CTFParachute_Primary:
+			case ETFClassID::CTFParachute_Secondary:
+			case ETFClassID::CTFPistol:
+			case ETFClassID::CTFPistol_Scout:
+			case ETFClassID::CTFPistol_ScoutPrimary:
+			case ETFClassID::CTFPistol_ScoutSecondary:
+			case ETFClassID::CTFPipebombLauncher:
+			case ETFClassID::CTFPEPBrawlerBlaster:
+			case ETFClassID::CTFRocketLauncher:
+			case ETFClassID::CTFRocketLauncher_AirStrike:
+			case ETFClassID::CTFRocketLauncher_DirectHit:
+			case ETFClassID::CTFRocketLauncher_Mortar:
+			case ETFClassID::CTFRocketPack:
+			case ETFClassID::CTFShotgun:
+			case ETFClassID::CTFShotgun_HWG:
+			case ETFClassID::CTFShotgun_Pyro:
+			case ETFClassID::CTFShotgun_Revenge:
+			case ETFClassID::CTFShotgunBuildingRescue:
+			case ETFClassID::CTFShotgun_Soldier:
+			case ETFClassID::CTFRevolver:
+			return true;
+
+			default: return false;
+		}
+		return false;
 	}
 
 	int GetIndex()

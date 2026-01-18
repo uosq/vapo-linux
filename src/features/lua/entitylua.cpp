@@ -35,6 +35,7 @@ namespace LuaClasses
 			{"IsAlive", IsAlive},
 			{"IsPlayer", IsPlayer},
 			{"GetWeaponID", GetWeaponID},
+			{"GetClassID", GetClassID},
 			{nullptr, nullptr}
 		};
 
@@ -684,11 +685,26 @@ namespace LuaClasses
 				return 1;
 			}
 
-			if (le->ent->IsWeapon())
-				lua_pushinteger(L, static_cast<CTFWeaponBase*>(le->ent)->GetWeaponID());
-			else
+			if (!le->ent->IsWeapon())
+			{
 				lua_pushnil(L);
+				return 1;
+			}
 
+			lua_pushinteger(L, static_cast<CTFWeaponBase*>(le->ent)->GetWeaponID());
+			return 1;
+		}
+
+		int GetClassID(lua_State* L)
+		{
+			LuaEntity* le = CheckEntity(L, 1);
+			if (le->ent == nullptr)
+			{
+				lua_pushnil(L);
+				return 1;
+			}
+
+			lua_pushinteger(L, static_cast<int>(le->ent->GetClassID()));
 			return 1;
 		}
 	}
