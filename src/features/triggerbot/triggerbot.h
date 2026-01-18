@@ -42,7 +42,7 @@ namespace Triggerbot
 		if (pLocal == nullptr || pTarget == nullptr)
 			return false;
 
-		int iNoBackstab = interfaces::attributeManager.AttributeHookValue(1.0, "cannot_be_backstabbed", pTarget);
+		int iNoBackstab = AttributeHookValue(1.0, "cannot_be_backstabbed", pTarget, nullptr, true);
 		if (iNoBackstab == 0)
 			return false;
 

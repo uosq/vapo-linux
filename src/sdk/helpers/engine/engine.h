@@ -94,11 +94,6 @@ namespace helper
 			return true;
 		}
 
-		inline float AttributeHookValue(float defaultValue, const char *attrib_name, CBaseEntity *entity)
-		{
-			return interfaces::attributeManager.AttributeHookValue(defaultValue, attrib_name, entity);
-		}
-
 		inline void Trace(Vector start, Vector end, unsigned int mask, ITraceFilter* pFilter, CGameTrace* pTrace)
 		{
 			Ray_t ray;

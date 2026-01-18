@@ -1,6 +1,7 @@
 #include "interfaces.h"
 
 HCursor cursor = 0;
+AttributeHookValueFn AttributeHookValue = nullptr;
 
 namespace interfaces
 {
@@ -23,7 +24,6 @@ namespace interfaces
 	IKeyValuesSystem* KeyValuesSystem = nullptr;
 	IVModelInfoClient* ModelInfoClient = nullptr;
 	void* ClientState = nullptr; // fuck C++
-	AttributeManager attributeManager;
 }
 
 namespace factories
@@ -189,8 +189,8 @@ bool InitializeInterfaces()
 
 	{ // attribute hook manager
 		// get the function
-		attribute_hook_value_float_original = (float (*)(float, const char*, CBaseEntity*, void*, bool))sigscan_module("client.so", "55 31 C0 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 49 89 FC 53 89 CB");
-		if (!attribute_hook_value_float_original)
+		AttributeHookValue = reinterpret_cast<AttributeHookValueFn>(sigscan_module("client.so", "55 31 C0 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 49 89 FC 53 89 CB"));
+		if (AttributeHookValue == nullptr)
 			return false;
 	}
 

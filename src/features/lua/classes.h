@@ -109,6 +109,8 @@ namespace LuaClasses
 		int IsPlayer(lua_State* L);
 
 		int GetPlayerResources(lua_State* L);
+
+		int GetWeaponID(lua_State *L);
 	};
 
 	namespace MaterialLua

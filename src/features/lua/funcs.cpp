@@ -787,7 +787,7 @@ namespace LuaFuncs
 				return 0;
 			}
 
-			if (!lua_isnoneornil(L, 2))
+			if (lua_isnoneornil(L, 2))
 			{
 				luaL_error(L, "Argument #2 is nil!");
 				return 0;

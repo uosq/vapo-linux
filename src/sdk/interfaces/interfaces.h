@@ -15,7 +15,6 @@
 #include "../definitions/enginetool.h"
 #include "../definitions/cglobalvars.h"
 #include "../definitions/ivrenderview.h"
-#include "../definitions/attributemanager.h"
 #include "../definitions/weaponinfo.h"
 #include "../definitions/iinputsystem.h"
 #include "../definitions/ienginetrace.h"
@@ -27,6 +26,9 @@
 #include "../definitions/igamemovement.h"
 #include "../definitions/imovehelper.h"
 #include "../definitions/ivmodelinfoclient.h"
+
+using AttributeHookValueFn = float(*)(float, const char*, CBaseEntity*, void*, bool);
+extern AttributeHookValueFn AttributeHookValue;
 
 extern HCursor cursor;
 
@@ -51,7 +53,6 @@ namespace interfaces
 	extern IKeyValuesSystem* KeyValuesSystem;
 	extern IVModelInfoClient* ModelInfoClient;
 	extern void* ClientState;
-	extern AttributeManager attributeManager;
 }
 
 namespace factories

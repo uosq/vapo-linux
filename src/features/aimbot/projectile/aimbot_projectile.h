@@ -16,8 +16,224 @@
 #include <cmath>
 #include <vector>
 
+struct ProjectileInfo_t
+{
+	float speed = 0;
+	float gravity = 0;
+	float primetime = 0;
+	float damage_radius = 0;
+	float lifetime = 60.0f;
+	bool simple_trace = false;
+	Vector offset{};
+	Vector hull{6, 6, 6};
+};
+
 struct AimbotProjectile
 {
+	bool GetProjectileInfo(ProjectileInfo_t& info, CTFPlayer* owner, CTFWeaponBase* pWeapon)
+	{
+		if (owner == nullptr || pWeapon == nullptr)
+			return false;
+
+		bool bDucking = owner->GetFlags() & FL_DUCKING;
+		float gravity = interfaces::Cvar->FindVar("sv_gravity")->GetFloat()/800;
+
+		int id = pWeapon->GetWeaponID();
+
+		int iTickBase = owner->GetTickBase();
+		float flTickBase = TICKS_TO_TIME(iTickBase);
+
+		switch(id)
+		{
+			case TF_WEAPON_ROCKETLAUNCHER:
+			case TF_WEAPON_ROCKETLAUNCHER_DIRECTHIT:
+			{
+				info.hull.Set();
+				info.speed = owner->InCond(TF_COND_RUNE_PRECISION) ? 3000 : AttributeHookValue(1100, "mult_projectile_speed", pWeapon, nullptr, true);
+				info.offset.x = 23.5f;
+				info.offset.y = AttributeHookValue(0, "centerfire_projectile", pWeapon, nullptr, true) == 1 ? 0 : 12;
+				info.offset.z = bDucking ? 8 : -3;
+				info.damage_radius = id == TF_WEAPON_ROCKETLAUNCHER ? 146 : 44;
+				info.simple_trace = true;
+				return true;
+			}
+
+			case TF_WEAPON_PARTICLE_CANNON:
+			case TF_WEAPON_RAYGUN:
+			case TF_WEAPON_DRG_POMSON:
+			{
+				bool bIsCowMangler = id == TF_WEAPON_PARTICLE_CANNON;
+				info.offset.Set(23.5, 8, bDucking ? 8 : -3);
+				info.speed = bIsCowMangler ? 1100 : 1200;
+				info.hull = bIsCowMangler ? Vector(0, 0, 0) : Vector(1, 1, 1);
+				info.simple_trace = true;
+				return true;
+			}
+
+			case TF_WEAPON_GRENADELAUNCHER:
+			case TF_WEAPON_CANNON:
+			{
+				bool bIsCannon = id == TF_WEAPON_CANNON;
+				float mortar = bIsCannon ? AttributeHookValue(0.f, "grenade_launcher_mortar_mode", pWeapon, nullptr, true) : 0;
+				info.speed = AttributeHookValue(owner->InCond(TF_COND_RUNE_PRECISION) ? 3000 : AttributeHookValue(1200, "mult_projectile_range", pWeapon, nullptr, true), "mult_projectile_range", pWeapon, nullptr, true);
+				info.gravity = gravity;
+				return true;
+			}
+
+			case TF_WEAPON_PIPEBOMBLAUNCHER:
+			{
+				info.offset.Set(16, 8, -6);
+				info.gravity = gravity;
+				
+				float charge = 0.0f;
+				float m_flChargeBeginTime = ((CTFPipebombLauncher*)pWeapon)->m_flChargeBeginTime();
+				if (m_flChargeBeginTime > flTickBase)
+					charge = 0.0f;
+				else
+					charge = flTickBase - m_flChargeBeginTime;
+
+				info.speed = AttributeHookValue(Math::RemapVal(0, 0, AttributeHookValue(4.0f, "stickybomb_charge_rate", pWeapon, nullptr, true), 900, 2400, true), "mult_projectile_range", pWeapon, nullptr, true);
+				return true;
+			}
+
+			case TF_WEAPON_FLAREGUN:
+			{
+				info.offset.Set(23.5, 12, bDucking ? 8 : -3);
+				info.hull.Set(0, 0, 0);
+				info.speed = AttributeHookValue(2000, "mult_projectile_speed", pWeapon, nullptr, true);
+				info.gravity = 0.01f;
+				info.lifetime = 0.3 * gravity;
+				return true;
+			}
+
+			case TF_WEAPON_FLAREGUN_REVENGE:
+			{
+				info.offset.Set(23.5, 12, bDucking ? 8 : -3);
+				info.hull.Set(0, 0, 0);
+				info.speed = 3000;
+				return true;
+			}
+
+			case TF_WEAPON_COMPOUND_BOW:
+			{
+				info.offset.Set(23.5, 12, -3);
+				info.hull.Set(1, 1, 1);
+
+				float flchargebegintime = static_cast<CTFPipebombLauncher*>(pWeapon)->m_flChargeBeginTime();
+				float charge = 0.0f;
+				if (flchargebegintime > 0)
+					charge = TICKS_TO_TIME( owner->GetTickBase()) - flchargebegintime;
+
+				info.speed = Math::RemapVal(charge, 0, 1, 1800, 2600);
+				info.gravity = Math::RemapVal(charge, 0, 1, 0.5, 0.1) * gravity;
+				info.lifetime = 10;
+				return true;
+			}
+
+			case TF_WEAPON_CROSSBOW:
+			case TF_WEAPON_SHOTGUN_BUILDING_RESCUE:
+			{
+				bool isCrossbow = id == TF_WEAPON_CROSSBOW;
+				info.offset.Set(23.5, 12, -3);
+				info.hull = isCrossbow ? Vector(3, 3, 3) : Vector(1, 1, 1);
+				info.speed = 2400;
+				info.gravity = gravity * 0.2;
+				info.lifetime = 10;
+				return true;
+			}
+
+			case TF_WEAPON_SYRINGEGUN_MEDIC:
+			{
+				info.offset.Set(16, 6, -8);
+				info.hull.Set(1, 1, 1);
+				info.speed = 1000;
+				info.gravity = 0.3 * gravity;
+				return true;
+			}
+
+			case TF_WEAPON_FLAMETHROWER:
+			{
+				static ConVar* tf_flamethrower_size = interfaces::Cvar->FindVar("tf_flamethrower_boxsize");
+				if (!tf_flamethrower_size)
+					return false;
+				
+				float flhull = tf_flamethrower_size->GetFloat();
+				info.offset.Set(40, 5, 0);
+				info.hull.Set(flhull, flhull, flhull);
+				info.speed = 1000;
+				info.lifetime = 0.285;
+				info.simple_trace = true;
+				return true;
+			}
+
+			case TF_WEAPON_FLAME_BALL:
+			{
+				info.offset.Set(3, 7, -9);
+				info.hull.Set(1, 1, 1);
+				info.speed = 3000;
+				info.lifetime = 0.18;
+				info.gravity = 0;
+				info.simple_trace = true;
+				return true;
+			}
+
+			case TF_WEAPON_CLEAVER:
+			{
+				info.offset.Set(16, 8, -6);
+				info.hull.Set(1, 1, 10); // wtf is this 10?
+				info.gravity = 1;
+				info.lifetime = 2.2;
+				return true;
+			}
+
+			case TF_WEAPON_BAT_WOOD:
+			case TF_WEAPON_BAT_GIFTWRAP:
+			{
+				ConVar* tf_scout_stunball_base_speed = interfaces::Cvar->FindVar("tf_scout_stunball_base_speed");
+				if (!tf_scout_stunball_base_speed)
+					return false;
+
+				info.speed = tf_scout_stunball_base_speed->GetFloat();
+				info.gravity = 1;
+				info.lifetime = gravity;
+				return true;
+			}
+
+			case TF_WEAPON_JAR:
+			case TF_WEAPON_JAR_MILK:
+			{
+				info.offset.Set(16, 8, -6);
+				info.speed = 1000;
+				info.gravity = 1;
+				info.lifetime = 2.2;
+				info.hull.Set(3, 3, 3);
+				return true;
+			}
+
+			case TF_WEAPON_JAR_GAS:
+			{
+				info.offset.Set(16, 8, -6);
+				info.speed = 2000;
+				info.gravity = 1;
+				info.lifetime = 2.2;
+				info.hull.Set(3, 3, 3);
+				return true;
+			}
+
+			case TF_WEAPON_LUNCHBOX:
+			{
+				info.offset.z = -8;
+				info.hull.Set(17, 17, 7);
+				info.speed = 500;
+				info.gravity = 1 * gravity;
+				return true;
+			}
+			default: return false;
+		}
+
+		return false;
+	}
+
 	// Offset before any multipointing is applied
 	float GetInitialOffset(CTFPlayer* target, CTFWeaponBase* pWeapon)
 	{
@@ -98,10 +314,6 @@ struct AimbotProjectile
 
 	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, AimbotState& state)
 	{
-		static ConVar* sv_gravity = interfaces::Cvar->FindVar("sv_gravity");
-		if (!sv_gravity)
-			return;
-
 		ProjectileInfo_t info;
 		if (!GetProjectileInfo(info, pLocal, pWeapon))
 			return;
@@ -124,6 +336,10 @@ struct AimbotProjectile
 		CGameTrace trace;
 		CTraceFilterHitscan filter;
 		filter.pSkip = pLocal;
+
+		static ConVar* sv_gravity = interfaces::Cvar->FindVar("sv_gravity");
+		if (!sv_gravity)
+			return;
 
 		float gravity = sv_gravity->GetFloat() * 0.5f * info.gravity;
 
