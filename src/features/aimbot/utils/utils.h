@@ -23,7 +23,7 @@ struct AimbotState
 {
 	bool running = false;
 	bool shouldSilent = false;
-	std::vector<Vector> targetPath;
+	//std::vector<Vector> targetPath;
 	Vector angle = {0, 0, 0};
 };
 
@@ -32,7 +32,7 @@ static void ClearAimbotState(AimbotState& state)
 	//state.angle.Set(0, 0, 0);
 	state.shouldSilent = false;
 	state.running = false;
-	state.targetPath.clear();
+	//state.targetPath.clear();
 }
 
 namespace AimbotUtils
@@ -71,7 +71,7 @@ namespace AimbotUtils
 
 		if (entity->IsBuilding())
 		{
-			auto* building = reinterpret_cast<CBaseObject*>(entity);
+			auto* building = static_cast<CBaseObject*>(entity);
 			if (building == nullptr)
 				return false;
 

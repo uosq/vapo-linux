@@ -17,6 +17,12 @@ class CTFGrenadePipebombProjectile;
 
 typedef unsigned short WEAPON_FILE_INFO_HANDLE;
 
+// xref: CHudCrosshair
+// Almost all of the functions with 1 parameter is GetTFWpnData
+// Then to get the ofset for the handle you do
+// go inside GetTFWpnData
+// it will call GetFileWeaponInfoFromHandle
+// whatever it passes (this + 0xsomething), the 0x123 is the offset
 inline FileWeaponInfo_t* Rebuild_GetFileWeaponInfoFromHandle(void* handle)
 {
 	using GetFileWeaponInfoFromHandleFn = FileWeaponInfo_t*(*)(void*);
@@ -61,7 +67,7 @@ public:
 	const FileWeaponInfo_t* GetWeaponInfo()
 	{
 		// offset from EDI,word ptr [RDI + 0xF12] in CCombatWeapon(?)->GetTFWpnData()
-		uintptr_t handleAddress = (uintptr_t)this + 0xf12;
+		uintptr_t handleAddress = reinterpret_cast<uintptr_t>(this) + 0xf12;
 		void* handleValue = *(void**)handleAddress;
 		return Rebuild_GetFileWeaponInfoFromHandle(handleValue);
 	}

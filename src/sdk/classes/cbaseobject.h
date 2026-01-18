@@ -3,7 +3,7 @@
 #include "../netvars/netvar.h"
 #include "entity.h"
 
-class CBaseObject: public IClientEntity
+class CBaseObject: public CBaseEntity
 {
 public:
 	NETVAR(m_iHealth, "CBaseObject->m_iHealth", int);

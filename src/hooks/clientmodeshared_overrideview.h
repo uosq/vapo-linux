@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../sdk/interfaces/interfaces.h"
+#include "../features/entitylist/entitylist.h"
 #include "../sdk/classes/entity.h"
 #include "../sdk/classes/player.h"
 #include "../sdk/helpers/helper.h"
@@ -14,8 +15,14 @@ DECLARE_VTABLE_HOOK(OverrideView, void, (IClientMode *thisptr, CViewSetup *view)
 	if (view == nullptr)
 		return;
 
-	if (settings.misc.customfov_enabled)
-		view->fov = settings.misc.customfov;
+	if (CTFPlayer* pLocal = EntityList::GetLocal(); pLocal != nullptr)
+	{
+		if (!pLocal->IsAlive() || pLocal->InCond(ETFCond::TF_COND_ZOOMED))
+			return;
+
+		if (settings.misc.customfov_enabled)
+			view->fov = settings.misc.customfov;
+	}
 }
 
 inline void HookOverrideView()

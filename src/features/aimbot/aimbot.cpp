@@ -1,4 +1,5 @@
 #include "aimbot.h"
+#include "melee/aimbot_melee.h"
 
 namespace Aimbot
 {
@@ -22,7 +23,6 @@ namespace Aimbot
 	void Run(CTFPlayer* pLocal, CTFWeaponBase* pWeapon, CUserCmd* pCmd, bool* bSendPacket)
 	{
 		ClearAimbotState(state);
-		EntityList::m_pAimbotTarget = nullptr;
 
 		if (!settings.aimbot.enabled)
 			return;
@@ -41,7 +41,6 @@ namespace Aimbot
 			{
 				static AimbotHitscan hitscan;
 				hitscan.Run(pLocal, pWeapon, pCmd, state);
-				break;
 			} break;
 			
 			case EWeaponType::PROJECTILE:
@@ -49,12 +48,18 @@ namespace Aimbot
 				static AimbotProjectile projectile;
 				projectile.Run(pLocal, pWeapon, pCmd, state);
 
-				if (state.shouldSilent)
+				if (settings.aimbot.psilent && state.shouldSilent)
 					*bSendPacket = false;
-				break;
 			} break;
 
 			case EWeaponType::MELEE:
+			{
+				static AimbotMelee melee;
+				melee.Run(pLocal, pWeapon, pCmd, state);
+
+				if (settings.aimbot.psilent && state.shouldSilent)
+					*bSendPacket = false;
+			} break;
 			default: break;
 		}
 	}
@@ -82,7 +87,7 @@ namespace Aimbot
 
 	void CleanTargetPath()
 	{
-		static float lastcleartime = 0.0f;
+		/*static float lastcleartime = 0.0f;
 		if (state.targetPath.empty())
 			return;
 
@@ -91,10 +96,12 @@ namespace Aimbot
 
 		state.targetPath.clear();
 		lastcleartime = interfaces::GlobalVars->realtime;
+		*/
 	}
 
 	void DrawTargetPath()
 	{
+		/*
 		//CleanTargetPath();
 
 		if (state.targetPath.size() < 2)
@@ -114,7 +121,7 @@ namespace Aimbot
 
 			interfaces::Surface->DrawLine(prevScreen.x, prevScreen.y, currScreen.x, currScreen.y);
 			prevScreen = currScreen;
-		}
+		}*/
 	}
 
 	void RunPaint(CTFPlayer* pLocal)

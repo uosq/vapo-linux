@@ -9,6 +9,7 @@
 
 #include "hitscan/aimbot_hitscan.h"
 #include "projectile/aimbot_projectile.h"
+#include "melee/aimbot_melee.h"
 #include <algorithm>
 
 namespace Aimbot

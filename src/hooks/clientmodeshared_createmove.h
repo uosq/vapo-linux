@@ -131,6 +131,8 @@ DECLARE_VTABLE_HOOK(CreateMove, bool, (IClientMode* thisptr, float sample_framet
 	if (!interfaces::Engine->IsInGame() || !interfaces::Engine->IsConnected())
 		return ret;
 
+	EntityList::m_pAimbotTarget = nullptr;
+
 	CTFPlayer* pLocal = EntityList::GetLocal();
 	if (!pLocal || !pLocal->IsAlive() || pLocal->IsTaunting())
 		return ret;

@@ -161,12 +161,12 @@ namespace ESP
 					continue;
 
 				Vector top;
-				Vector max = origin + Vector(0, 0, entity->m_vecBuildMaxs().z);
+				Vector max = origin + Vector(0, 0, entity->m_vecMaxs().z);
 				if (!helper::engine::WorldToScreen(max, top))
 					continue;
 
 				int h = (bottom - top).Length();
-				int w = reinterpret_cast<CBaseEntity*>(entity)->IsTeleporter() ? h * 2.0f : h * 0.3f;
+				int w = static_cast<CBaseEntity*>(entity)->IsTeleporter() ? h * 2.0f : h * 0.3f;
 
 				Color color = GetBuildingColor(entity);
 

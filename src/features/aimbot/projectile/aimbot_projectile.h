@@ -462,7 +462,7 @@ struct AimbotProjectile
 					}
 				}
 
-				state.targetPath = path;
+				//state.targetPath = path;
 				pCmd->viewangles = angle;
 				state.angle = angle;
 				state.shouldSilent = true;

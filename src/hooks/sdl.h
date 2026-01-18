@@ -172,6 +172,9 @@ inline void Hooked_SwapWindow(SDL_Window* window)
 	if (settings.misc.spectatorlist)
 		DrawSpectatorList();
 
+	if (settings.misc.playerlist)
+		DrawPlayerList();
+
 	if (settings.menu_open)
 		DrawMainWindow();
 

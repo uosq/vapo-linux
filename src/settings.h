@@ -52,6 +52,7 @@ struct Settings_Aimbot
 	float max_sim_time = 0.0f;
 	bool viewmodelaim = false;
 	bool draw_fov_indicator = false;
+	bool psilent = false;
 };
 
 struct Settings_Misc
@@ -66,6 +67,7 @@ struct Settings_Misc
 	bool streamer_mode = false;
 	bool bhop = false;
 	bool accept_item_drop = false;
+	bool playerlist = false;
 
 	float viewmodel_offset[3] = {0.0, 0.0, 0.0};
 };

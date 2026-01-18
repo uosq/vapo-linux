@@ -9,6 +9,8 @@
 #include "../features/lua/api.h"
 #include "console.h"
 #include "netvar_parser.h"
+#include "../features/entitylist/entitylist.h"
+#include "../sdk/definitions/eteam.h"
 
 static TextEditor editor;
 
@@ -60,6 +62,7 @@ static void DrawAimbotTab()
 	ImGui::Checkbox("Autoshoot", &settings.aimbot.autoshoot);
 	ImGui::Checkbox("Viewmodel Aim", &settings.aimbot.viewmodelaim);
 	ImGui::Checkbox("Draw FOV Indicator", &settings.aimbot.draw_fov_indicator);
+	ImGui::Checkbox("pSilent", &settings.aimbot.psilent);
 	ImGui::SliderFloat("Fov", &settings.aimbot.fov, 0.0f, 180.0f);
 	ImGui::SliderFloat("Max Sim Time", &settings.aimbot.max_sim_time, 0.0f, 5.0f);
 
@@ -75,6 +78,7 @@ static void DrawESPTab()
 	ImGui::Checkbox("Box", &settings.esp.box);
 	ImGui::Checkbox("Ignore Cloakeds", &settings.esp.ignorecloaked);
 	ImGui::Checkbox("Buildings", &settings.esp.buildings);
+	ImGui::Checkbox("Weapon", &settings.esp.weapon);
 
 	ImGui::Separator();
 
@@ -85,7 +89,6 @@ static void DrawESPTab()
 	ImGui::TextUnformatted("Glow");
 	ImGui::SliderInt("Stencil", &settings.esp.stencil, 0, 10);
 	ImGui::SliderInt("Blur", &settings.esp.blur, 0, 10);
-	ImGui::Checkbox("Weapon", &settings.esp.weapon);
 
 	ImGui::Separator();
 
@@ -121,6 +124,7 @@ static void DrawMiscTab()
 	ImGui::Separator();
 
 	ImGui::Checkbox("Spectator List", &settings.misc.spectatorlist);
+	ImGui::Checkbox("Player List", &settings.misc.playerlist);
 	ImGui::Checkbox("sv_pure bypass", &settings.misc.sv_pure_bypass);
 	ImGui::Checkbox("Streamer Mode", &settings.misc.streamer_mode);
 	ImGui::Checkbox("Bhop", &settings.misc.bhop);
@@ -374,10 +378,9 @@ static void DrawSpectatorList()
 	int localTeam = pLocal->m_iTeamNum();
 	int localIndex = pLocal->GetIndex();
 
-	for (int i = 1; i < maxclients; i++)
+	for (const auto& player : EntityList::m_vecPlayers)
 	{
-		CTFPlayer* player = static_cast<CTFPlayer*>(interfaces::EntityList->GetClientEntity(i));
-		if (player == nullptr || !player->IsPlayer() || player->IsAlive() || player == pLocal)
+		if (player->IsAlive() || player == pLocal)
 			continue;
 
 		if (player->m_iTeamNum() != localTeam)
@@ -388,7 +391,7 @@ static void DrawSpectatorList()
 			continue;
 
 		player_info_t info;
-		if (!interfaces::Engine->GetPlayerInfo(i, &info))
+		if (!interfaces::Engine->GetPlayerInfo(player->GetIndex(), &info))
 			continue;
 
 		int m_iObserverMode = player->m_iObserverMode();
@@ -397,6 +400,51 @@ static void DrawSpectatorList()
 		ImGui::TextColored(isfirstperson ? ImVec4(1.0, 0.5, 0.5, 1.0) : ImVec4(1.0, 1.0, 1.0, 1.0), "%s", player->GetName().c_str());
 	}
 
+	ImGui::End();
+}
+
+static void DrawPlayerList()
+{
+	if (interfaces::Engine->IsTakingScreenshot())
+		return;
+
+	ImGui::SetNextWindowSizeConstraints(
+        	ImVec2(150.0f, 0.0f),
+        	ImVec2(FLT_MAX, FLT_MAX)
+    	);
+
+	int flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse;
+	if (!settings.menu_open)
+		flags |= ImGuiWindowFlags_NoMove;
+
+	if (ImGui::Begin("Player List", nullptr, flags))
+	{
+		for (const auto& entity : EntityList::m_vecPlayers)
+		{
+			std::string name = entity->GetName();
+
+			switch (entity->m_iTeamNum())
+			{
+				case TEAM_BLU:
+				{
+					Color color = settings.colors.blu_team;
+					ImVec4 textColor(color.r()/255.0f, color.g()/255.0f, color.b()/255.0f, 255);
+					ImGui::TextColored(textColor, "%s", name.c_str());
+					break;
+				}
+
+				case TEAM_RED:
+				{
+					Color color = settings.colors.red_team;
+					ImVec4 textColor(color.r()/255.0f, color.g()/255.0f, color.b()/255.0f, 255);
+					ImGui::TextColored(textColor, "%s", name.c_str());
+					break;
+				}
+
+				default: break;
+			}
+		}
+	}
 	ImGui::End();
 }
 
