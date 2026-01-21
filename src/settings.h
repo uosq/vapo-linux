@@ -68,6 +68,7 @@ struct Settings_Misc
 	bool bhop = false;
 	bool accept_item_drop = false;
 	bool playerlist = false;
+	bool insecure_mode_bypass = false;
 
 	float viewmodel_offset[3] = {0.0, 0.0, 0.0};
 };

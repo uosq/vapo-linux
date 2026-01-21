@@ -129,6 +129,8 @@ static void DrawMiscTab()
 	ImGui::Checkbox("Streamer Mode", &settings.misc.streamer_mode);
 	ImGui::Checkbox("Bhop", &settings.misc.bhop);
 	ImGui::Checkbox("Backpack Expander", &settings.misc.backpack_expander);
+	ImGui::Checkbox("Accept Item Drops", &settings.misc.accept_item_drop);
+	ImGui::Checkbox("Insecure Bypass", &settings.misc.insecure_mode_bypass);
 
 	ImGui::Separator();
 
@@ -139,9 +141,6 @@ static void DrawMiscTab()
 
 	ImGui::SliderFloat3("Viewmodel Offset", settings.misc.viewmodel_offset, -20, 20.0f );
 
-	ImGui::Separator();
-
-	ImGui::Checkbox("Accept Item Drops", &settings.misc.accept_item_drop);
 
 	ImGui::EndGroup();
 }

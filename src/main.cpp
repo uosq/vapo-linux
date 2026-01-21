@@ -1,6 +1,7 @@
 #include "hooks/cinventorymanager_showitemspickedup.h"
 #include "hooks/clientmodeshared_createmove.h"
 #include "hooks/ctfplayer_getmaxitemcount.h"
+#include "hooks/host_issecureserverallowed.h"
 #include "hooks/isurface_setcursor.h"
 #include "hooks/modelrender_drawmodelexecute.h"
 #include "hooks/enginevgui_paint.h"
@@ -54,6 +55,7 @@ void init(void)
 	HookSendNetMsg();
 	HookLevelInitPostEntity();
 	HookLevelInitPreEntity();
+	HookIsSecureServerAllowed();
 
 	Lua::InitLua();
 }
