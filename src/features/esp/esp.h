@@ -104,7 +104,7 @@ namespace ESP
 	{
 		int textw, texth;
 		helper::draw::GetTextSize(name, textw, texth);
-		helper::draw::TextShadow(top.x - (textw*0.5f), top.y - texth - 2, color, name);
+		helper::draw::Text(top.x - (textw*0.5f), top.y - texth - 2, color, name);
 	}
 
 	inline void Run(CTFPlayer* pLocal)
