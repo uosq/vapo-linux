@@ -577,7 +577,7 @@ enum ETFCond
 	TF_COND_CRITBOOSTED                      = 11, // DO NOT RE-USE THIS -- THIS IS FOR KRITZKRIEG AND REVENGE CRITS ONLY
 	TF_COND_TMPDAMAGEBONUS                   = 12,
 	TF_COND_FEIGN_DEATH                      = 13,
-	TF_COND_PHASE                            = 14,
+	TF_COND_BONKED                            = 14,
 	TF_COND_STUNNED                          = 15, // Any type of stun. Check iStunFlags for more info.
 	TF_COND_OFFENSEBUFF                      = 16,
 	TF_COND_SHIELD_CHARGE                    = 17,
