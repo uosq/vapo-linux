@@ -59,6 +59,8 @@ namespace Antiaim
 
 	static float GetYaw(CUserCmd* pCmd, YawMode mode)
 	{
+		float spin_speed = settings.antiaim.spin_speed;
+
 		switch (mode)
 		{
 			case YawMode::LEFT: return pCmd->viewangles.y + 90.0f;
@@ -66,8 +68,8 @@ namespace Antiaim
 			case YawMode::BACK: return pCmd->viewangles.y - 180.0f;
 			case YawMode::NONE: return pCmd->viewangles.y;
 			case YawMode::FORWARD: return pCmd->viewangles.y;
-			case YawMode::SPIN_LEFT: return pCmd->viewangles.y + (pCmd->tick_count % 360);
-			case YawMode::SPIN_RIGHT: return pCmd->viewangles.y - (pCmd->tick_count % 360);
+			case YawMode::SPIN_LEFT: return pCmd->viewangles.y + (pCmd->tick_count % 360) * spin_speed;
+			case YawMode::SPIN_RIGHT: return pCmd->viewangles.y - (pCmd->tick_count % 360) * spin_speed;
 			case YawMode::JITTER: return pCmd->viewangles.y + ((pCmd->tick_count % 2) ? 90.0f : -90.0f);
 		}
 
@@ -86,12 +88,12 @@ namespace Antiaim
 			return;
 
 		constexpr int maxChoke = 2; // fake on 2 ticks, real on 1
-		int choke = reinterpret_cast<CClientState*>(interfaces::ClientState)->chokedcommands;
+		int choke = static_cast<CClientState*>(interfaces::ClientState)->chokedcommands;
 
-		if (choke < maxChoke) *bSendPacket = true; // fake
-		else *bSendPacket = false; // real
+		if (choke < maxChoke) *bSendPacket = false; // fake
+		else *bSendPacket = true; // real
 
-		bool isFake = !(*bSendPacket);
+		bool isFake = *bSendPacket;
 		
 		if (settings.antiaim.pitch_mode != PitchMode::NONE)
 		{

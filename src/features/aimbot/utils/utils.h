@@ -63,7 +63,16 @@ namespace AimbotUtils
 			if (player->IsGhost())
 				return false;
 
-			if (settings.esp.ignorecloaked && player->InCond(ETFCond::TF_COND_CLOAKED))
+			if (settings.aimbot.ignorecloaked && player->InCond(ETFCond::TF_COND_CLOAKED))
+				return false;
+
+			if (settings.aimbot.ignorebonked && player->InCond(ETFCond::TF_COND_BONKED))
+				return false;
+
+			if (settings.aimbot.ignoreubered && player->InCond(ETFCond::TF_COND_INVULNERABLE))
+				return false;
+
+			if (settings.aimbot.ignorehoovy && player->m_iClass() == ETFClass::TF_CLASS_HEAVYWEAPONS && (player->GetFlags() & FL_DUCKING))
 				return false;
 
 			return true;

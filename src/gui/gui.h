@@ -62,9 +62,19 @@ static void DrawAimbotTab()
 	ImGui::Checkbox("Autoshoot", &settings.aimbot.autoshoot);
 	ImGui::Checkbox("Viewmodel Aim", &settings.aimbot.viewmodelaim);
 	ImGui::Checkbox("Draw FOV Indicator", &settings.aimbot.draw_fov_indicator);
-	ImGui::Checkbox("pSilent", &settings.aimbot.psilent);
 	ImGui::SliderFloat("Fov", &settings.aimbot.fov, 0.0f, 180.0f);
 	ImGui::SliderFloat("Max Sim Time", &settings.aimbot.max_sim_time, 0.0f, 5.0f);
+
+	ImGui::Separator();
+
+	ImGui::TextUnformatted("Ignore Options");
+	ImGui::Checkbox("Cloaked", &settings.aimbot.ignorecloaked);
+	ImGui::SameLine();
+	ImGui::Checkbox("Ubercharged", &settings.aimbot.ignoreubered);
+	ImGui::SameLine();
+	ImGui::Checkbox("Hoovy", &settings.aimbot.ignorehoovy);
+	ImGui::SameLine();
+	ImGui::Checkbox("Bonked", &settings.aimbot.ignorebonked);
 
 	ImGui::EndGroup();
 }
@@ -243,6 +253,8 @@ static void DrawAntiaimTab()
 
 		ImGui::EndCombo();
 	}
+
+	ImGui::SliderFloat("Spin Speed", &settings.antiaim.spin_speed, 0.0f, 10.0f);
 
 	ImGui::EndGroup();
 }

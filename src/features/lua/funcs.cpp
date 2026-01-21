@@ -163,6 +163,7 @@ namespace LuaFuncs
 			{"IsConsoleVisible", IsConsoleVisible},
 			{"GetViewAngles", GetViewAngles},
 			{"SetViewAngles", SetViewAngles},
+			{"GetNetChannel", GetNetChannel},
 			{nullptr, nullptr},
 		};
 
@@ -236,6 +237,19 @@ namespace LuaFuncs
 
 			Vector out; helper::engine::WorldToScreen(*vec, out);
 			LuaClasses::VectorLua::push_vector(L, out);
+			return 1;
+		}
+
+		int GetNetChannel(lua_State* L)
+		{
+			CNetChannel* netchan = reinterpret_cast<CNetChannel*>(interfaces::Engine->GetNetChannelInfo());
+			if (netchan == nullptr)
+			{
+				lua_pushnil(L);
+				return 1;
+			}
+
+			LuaClasses::NetChannelLua::push_netchannel(Lua::m_luaState, netchan);
 			return 1;
 		}
 	}
@@ -1235,7 +1249,6 @@ namespace LuaFuncs
 	{
 		const luaL_Reg clientlib[]
 		{
-			{"GetNetChannel", GetNetChannel},
 			{"GetConVar", GetConVar},
 			{"SetConVar", SetConVar},
 			{"ChatSay", ChatSay},
@@ -1248,19 +1261,6 @@ namespace LuaFuncs
 			lua_newtable(L);
 			luaL_setfuncs(L, clientlib, 0);
 			lua_setglobal(L, "client");
-		}
-
-		int GetNetChannel(lua_State* L)
-		{
-			CNetChannel* netchan = reinterpret_cast<CNetChannel*>(interfaces::Engine->GetNetChannelInfo());
-			if (netchan == nullptr)
-			{
-				lua_pushnil(L);
-				return 1;
-			}
-
-			LuaClasses::NetChannelLua::push_netchannel(Lua::m_luaState, netchan);
-			return 1;
 		}
 
 		int GetConVar(lua_State* L)
@@ -1385,6 +1385,7 @@ namespace LuaFuncs
 			{"GetClientSignonState", GetClientSignonState},
 			{"GetDeltaTick", GetDeltaTick},
 			{"GetLastCommandAck", GetLastCommandAck},
+			{"ForceFullUpdate", ForceFullUpdate},
 			{nullptr, nullptr}
 		};
 
@@ -1453,6 +1454,24 @@ namespace LuaFuncs
 
 			lua_pushinteger(L, static_cast<CClientState*>(interfaces::ClientState)->last_command_ack);
 			return 1;
+		}
+
+		int ForceFullUpdate(lua_State *L)
+		{
+			// xref: Requesting full game update
+			if (interfaces::ClientState == nullptr)
+				return 0;
+
+			// I should probably add this to the clientstate def
+			// But I don't use it anywhere in the code sooo
+
+			using ForceFullUpdateFn = void(*)(CClientState* self);
+			static ForceFullUpdateFn original_ForceFullUpdate = reinterpret_cast<ForceFullUpdateFn>(sigscan_module("engine.so", "83 BF B8 01 00 00 FF 74 ? 55"));
+			if (original_ForceFullUpdate == nullptr)
+				return 0;
+
+			original_ForceFullUpdate(reinterpret_cast<CClientState*>(interfaces::ClientState));
+			return 0;
 		}
 	}
 }

@@ -38,6 +38,7 @@ namespace LuaFuncs
 		int SetViewAngles(lua_State* L);
 		int GetViewAngles(lua_State* L);
 		int WorldToScreen(lua_State* L);
+		int GetNetChannel(lua_State* L);
 
 		extern const luaL_Reg enginelib[];
 	}
@@ -140,7 +141,6 @@ namespace LuaFuncs
 	{
 		extern const luaL_Reg clientlib[];
 		void luaopen_client(lua_State* L);
-		int GetNetChannel(lua_State* L);
 		int GetConVar(lua_State* L);
 		int SetConVar(lua_State* L);
 		int ChatSay(lua_State* L);
@@ -157,6 +157,7 @@ namespace LuaFuncs
 		int GetClientSignonState(lua_State* L);
 		int GetDeltaTick(lua_State* L);
 		int GetLastCommandAck(lua_State* L);
+		int ForceFullUpdate(lua_State* L);
 	}
 
 	namespace input

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sdk/definitions/color.h"
+#include <cstdint>
 #include <string>
 #include <unistd.h>
 
@@ -27,6 +28,7 @@ struct Settings_Antiaim
 	PitchMode pitch_mode = PitchMode::NONE;
 	YawMode real_yaw_mode = YawMode::NONE;
 	YawMode fake_yaw_mode = YawMode::NONE;
+	float spin_speed = 0;
 };
 
 struct Settings_ESP
@@ -52,7 +54,10 @@ struct Settings_Aimbot
 	float max_sim_time = 0.0f;
 	bool viewmodelaim = false;
 	bool draw_fov_indicator = false;
-	bool psilent = false;
+	bool ignorecloaked = false;
+	bool ignoreubered = false;
+	bool ignorehoovy = false;
+	bool ignorebonked = false;
 };
 
 struct Settings_Misc
