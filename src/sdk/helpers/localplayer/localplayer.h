@@ -43,7 +43,7 @@ namespace helper
 				case EWeaponType::PROJECTILE:
 				{
 					int id = pWeapon->GetWeaponID();
-					if (id == TF_WEAPON_COMPOUND_BOW || TF_WEAPON_PIPEBOMBLAUNCHER)
+					if (id == TF_WEAPON_COMPOUND_BOW || id == TF_WEAPON_PIPEBOMBLAUNCHER)
 					{
 						float flchargebegintime = static_cast<CTFPipebombLauncher*>(pWeapon)->m_flChargeBeginTime();
 						float charge = flchargebegintime > 0.f ? TICKS_TO_TIME(pLocal->GetTickBase()) - flchargebegintime : 0.f;

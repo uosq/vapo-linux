@@ -12,6 +12,8 @@ namespace LuaFuncs
 	{
 		void luaopen_commonfunctions(lua_State* L);
 		int Print(lua_State* L);
+		int GetMetaTableName(lua_State* L, int index);
+		int Typeof(lua_State* L);
 	}
 
 	namespace globalvars

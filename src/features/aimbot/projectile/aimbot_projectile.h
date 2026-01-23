@@ -461,7 +461,6 @@ struct AimbotProjectile
 						default: break;
 					}
 				}
-
 			}
 
 			if (helper::localplayer::IsAttacking(pLocal, pWeapon, pCmd))
