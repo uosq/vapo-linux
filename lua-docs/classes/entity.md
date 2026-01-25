@@ -19,16 +19,16 @@ returns **Vector3**
 ### > GetAbsAngles( )
 returns **Vector3**
 
-### > GetNetvarInt( )
+### > GetNetvarInt( netvar: **string** )
 returns **int**
 
-### > GetNetvarFloat( )
+### > GetNetvarFloat( netvar: **string** )
 returns **number**
 
-### > GetNetvarVector( )
+### > GetNetvarVector( netvar: **string** )
 returns **Vector3**
 
-### > GetNetvarEntity( )
+### > GetNetvarEntity( netvar: **string** )
 returns **Entity?**
 
 ### > SetNetvarInt( netvar: **string**, value: **int** )
