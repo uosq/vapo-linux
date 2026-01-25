@@ -10,6 +10,7 @@ All Read & Write methods use the current bit position
 returns **int**
 
 ### > Reset( )
+Resets the current bit position to 0
 
 ### > WriteBit( val: **int** )
 
