@@ -177,12 +177,18 @@ bool InitializeInterfaces()
 	}
 
 	{ // global vars
-		uintptr_t HudUpdateFn = (uintptr_t)vtable::get(interfaces::BaseClientDLL)[11];
-		unsigned int mov_addr = *(unsigned int*)(HudUpdateFn + 0x16);
-		uintptr_t next_instr = (uintptr_t)(HudUpdateFn + 0x1A);
+		/*
+                undefined FUN_0178d6c0()
+                FUN_0178d6c0                         XREF[4]:     FUN_016e9160:016e91a8(c), 
+                                                                	FUN_0186c670:0186c6b1(c), 
+                                                                	02465b6c, 0252ea8c(*)  
+        0178d6c0 4C 8D 15        LEA        R10,[gpGlobals]                                  = 02ee4c00
+                 79 4B 70 01
+        0178d6c7 49 8B 02        MOV        RAX,qword ptr [R10]=>gpGlobals                   = 02ee4c00
+		*/
+		uintptr_t unkFunc = reinterpret_cast<uintptr_t>(sigscan_module("client.so", "4C 8D 15 ? ? ? ? 49 8B 02"));
+		interfaces::GlobalVars = *reinterpret_cast<CGlobalVars**>(vtable::ResolveRIP(unkFunc, 3, 7));
 		
-		// MOV RAX,qword ptr [gpGlobals]
-		interfaces::GlobalVars = (CGlobalVars*)(*(void **)(next_instr + mov_addr));
 		if (!interfaces::GlobalVars)
 			return false;
 	}
