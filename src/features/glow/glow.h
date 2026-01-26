@@ -99,7 +99,7 @@ namespace Glow
 
 			auto moveChild = ent->FirstShadowChild();
 			int passes = 0;
-			while (moveChild != nullptr && passes <= 32)
+			while (moveChild != nullptr && passes <= 32 && moveChild->ShouldDraw())
 			{
 				if (settings.esp.weapon && static_cast<CBaseEntity*>(moveChild)->IsWeapon())
 				{

@@ -4,6 +4,8 @@ if [ ! -d build ]; then
 	mkdir build
 fi
 
+# check for Pluto-lang static binary
+# if not there, compile it
 if [ ! -f build/libplutostatic.a ]; then
 	cd build
 
@@ -22,6 +24,8 @@ if [ ! -f build/libplutostatic.a ]; then
 	cd ../
 fi
 
+# check for Lua static binary
+# if not there, compile it
 if [ ! -f build/liblua.a ]; then
 	cd build
 
@@ -41,6 +45,8 @@ if [ ! -f build/liblua.a ]; then
 	rm -fr lua-5.4.8
 fi
 
+# check for glew (opengl)
+# if not there, compile it
 if [ ! -f build/libGLEW.a ]; then
 	cd build
 
@@ -65,10 +71,19 @@ if [ ! -f build/libGLEW.a ]; then
 	rm build/glew-2.3.0
 fi
 
+# check for netvar text file (I should probably generate it on the fly from the already made SetupNetvars function)
 if [ ! -f build/netvars.txt ]; then
 	cp netvars.txt build/
 fi
 
+# copy our p100 attach script
+cp attach.sh build/
+
+# compile it
+# this shit takes longer to compile than I want to admit
+# i shouldn't include the entire pluto and glew libraries
+# but it doesn't attach without them
+# fuck my life
 g++ -shared -fPIC \
 	-Wl,--whole-archive \
 	build/libGLEW.a \
@@ -87,4 +102,4 @@ g++ -shared -fPIC \
 	src/settings.cpp \
 	-o build/libvapo.so \
 	-O2 -std=c++17 -lSDL2 -lvulkan -lm -ldl \
-	-Werror -flto=auto -s
+	-Werror -flto=auto
