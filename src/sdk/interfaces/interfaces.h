@@ -26,6 +26,8 @@
 #include "../definitions/igamemovement.h"
 #include "../definitions/imovehelper.h"
 #include "../definitions/ivmodelinfoclient.h"
+#include "../definitions/hudbasechat.h"
+#include "../definitions/ceconnotificationqueue.h"
 
 using AttributeHookValueFn = float(*)(float defaultValue, const char* attribName, CBaseEntity* pEntity, void*, bool);
 extern AttributeHookValueFn AttributeHookValue;
@@ -55,6 +57,10 @@ namespace interfaces
 	extern IKeyValuesSystem* KeyValuesSystem;
 	extern IVModelInfoClient* ModelInfoClient;
 	extern void* ClientState;
+	extern CBaseHudChat* gHUD;
+	extern IStudioRender* StudioRender;
+	//extern IGameMovement* GameMovement;
+	//extern CEconNotificationQueue* g_notificationQueue;
 }
 
 namespace factories
@@ -67,6 +73,7 @@ namespace factories
 	extern CreateInterfaceFn enginevgui;
 	extern CreateInterfaceFn inputsystem;
 	extern CreateInterfaceFn materialsystem;
+	extern CreateInterfaceFn studiorender;
 };
 
 template <typename T>

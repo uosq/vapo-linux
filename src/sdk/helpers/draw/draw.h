@@ -67,9 +67,10 @@ namespace helper
 			// convert our string to wide string
 			// fuck my life
 			std::wstring wtext(text.begin(), text.end());
-			
+			Color black = {0, 0, 0, 255};
+
 			interfaces::Surface->DrawSetTextPos(x + 2, y + 2);
-			interfaces::Surface->DrawSetTextColor((Color){0, 0, 0, 255});
+			interfaces::Surface->DrawSetTextColor(black);
 			interfaces::Surface->DrawPrintText(wtext.c_str(), wtext.length());
 
 			interfaces::Surface->DrawSetTextPos(x, y);

@@ -42,6 +42,17 @@ enum class MeleeMode
 	RAGE
 };
 
+enum class AimbotMode
+{
+	INVALID = -1,
+	PLAIN,
+	SMOOTH,
+	ASSISTANCE,
+	SILENT,
+	PSILENT,
+	MAX
+};
+
 struct Settings_Antiaim
 {
 	bool enabled = false;
@@ -78,7 +89,10 @@ struct Settings_Aimbot
 	bool ignoreubered = false;
 	bool ignorehoovy = false;
 	bool ignorebonked = false;
+	bool waitforcharge = false;
+	AimbotMode mode = AimbotMode::PLAIN;
 	MeleeMode melee = MeleeMode::NONE;
+	float smoothness = 10.0f;
 };
 
 struct Settings_Misc

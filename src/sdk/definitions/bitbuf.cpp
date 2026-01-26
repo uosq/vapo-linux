@@ -1411,11 +1411,11 @@ int64_t bf_read::ReadLongLong()
 	return retval;
 }
 
-float bf_read::ReadFloat(int numbits)
+float bf_read::ReadFloat()
 {
 	float ret;
 	nullAssert(sizeof(ret) == 4);
-	ReadBits(&ret, numbits);
+	ReadBits(&ret, sizeof(ret) << 3);
 
 	// Swap the float, since ReadBits reads raw data
 	LittleFloat(&ret, &ret);

@@ -3,6 +3,7 @@
 #include "../../classes/player.h"
 #include "../../classes/weaponbase.h"
 #include "../../definitions/hudbasechat.h"
+#include <cstdarg>
 
 namespace helper
 {
@@ -79,5 +80,13 @@ namespace helper
 		}
 
 		inline Vector LastAngle{};
+
+		inline void ChatPrintf(int iPlayerIndex, int iFilter, const char* fmt)
+		{
+			// xref: Console
+			using ChatPrintfFn = void(*)(CBaseHudChat*, int, int, const char*);
+			static ChatPrintfFn original = reinterpret_cast<ChatPrintfFn>(sigscan_module("client.so", "55 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 41 89 F4 53 89 D3 48 89 CA"));
+			original(interfaces::gHUD, iPlayerIndex, iFilter, fmt);
+		}
 	}
 }

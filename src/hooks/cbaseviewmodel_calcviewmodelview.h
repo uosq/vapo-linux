@@ -69,6 +69,6 @@ inline void HookCalcViewModelView()
 	detour_init(&calcViewModel_ctx, (void*)originalCalcViewModelView, (void*)&HookedCalcViewModelView);
 	detour_enable(&calcViewModel_ctx);
 
-	Color_t color{100, 255, 100, 255};
+	constexpr Color_t color{100, 255, 100, 255};
 	interfaces::Cvar->ConsoleColorPrintf(color, "CalcViewModelView hooked\n");
 }

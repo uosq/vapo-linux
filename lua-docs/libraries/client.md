@@ -9,7 +9,7 @@ returns **int**, **number**, **string**
 
 ### > ChatSay( text: **string** )
 
-### > Command( text: **string** )
+### > Command( text: **string**, [unrestricted: **bool** = false] )
 
 ### > IsClassMenuOpen()
 returns **bool**

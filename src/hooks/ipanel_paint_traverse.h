@@ -33,5 +33,7 @@ DECLARE_VTABLE_HOOK(PaintTraverse, void, (IPanel* thisptr, VPANEL vguiPanel, boo
 inline void HookPaintTraverse()
 {
 	INSTALL_VTABLE_HOOK(PaintTraverse, interfaces::VGui, 42);
-	helper::console::ColoredPrint("IPanel::PaintTraverse hooked\n", (Color_t){100, 255, 100, 255});
+
+	constexpr Color_t color = {100, 255, 100, 255};
+	helper::console::ColoredPrint("IPanel::PaintTraverse hooked\n", color);
 }

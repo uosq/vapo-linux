@@ -2,6 +2,7 @@
 #include "hooks/clientmodeshared_createmove.h"
 #include "hooks/clientmodeshared_firegameevent.h"
 #include "hooks/ctfplayer_getmaxitemcount.h"
+#include "hooks/istudiorender_forcedmaterialoverride.h"
 #include "hooks/isurface_setcursor.h"
 #include "hooks/modelrender_drawmodelexecute.h"
 #include "hooks/enginevgui_paint.h"
@@ -14,9 +15,9 @@
 #include "hooks/ipanel_paint_traverse.h"
 #include "hooks/netchan_sendnetmsg.h"
 #include "hooks/sdl.h"
-#include "hooks/vulkan.h"
 #include "hooks/chlclient_levelinitpreentity.h"
 #include "hooks/chlclient_levelpostentity.h"
+#include "hooks/dxvk.h"
 
 #include "sdk/interfaces/interfaces.h"
 #include <sys/types.h>
@@ -34,7 +35,8 @@ void init(void)
 	fontManager.Init();
 
 	HookSDL();
-	HookVulkan();
+	//HookVulkan();
+	HookDXVK();
 
 	SetupNetVars();
 	//SetupNetVarsToFile();
@@ -56,6 +58,7 @@ void init(void)
 	HookLevelInitPostEntity();
 	HookLevelInitPreEntity();
 	HookFireGameEvent();
+	HookForcedMaterialOverride();
 
 	Lua::InitPluto();
 }

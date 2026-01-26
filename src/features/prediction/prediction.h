@@ -59,10 +59,10 @@ namespace PlayerPrediction
 		Vector down = Vector(origin.x, origin.y, origin.z - 2);
 
 		CGameTrace trace;
-		CTraceFilterWorldAndPropsOnly filter;
+		CTraceFilterCollideable filter;
 		filter.pSkip = player;
 
-		helper::engine::TraceHull(origin, down, mins, maxs, MASK_PLAYERSOLID, &filter, &trace);
+		helper::engine::TraceHull(origin, down, mins, maxs, MASK_SOLID, &filter, &trace);
 		return trace.fraction < 1.0f && trace.plane.normal.z >= 0.7f;
 	}
 
@@ -289,8 +289,7 @@ namespace PlayerPrediction
 			if (!isOnGround)
 				StayOnGround(player, origin, mins, maxs, stepsize);
 
-			path.emplace_back((Vector){origin.x, origin.y, origin.z});
-
+			path.emplace_back(origin);
 			clock += interfaces::GlobalVars->interval_per_tick;
 		}
 	}

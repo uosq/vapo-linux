@@ -26,3 +26,24 @@ returns clicked: **bool**, new value: **number**
 This should **ALWAYS** be called after **Begin**, even if it returned false!
 
 Don't complain to me about crashes if you forget to call **End**
+
+## Examples
+
+```lua
+local check = false
+
+local function DrawGUI()
+	ui.Begin("My Cool Lua Window")
+
+	if ui.Button("Click me") then
+		print("clicked")
+	end
+
+	--- will toggle (on & off) the check variable
+	_, check = ui.Checkbox("Check me", check)
+
+	ui.End()
+end
+
+hooks.Add("ImGui", "my cool stuff", DrawGUI)
+```

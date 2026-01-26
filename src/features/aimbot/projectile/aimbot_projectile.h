@@ -345,9 +345,6 @@ struct AimbotProjectile
 
 		for (auto entity : EntityList::GetEnemies())
 		{
-			if (entity == nullptr)
-				continue;
-
 			if (!AimbotUtils::IsValidEntity(entity, localTeam))
 				continue;
 
@@ -467,7 +464,14 @@ struct AimbotProjectile
 			{
 				pCmd->viewangles = angle;
 				state.angle = angle;
-				state.shouldSilent = true;
+
+				AimbotMode mode = settings.aimbot.mode;
+
+				if (mode == AimbotMode::PSILENT)
+					state.shouldSilent = true;
+
+				if (mode == AimbotMode::PLAIN)
+					interfaces::Engine->SetViewAngles(angle);
 			}
 			
 			EntityList::m_pAimbotTarget = target.entity;

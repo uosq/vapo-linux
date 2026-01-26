@@ -7,6 +7,7 @@
 #include "../entitylist/entitylist.h"
 #include "../../sdk/handle_utils.h"
 #include "pluto/lua.h"
+#include "../prediction/prediction.h"
 
 namespace LuaClasses
 {
@@ -44,6 +45,8 @@ namespace LuaClasses
 			{"GetWeaponType", GetWeaponType},
 			{"IsInReload", IsInReload},
 			{"GetSmackTime", GetSmackTime},
+			{"GetIndex", GetIndex},
+			{"Predict", Predict},
 			{nullptr, nullptr}
 		};
 
@@ -188,12 +191,11 @@ namespace LuaClasses
 				auto& offset = it->second;
 				uintptr_t entityPtr = reinterpret_cast<uintptr_t>(le->ent);
 				int value = *reinterpret_cast<int*>(entityPtr + offset);
-				lua_pushnumber(L, value);
+				lua_pushinteger(L, value);
+				return 1;
 			}
-			else
-			{
-				lua_pushnil(L);
-			}
+
+			lua_pushnil(L);
 			return 1;
 		}
 
@@ -214,11 +216,10 @@ namespace LuaClasses
 				uintptr_t entityPtr = reinterpret_cast<uintptr_t>(le->ent);
 				float value = *reinterpret_cast<float*>(entityPtr + offset);
 				lua_pushnumber(L, value);
+				return 1;
 			}
-			else
-			{
-				lua_pushnil(L);
-			}
+
+			lua_pushnil(L);
 			return 1;
 		}
 
@@ -239,11 +240,10 @@ namespace LuaClasses
 				uintptr_t entityPtr = reinterpret_cast<uintptr_t>(le->ent);
 				Vector value = *reinterpret_cast<Vector*>(entityPtr + offset);
 				LuaClasses::VectorLua::push_vector(L, value);
+				return 1;
 			}
-			else
-			{
-				lua_pushnil(L);
-			}
+
+			lua_pushnil(L);
 			return 1;
 		}
 
@@ -265,12 +265,10 @@ namespace LuaClasses
 				auto handle = *reinterpret_cast<EHANDLE*>(entityPtr + offset);
 				CBaseEntity* ent = HandleAs<CBaseEntity*>(handle);
 				push_entity(L, ent);
-			}
-			else
-			{
-				lua_pushnil(L);
+				return 1;
 			}
 
+			lua_pushnil(L);
 			return 1;
 		}
 
@@ -829,6 +827,49 @@ namespace LuaClasses
 				return 0;
 
 			lua_pushnumber(L, pWeapon->m_flSmackTime());
+			return 1;
+		}
+
+		int GetIndex(lua_State* L)
+		{
+			LuaEntity* le = static_cast<LuaEntity*>(luaL_checkudata(L, 1, "Entity"));
+			if (le->ent == nullptr)
+				return 0;
+
+			lua_pushinteger(L, le->ent->entindex());
+			return 1;
+		}
+
+		// entity:Predict
+		int Predict(lua_State* L)
+		{
+			LuaEntity* le = static_cast<LuaEntity*>(luaL_checkudata(L, 1, "Entity"));
+			if (le->ent == nullptr)
+			{
+				lua_pushnil(L);
+				return 1;
+			}
+
+			if (!le->ent->IsPlayer())
+			{
+				lua_pushnil(L);
+				return 1;
+			}
+
+			float seconds = luaL_checknumber(L, 2);
+
+			std::vector<Vector> path;
+			PlayerPrediction::Predict(static_cast<CTFPlayer*>(le->ent), seconds, path);
+
+			lua_newtable(L);
+
+			int i = 1;
+			for (const Vector& v : path)
+			{
+				LuaClasses::VectorLua::push_vector(L, v);
+				lua_rawseti(L, -2, i++);
+			}
+
 			return 1;
 		}
 	}

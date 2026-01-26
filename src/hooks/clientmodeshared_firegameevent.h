@@ -21,15 +21,21 @@ inline detour_ctx_t firegameevent_ctx;
 
 DETOUR_DECL_TYPE(void, original_FireGameEvent, void* self, IGameEvent* gameEvent);
 
-inline void Hooked_FireGameEvent(void* self, IGameEvent* gameEvent)
+inline void Hooked_FireGameEvent(void* self, IGameEvent* event)
 {
+	if (event == nullptr)
+	{
+		DETOUR_ORIG_CALL(&firegameevent_ctx, original_FireGameEvent, self, event);
+		return;
+	}
+
 	if (LuaHookManager::HasHooks("FireGameEvent"))
 	{
-		LuaClasses::GameEventLua::push_gameevent(Lua::m_luaState, gameEvent);
+		LuaClasses::GameEventLua::push_gameevent(Lua::m_luaState, event);
 		LuaHookManager::Call(Lua::m_luaState, "FireGameEvent", 1);
 	}
 
-	DETOUR_ORIG_CALL(&firegameevent_ctx, original_FireGameEvent, self, gameEvent);
+	DETOUR_ORIG_CALL(&firegameevent_ctx, original_FireGameEvent, self, event);
 }
 
 inline void HookFireGameEvent(void)

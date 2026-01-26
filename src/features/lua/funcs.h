@@ -68,6 +68,7 @@ namespace LuaFuncs
 		int GetPlayers(lua_State* L);
 		int GetTeammates(lua_State* L);
 		int GetEnemies(lua_State* L);
+		int GetCurrentWeapon(lua_State* L);
 	}
 
 	namespace draw
@@ -150,6 +151,7 @@ namespace LuaFuncs
 		int ChatSay(lua_State* L);
 		int Command(lua_State* L);
 		int IsClassMenuOpen(lua_State* L);
+		int ChatPrintf(lua_State* L);
 	}
 
 	namespace clientstate
@@ -199,5 +201,22 @@ namespace LuaFuncs
 		int TextUnformatted(lua_State* L);
 		int SliderFloat(lua_State* L);
 		int End(lua_State* L);
+	}
+
+	namespace aimbot
+	{
+		extern const luaL_Reg aimbotlib[];
+		void luaopen_aimbot(lua_State* L);
+
+		int GetTarget(lua_State* L);
+		int SetTarget(lua_State* L);
+		int GetMode(lua_State* L);
+		int SetMode(lua_State* L);
+		int GetFOV(lua_State* L);
+		int SetFOV(lua_State* L);
+		int IsEntityValid(lua_State* L);
+		int IsRunning(lua_State* L);
+		int GetKey(lua_State* L);
+		int SetKey(lua_State* L);
 	}
 }

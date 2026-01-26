@@ -58,7 +58,7 @@ namespace LuaClasses
 		extern const luaL_Reg methods[];
 		void luaopen_vector(lua_State* L);
 		Vector* push_vector(lua_State* L, float x = 0, float y = 0, float z = 0);
-		Vector* push_vector(lua_State* L, Vector vec);
+		Vector* push_vector(lua_State* L, const Vector& vec);
 		int Vector3(lua_State* L);
 		
 		int GC(lua_State* L);
@@ -144,6 +144,10 @@ namespace LuaClasses
 		int GetWeaponType(lua_State* L);
 		int IsInReload(lua_State* L);
 		int GetSmackTime(lua_State* L);
+
+		int GetIndex(lua_State* L);
+
+		int Predict(lua_State* L);
 	};
 
 	namespace MaterialLua

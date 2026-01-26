@@ -87,4 +87,4 @@ g++ -shared -fPIC \
 	src/settings.cpp \
 	-o build/libvapo.so \
 	-O2 -std=c++17 -lSDL2 -lvulkan -lm -ldl \
-	-Werror -flto=auto
+	-Werror -flto=auto -s

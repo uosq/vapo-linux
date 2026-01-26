@@ -213,7 +213,8 @@ namespace Glow
 			pRenderContext->PopRenderTargetAndViewport();
 		}
 
-		if (settings.esp.blur)
+		// blur pass
+		if (settings.esp.blur > 0)
 		{
 			pRenderContext->PushRenderTargetAndViewport();
 			pRenderContext->Viewport(0, 0, w, h);
@@ -229,7 +230,7 @@ namespace Glow
 			pRenderContext->PopRenderTargetAndViewport();
 		}
 
-		{
+		{	// draw pass
 			pRenderContext->SetStencilEnable(true);
 			pRenderContext->SetStencilWriteMask(0);
 			pRenderContext->SetStencilTestMask(0xFF);

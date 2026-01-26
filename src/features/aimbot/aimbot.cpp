@@ -48,7 +48,7 @@ namespace Aimbot
 				static AimbotProjectile projectile;
 				projectile.Run(pLocal, pWeapon, pCmd, state);
 
-				if (state.shouldSilent)
+				if (settings.aimbot.mode == AimbotMode::PSILENT && state.shouldSilent)
 					*bSendPacket = false;
 			} break;
 
@@ -57,7 +57,7 @@ namespace Aimbot
 				static AimbotMelee melee;
 				melee.Run(pLocal, pWeapon, pCmd, state);
 
-				if (state.shouldSilent)
+				if (settings.aimbot.mode == AimbotMode::PSILENT && state.shouldSilent)
 					*bSendPacket = false;
 			} break;
 			default: break;

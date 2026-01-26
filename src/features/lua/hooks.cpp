@@ -5,16 +5,17 @@ namespace LuaHookManager
 {
     std::unordered_map<std::string, std::vector<LuaHook>> hooks;
 
-	void Add(std::string name, std::string id, int lua_func_ref)
+	bool Add(std::string name, std::string id, int lua_func_ref)
 	{
 		auto& eventHooks = hooks[name];
 		for (const auto& hook : eventHooks)
 		{
 			if (hook.name == id)
-				return; 
+				return false;
 		}
 
 		eventHooks.push_back({ id, lua_func_ref });
+		return true;
 	}
 
 	bool Remove(lua_State* L, std::string name, std::string id)

@@ -12,6 +12,7 @@
 #include "../features/entitylist/entitylist.h"
 #include "../sdk/definitions/eteam.h"
 #include "../features/aimbot/melee/aimbot_melee.h"
+#include "../features/aimbot/utils/utils.h"
 
 static TextEditor editor;
 
@@ -63,8 +64,10 @@ static void DrawAimbotTab()
 	ImGui::Checkbox("Autoshoot", &settings.aimbot.autoshoot);
 	ImGui::Checkbox("Viewmodel Aim", &settings.aimbot.viewmodelaim);
 	ImGui::Checkbox("Draw FOV Indicator", &settings.aimbot.draw_fov_indicator);
+	ImGui::Checkbox("Wait For Charge", &settings.aimbot.waitforcharge);
 	ImGui::SliderFloat("Fov", &settings.aimbot.fov, 0.0f, 180.0f);
 	ImGui::SliderFloat("Max Sim Time", &settings.aimbot.max_sim_time, 0.0f, 5.0f);
+	ImGui::SliderFloat("Smoothness", &settings.aimbot.smoothness, 10.0f, 100.0f);
 
 	if (ImGui::BeginCombo("Melee Aimbot", GetMeleeModeName().c_str()))
 	{
@@ -76,6 +79,26 @@ static void DrawAimbotTab()
 
 		if (ImGui::Selectable("Rage"))
 			settings.aimbot.melee = MeleeMode::RAGE;
+
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::BeginCombo("Aimbot Method", AimbotUtils::GetAimbotModeName().c_str()))
+	{
+		if (ImGui::Selectable("Plain"))
+			settings.aimbot.mode = AimbotMode::PLAIN;
+
+		if (ImGui::Selectable("Smooth"))
+			settings.aimbot.mode = AimbotMode::SMOOTH;
+
+		if (ImGui::Selectable("Assistance"))
+			settings.aimbot.mode = AimbotMode::ASSISTANCE;
+
+		if (ImGui::Selectable("Silent"))
+			settings.aimbot.mode = AimbotMode::SILENT;
+
+		if (ImGui::Selectable("pSilent"))
+			settings.aimbot.mode = AimbotMode::PSILENT;
 
 		ImGui::EndCombo();
 	}
@@ -295,7 +318,7 @@ static void DrawLuaTab()
 			"render", "materials",
 			"client", "BitBuffer",
 			"clientstate", "ui",
-			"menu"
+			"menu", "aimbot"
 		};
 
 		auto def = TextEditor::LanguageDefinition::Lua();

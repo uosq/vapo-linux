@@ -22,6 +22,9 @@ DECLARE_VTABLE_HOOK(VGuiPaint, void, (IEngineVGui* thisptr, PaintMode_t paint))
 {
 	originalVGuiPaint(thisptr, paint);
 
+	if (interfaces::Engine->IsTakingScreenshot())
+		return;
+
 	if (paint & PAINT_UIPANELS)
 	{
 		interfaces::Surface->StartDrawing();
@@ -47,7 +50,6 @@ inline void HookEngineVGuiPaint()
 {
 	INSTALL_VTABLE_HOOK(VGuiPaint, interfaces::EngineVGui, 15);
 
-	Color_t color;
-	color.SetRGB(100, 255, 100, 255);
+	constexpr Color_t color = {100, 255, 100, 255};
 	helper::console::ColoredPrint("EngineVGui::Paint hooked\n", color);
 }

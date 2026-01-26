@@ -83,3 +83,16 @@ returns **int**
 
 ### > GetProtocolVersion( )
 returns **int**
+
+## Examples
+
+```lua
+local netchannel: NetChannel = engine.GetNetChannel()
+if netchannel == nil then
+	print("NetChannel is nil! Are you in a match?")
+	return
+end
+
+print(netchannel:IsOverflowed())
+netchannel:SetChoked()
+```

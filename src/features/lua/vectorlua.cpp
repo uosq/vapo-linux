@@ -100,10 +100,11 @@ namespace LuaClasses
 			return v;
 		}
 
-		Vector* push_vector(lua_State* L, Vector vec)
+		Vector* push_vector(lua_State* L, const Vector& vec)
 		{
 			Vector* v = static_cast<Vector*>(lua_newuserdata(L, sizeof(Vector)));
-			new (v) Vector(vec.x, vec.y, vec.z);
+			//new (v) Vector(vec.x, vec.y, vec.z);
+			*v = vec;
 
 			luaL_getmetatable(L, "Vector3");
 			lua_setmetatable(L, -2);

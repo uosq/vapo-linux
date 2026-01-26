@@ -33,6 +33,6 @@ inline void HookCTFPlayerInventory_MaxItemCount()
 	detour_init(&GetMaxItemCount_ctx, (void*)originalMaxItemCountFn, (void*)&Hooked_GetMaxItemCount);
 	detour_enable(&GetMaxItemCount_ctx);
 
-	Color_t color{100, 255, 100, 255};
+	constexpr Color_t color{100, 255, 100, 255};
 	interfaces::Cvar->ConsoleColorPrintf(color, "CTFPlayerInventory::GetMaxItemCount hooked\n");
 }

@@ -28,6 +28,7 @@ namespace Lua
 		LuaFuncs::input::luaopen_input(m_luaState);
 		LuaFuncs::menu::luaopen_menu(m_luaState);
 		LuaFuncs::ui::luaopen_ui(m_luaState);
+		LuaFuncs::aimbot::luaopen_aimbot(m_luaState);
 
 		// open classes
 		LuaClasses::VectorLua::luaopen_vector(m_luaState);

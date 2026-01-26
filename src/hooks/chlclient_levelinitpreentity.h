@@ -22,5 +22,7 @@ DECLARE_VTABLE_HOOK(LevelInitPreEntity, void, (IBaseClientDLL* thisptr, const ch
 static void HookLevelInitPreEntity()
 {
 	INSTALL_VTABLE_HOOK(LevelInitPreEntity, interfaces::BaseClientDLL, 5);
-	helper::console::ColoredPrint("BaseClientDll::LevelInitPreEntity hooked\n", (Color_t){100, 255, 100, 255});
+
+	constexpr Color_t color{100, 255, 100, 255};
+	helper::console::ColoredPrint("BaseClientDll::LevelInitPreEntity hooked\n", color);
 }

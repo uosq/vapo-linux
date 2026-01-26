@@ -50,8 +50,6 @@ class CMouthInfo;
 class CRenamedRecvTableInfo;
 class IConVar;
 
-class HANDLE;
-
 #define MAX_PLAYER_NAME_LENGTH 32
 #define SIGNED_GUID_LEN 32
 #define MAX_CUSTOM_FILES 4
@@ -269,7 +267,7 @@ public:
 	virtual uint			GetPresenceID( const char *pIDName );
 	virtual const char		*GetPropertyIdString( const uint id );
 	virtual void			GetPropertyDisplayString( uint id, uint value, char *pOutput, int nBytes );
-	virtual void			StartStatsReporting( HANDLE handle, bool bArbitrated );
+	virtual void			StartStatsReporting( void* handle, bool bArbitrated );
 
 	virtual void			InvalidateMdlCache();
 

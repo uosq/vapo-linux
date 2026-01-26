@@ -20,5 +20,7 @@ DECLARE_VTABLE_HOOK(LevelShutdown, void, (IBaseClientDLL* thisptr))
 static void HookLevelShutdown()
 {
 	INSTALL_VTABLE_HOOK(LevelShutdown, interfaces::BaseClientDLL, 7);
-	helper::console::ColoredPrint("BaseClientDll::LevelShutdown hooked\n", (Color_t){100, 255, 100, 255});
+
+	constexpr Color_t color = {100, 255, 100, 255};
+	helper::console::ColoredPrint("BaseClientDll::LevelShutdown hooked\n", color);
 }

@@ -16,7 +16,7 @@
 // Source https://8dcc.github.io/reversing/reversing-tf2-bsendpacket.html#introduction
 #define SENDPACKET_STACK_OFFSET 0xF8
 
-inline void RunLuaHooks(CUserCmd* pCmd, bool* bSendPacket)
+inline void RunLuaCreateMoveCallback(CUserCmd* pCmd, bool* bSendPacket)
 {
 	lua_newtable(Lua::m_luaState);
 
@@ -147,18 +147,18 @@ DECLARE_VTABLE_HOOK(CreateMove, bool, (IClientMode* thisptr, float sample_framet
     	uintptr_t current_stack_address = current_frame_address + 0x8;
     	bool* bSendPacket = (bool*)(current_stack_address + SENDPACKET_STACK_OFFSET);
 
-	if (LuaHookManager::HasHooks("CreateMove"))
-		RunLuaHooks(pCmd, bSendPacket);
-
-	if (reinterpret_cast<CClientState*>(interfaces::ClientState)->chokedcommands >= 21)
-		*bSendPacket = true;
-
 	Bhop::Run(pLocal, pCmd);
 	Antiaim::Run(pLocal, pWeapon, pCmd, bSendPacket);
 	Aimbot::Run(pLocal, pWeapon, pCmd, bSendPacket);
 	Triggerbot::Run(pLocal, pWeapon, pCmd);
 
-	if (*bSendPacket)
+	if (LuaHookManager::HasHooks("CreateMove"))
+		RunLuaCreateMoveCallback(pCmd, bSendPacket);
+
+	if (reinterpret_cast<CClientState*>(interfaces::ClientState)->chokedcommands >= 21)
+		*bSendPacket = true;
+
+	if (*bSendPacket == true)
 		helper::localplayer::LastAngle = pCmd->viewangles;
 
 	helper::engine::FixMovement(pCmd, originalAngles, pCmd->viewangles);
@@ -169,5 +169,7 @@ DECLARE_VTABLE_HOOK(CreateMove, bool, (IClientMode* thisptr, float sample_framet
 inline void HookCreateMove()
 {
 	INSTALL_VTABLE_HOOK(CreateMove, interfaces::ClientMode, 22);
-	helper::console::ColoredPrint("ClientModeShared::CreateMove hooked\n", (Color_t){100, 255, 100, 255});
+
+	constexpr Color_t color = {100, 255, 100, 255};
+	helper::console::ColoredPrint("ClientModeShared::CreateMove hooked\n", color);
 }

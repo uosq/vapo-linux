@@ -3,7 +3,7 @@
 #include "cbasehandle.h"
 #include "types.h"
 
-class CBasePlayer;
+class CTFPlayer;
 class CBaseEntity;
 typedef CHandle<CBaseEntity> EHANDLE;
 
@@ -63,9 +63,9 @@ public:
 	virtual			~IGameMovement( void ) {}
 	
 	// Process the current movement command
-	virtual void	ProcessMovement( CBasePlayer *pPlayer, CMoveData *pMove ) = 0;		
-	virtual void	StartTrackPredictionErrors( CBasePlayer *pPlayer ) = 0;
-	virtual void	FinishTrackPredictionErrors( CBasePlayer *pPlayer ) = 0;
+	virtual void	ProcessMovement( CTFPlayer *pPlayer, CMoveData *pMove ) = 0;		
+	virtual void	StartTrackPredictionErrors( CTFPlayer *pPlayer ) = 0;
+	virtual void	FinishTrackPredictionErrors( CTFPlayer *pPlayer ) = 0;
 	virtual void	DiffPrint( char const *fmt, ... ) = 0;
 
 	// Allows other parts of the engine to find out the normal and ducked player bbox sizes

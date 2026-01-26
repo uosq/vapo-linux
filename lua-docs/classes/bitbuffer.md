@@ -26,7 +26,7 @@ returns **int**
 
 ### > ReadString( [maxlength: **int** = 256] )
 
-### > WriteFloat( val: **number** )
+### > WriteFloat( val: **number**, [numbits: **int** = 32] )
 
 ### > ReadFloat( [numbits: **int** = 32] )
 
@@ -36,3 +36,20 @@ returns **int**
 
 ### > Delete( )
 Call this when you want to delete the BitBuffer from memory
+
+## Examples
+
+```lua
+local buf = BitBuffer()
+
+buf:WriteInt(12)
+buf:WriteFloat(30.5)
+buf:WriteString("Hello, world!")
+
+buf:Reset()
+print(buf:ReadInt(12)) -- 12
+print(buf:ReadFloat()) -- 30.5
+print(buf:ReadString(256)) --- "Hello, world!
+
+buf:Delete()
+```

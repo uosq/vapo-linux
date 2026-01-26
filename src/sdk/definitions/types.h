@@ -17,8 +17,6 @@
 #define DEG2RAD(x) ((float)(x) * (float)((float)(PI) / 180.f))
 #define RAD2DEG(x) ((float)(x) * (float)(180.f / (float)(PI)))
 
-#pragma warning (disable : 26495)
-
 class Vec2
 {
 public:

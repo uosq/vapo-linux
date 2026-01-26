@@ -22,6 +22,9 @@ void RegisterSettings(void)
 	REG_SETTING(aimbot, ignorehoovy, SettingType::BOOL)
 	REG_SETTING(aimbot, ignorebonked, SettingType::BOOL)
 	REG_SETTING(aimbot, melee, SettingType::INT)
+	REG_SETTING(aimbot, waitforcharge, SettingType::BOOL)
+	REG_SETTING(aimbot, mode, SettingType::INT)
+	REG_SETTING(aimbot, smoothness, SettingType::FLOAT)
 
 	// esp
 	REG_SETTING(esp, enabled, SettingType::BOOL)

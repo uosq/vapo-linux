@@ -51,7 +51,6 @@ inline void HookFrameStageNotify()
 {
 	INSTALL_VTABLE_HOOK(FrameStageNotify, interfaces::BaseClientDLL, 35);
 
-	Color_t color;
-	color.SetRGB(100, 255, 100, 255);
+	constexpr Color_t color = {100, 255, 100, 255};
 	helper::console::ColoredPrint("IBaseClientDll::FrameStageNotify hooked\n", color);
 }

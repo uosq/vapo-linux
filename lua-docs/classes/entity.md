@@ -10,6 +10,9 @@ returns **bool**
 ### > GetName( )
 returns **string**
 
+### > GetIndex( )
+returns **int**
+
 ### > GetClassName( )
 returns **string**
 
@@ -29,7 +32,7 @@ returns **number**
 returns **Vector3**
 
 ### > GetNetvarEntity( netvar: **string** )
-returns **Entity?**
+returns **Entity**?
 
 ### > SetNetvarInt( netvar: **string**, value: **int** )
 
@@ -66,6 +69,30 @@ returns **bool**
 ### > IsPlayer( )
 returns **bool**
 
+### > GetClassID( )
+returns **int**
+
+### > GetFirstMoveChild( )
+returns **Entity**?
+
+### > GetNextMovePeer( )
+returns **Entity**?
+
+### > AttributeHookValueInt( )
+returns **int**
+
+### > AttributeHookValueFloat( )
+returns **number**
+
+## Player Methods
+
+### > Predict( seconds: **number** )
+returns **Vector3[]**
+
+Only works with players, will return nil if Entity is not a player
+
+Will return a table with only 1 index when player is not moving (their origin)
+
 ### > GetPlayerResources( )
 returns table:
 
@@ -98,23 +125,10 @@ returns table:
 | m_iConnectionState | int |
 | m_flConnectTime | number |
 
+## Weapon Methods
+
 ### > GetWeaponID( )
 returns **int**
-
-### > GetClassID( )
-returns **int**
-
-### > GetFirstMoveChild( )
-returns **Entity?**
-
-### > GetNextMovePeer( )
-returns **Entity?**
-
-### > AttributeHookValueInt( )
-returns **int**
-
-### > AttributeHookValueFloat( )
-returns **number**
 
 ### > GetWeaponType( )
 returns **int**
@@ -122,5 +136,31 @@ returns **int**
 ### > IsInReload( )
 returns **bool**
 
+Only call this in a weapon, will return nil on anything else
+
 ### > GetSmackTime( )
 returns **number**
+
+## Examples
+
+Getting the localplayer
+```lua
+local localplayer = entities.GetLocalPlayer()
+if localplayer == nil then
+	print("Localplayer is nil! Are you in a match?")
+	return
+end
+```
+
+Getting a netvar/prop
+```lua
+local localplayer = entities.GetLocalPlayer()
+if localplayer == nil then
+	print("Localplayer is nil! Are you in a match?")
+	return
+end
+
+local class = localplayer:GetNetvarInt("CTFPlayer->m_iClass")
+
+print(class)
+```

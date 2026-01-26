@@ -526,7 +526,7 @@ public:
 	BITBUF_INLINE int	ReadWord() { return ReadUBitLong(16); }
 	BITBUF_INLINE long ReadLong() { return ReadUBitLong(32); }
 	int64_t			ReadLongLong();
-	float			ReadFloat(int numbits = 32);
+	float			ReadFloat();
 	bool			ReadBytes(void* pOut, int nBytes);
 	bool			ReadString(char* pStr, int bufLen, bool bLine = false, int* pOutNumChars = NULL);
 	char* ReadAndAllocateString(bool* pOverflow = 0);

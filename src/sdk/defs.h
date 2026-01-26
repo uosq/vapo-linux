@@ -3365,3 +3365,38 @@ enum EHitboxes
 	HITBOX_RIGHT_FOOT,
 	HITBOX_MAX
 };
+
+enum ChatFilters
+{
+	CHAT_FILTER_NONE		= 0,
+	CHAT_FILTER_JOINLEAVE	= 0x000001,
+	CHAT_FILTER_NAMECHANGE	= 0x000002,
+	CHAT_FILTER_PUBLICCHAT	= 0x000004,
+	CHAT_FILTER_SERVERMSG	= 0x000008,
+	CHAT_FILTER_TEAMCHANGE	= 0x000010,
+    //=============================================================================
+    // HPE_BEGIN:
+    // [tj]Added a filter for achievement announce
+    //=============================================================================
+     
+    CHAT_FILTER_ACHIEVEMENT	= 0x000020,
+     
+    //=============================================================================
+    // HPE_END
+    //=============================================================================
+};
+
+
+//-----------------------------------------------------------------------------
+enum TextColor
+{
+	COLOR_NORMAL = 1,
+	COLOR_USEOLDCOLORS = 2,
+	COLOR_PLAYERNAME = 3,
+	COLOR_LOCATION = 4,
+	COLOR_ACHIEVEMENT = 5,
+	COLOR_CUSTOM = 6,		// Will use the most recently SetCustomColor()
+	COLOR_HEXCODE = 7,		// Reads the color from the next six characters
+	COLOR_HEXCODE_ALPHA = 8,// Reads the color and alpha from the next eight characters
+	COLOR_MAX
+};

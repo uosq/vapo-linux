@@ -40,6 +40,6 @@ inline void HookSendNetMsg()
 	detour_init(&SendNetMsg_ctx, (void*)originalSendNetMsg, (void*)&Hooked_SendNetMsg);
 	detour_enable(&SendNetMsg_ctx);
 
-	Color_t color{100, 255, 100, 255};
+	constexpr Color_t color{100, 255, 100, 255};
 	interfaces::Cvar->ConsoleColorPrintf(color, "CNetChan::SendNetMsg hooked\n");
 }

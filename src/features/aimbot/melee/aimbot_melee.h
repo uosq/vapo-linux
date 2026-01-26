@@ -42,7 +42,7 @@ struct AimbotMelee
 
 		Vector targetAngle;
 		CBaseEntity* target = nullptr;
-		float highestDot = 0.0f;
+		float highestDot = -1.0f;
 
 		MeleeMode mode = settings.aimbot.melee;
 		float fovRad = DEG2RAD(mode == MeleeMode::LEGIT ? 90.0f : 180.0f);
@@ -65,7 +65,7 @@ struct AimbotMelee
 				continue;
 
 			float dot = dir.Dot(viewForward);
-			if (dot < minDot)
+			if (dot < minDot || highestDot > dot)
 				continue;
 
 			helper::engine::TraceHull(shootPos, shootPos + (dir * range), swingMins, swingMaxs, MASK_SHOT_HULL, &filter, &trace);

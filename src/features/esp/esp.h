@@ -29,7 +29,8 @@ namespace ESP
 			}
 		}
 
-		return (Color){255, 255, 255, 255};
+		Color defaultColor = {255, 255, 255, 255};
+		return defaultColor;
 	}
 
 	// Had to make a separate one
@@ -52,8 +53,9 @@ namespace ESP
 				default: break;
 			}
 		}
-		
-		return (Color){255, 255, 255, 255};
+
+		Color defaultColor = {255, 255, 255, 255};
+		return defaultColor;
 	}
 
 	inline bool IsValidPlayer(CTFPlayer* pLocal, CBaseEntity* entity)

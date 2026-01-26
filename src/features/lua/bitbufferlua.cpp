@@ -161,10 +161,8 @@ namespace LuaClasses
 				return 0;
 			}
 
-			int numbits = luaL_optinteger(L, 2, 32);
-
 			lbf->reader->Seek(lbf->curbitpos);
-			float value = lbf->reader->ReadFloat(numbits);
+			float value = lbf->reader->ReadFloat();
 
 			lbf->curbitpos = lbf->reader->GetNumBitsRead();
 
@@ -202,13 +200,15 @@ namespace LuaClasses
 			int maxlength = luaL_optinteger(L, 2, 256);
 			maxlength = std::clamp(maxlength, 0, 256);
 
-			char str[maxlength];
+			std::string str;
+			str.resize(maxlength + 1);
+
 			lbf->reader->Seek(lbf->curbitpos);
-			lbf->reader->ReadString(str, maxlength);
+			lbf->reader->ReadString(str.data(), maxlength);
 
 			lbf->curbitpos = lbf->reader->GetNumBitsRead();
 
-			lua_pushstring(L, str);
+			lua_pushstring(L, str.c_str());
 			return 1;
 		}
 

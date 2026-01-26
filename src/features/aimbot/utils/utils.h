@@ -186,4 +186,48 @@ namespace AimbotUtils
 
 		return targets;
 	}
+
+	inline std::string GetAimbotModeName()
+	{
+		switch(settings.aimbot.mode)
+		{
+			case AimbotMode::PLAIN: return "Plain";
+			case AimbotMode::SMOOTH: return "Smooth";
+			case AimbotMode::ASSISTANCE: return "Assistance";
+			case AimbotMode::SILENT: return "Silent";
+			case AimbotMode::PSILENT: return "pSilent";
+			default: return "Unknown";
+                }
+        }
+
+	inline bool CanDamageWithSniperRifle(CTFPlayer* pLocal, CBaseEntity* pTarget, CTFWeaponBase* pWeapon)
+	{
+		if (pLocal == nullptr || pTarget == nullptr || pWeapon == nullptr)
+			return false;
+
+		if (!pWeapon->IsSniperRifle())
+			return true;
+
+		if (pTarget->IsPlayer())
+		{
+			CTFPlayer* player = static_cast<CTFPlayer*>(pTarget);
+			if (player == nullptr)
+				return false;
+
+			int health = player->GetHealth();
+			return static_cast<CTFSniperRifle*>(pWeapon)->GetChargedDamage() >= health;
+		}
+
+		if (pTarget->IsBuilding())
+		{
+			CBaseObject* obj = static_cast<CBaseObject*>(pTarget);
+			if (obj == nullptr)
+				return false;
+
+			int health = obj->m_iHealth();
+			return static_cast<CTFSniperRifle*>(pWeapon)->GetChargedDamage() >= health;
+		}
+
+		return false;
+	}
 };

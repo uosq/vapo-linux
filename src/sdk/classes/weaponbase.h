@@ -72,30 +72,24 @@ public:
 		return Rebuild_GetFileWeaponInfoFromHandle(handleValue);
 	}
 
-	//int GetSlot() { return GetWeaponInfo()->iSlot; }
 	int GetWeaponID() {
-		// this is stupid
+		// xref: -use_action_slot_item_server
+		// func: EndUseActionSlotItem
+		/*
+			we want the 0xe18 offset
+  			iVar3 = (**(code **)(*plVar7 + 0xe18))(plVar7);
+  			if (iVar3 != 0x65) goto LAB_01dc047d;
+  			uVar5 = FUN_01fdca00(0x40);
+  			FUN_01fda880(uVar5,"-use_action_slot_item_server");
+		*/
 		using Fn = int(*)(void*);
 		auto vtable = *reinterpret_cast<void***>(this);
 		auto fn = reinterpret_cast<Fn>(vtable[0xE18 / sizeof(void*)]);
 		return fn(this);
 	}
 
-	//bool IsEnergyWeapon() { return vtable::call<436, bool>(this); }
-	//bool CalcIsAttackCriticalHelper() { return vtable::call<400, bool>(this); }
-	//bool AreRandomCritsEnabled() { return vtable::call<406, bool>(this); }
-	//float GetWeaponSpread() { return vtable::call<471, float>(this); }
-	//int GetSwingRange() { return vtable::call<459, int>(this); }
-
-	bool IsInReload()
-	{
-		return m_bInReload() || m_iReloadMode() != 0;
-	}
-
-	int GetSlot()
-	{
-		return GetWeaponInfo()->iSlot;
-	}
+	bool IsInReload() { return m_bInReload() || m_iReloadMode() != 0; }
+	int GetSlot() { return GetWeaponInfo()->iSlot; }
 
 	EWeaponType GetWeaponType()
 	{
@@ -153,10 +147,7 @@ public:
 		return EWeaponType::HITSCAN;
 	}
 
-	bool IsHitscan()
-	{
-		return GetWeaponType() == EWeaponType::HITSCAN;
-	}
+	bool IsHitscan() { return GetWeaponType() == EWeaponType::HITSCAN; }
 
 	bool CanPrimaryAttack()
 	{
@@ -183,16 +174,35 @@ public:
 		return m_iClip1() > 0 || m_iClip1() == -1;
 	}
 
-	bool IsMelee()
-	{
-		return GetSlot() == SLOT_MELEE;
-	}
+	bool IsMelee() { return GetSlot() == SLOT_MELEE; }
 
 	bool CanAmbassadorHeadshot()
 	{
 		if (GetWeaponID() == TF_WEAPON_REVOLVER && AttributeHookValue(0, "set_weapon_mode", this, nullptr, true))
 			return (interfaces::GlobalVars->curtime - m_flLastFireTime()) > 1.0f;
 		return false;
+	}
+
+	bool IsSniperRifle()
+	{
+		switch (GetClassID())
+		{
+			case ETFClassID::CTFSniperRifleClassic:
+			case ETFClassID::CTFSniperRifle:
+			case ETFClassID::CTFSniperRifleDecap:
+				return true;
+
+			default:
+				return false;
+		}
+
+		return false;
+	}
+
+	bool IsAmbassador()
+	{
+		return GetClassID() == ETFClassID::CTFRevolver
+		&& (m_iItemDefinitionIndex() == Spy_m_FestiveAmbassador || m_iItemDefinitionIndex() == Spy_m_TheAmbassador);
 	}
 };
 

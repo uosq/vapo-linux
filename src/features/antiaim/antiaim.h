@@ -90,8 +90,8 @@ namespace Antiaim
 		constexpr int maxChoke = 2; // fake on 2 ticks, real on 1
 		int choke = static_cast<CClientState*>(interfaces::ClientState)->chokedcommands;
 
-		if (choke < maxChoke) *bSendPacket = false; // fake
-		else *bSendPacket = true; // real
+		if (choke < maxChoke) *bSendPacket = false; // real
+		else *bSendPacket = true; // fake
 
 		bool isFake = *bSendPacket;
 		

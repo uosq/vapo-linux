@@ -2,10 +2,10 @@
 
 #include "types.h" // Solely to get at define for QAngle
 
-class CBasePlayer;
+class CTFPlayer;
 class CUserCmd;
 class MoveHelper;
-class MoveData;
+class CMoveData;
 
 class IPrediction
 {
@@ -60,10 +60,10 @@ public:
 	virtual void SetViewAngle(Vec3& ang) = 0;
 	virtual void GetLocalViewAngles(Vec3& ang) = 0;
 	virtual void SetLocalViewAngles(Vec3& ang) = 0;
-	virtual void RunCommand(CBasePlayer* player, CUserCmd* ucmd, MoveHelper* moveHelper) = 0;
-	virtual void SetupMove(CBasePlayer* player, CUserCmd* ucmd, MoveHelper* pHelper, MoveData* move) = 0;
-	virtual void FinishMove(CBasePlayer* player, CUserCmd* ucmd, MoveData* move) = 0;
-	virtual void SetIdealPitch(CBasePlayer* player, const Vec3& origin, const Vec3& angles, const Vec3& viewheight) = 0;
+	virtual void RunCommand(CTFPlayer* player, CUserCmd* ucmd, MoveHelper* moveHelper) = 0;
+	virtual void SetupMove(CTFPlayer* player, CUserCmd* ucmd, MoveHelper* pHelper, CMoveData* move) = 0;
+	virtual void FinishMove(CTFPlayer* player, CUserCmd* ucmd, CMoveData* move) = 0;
+	virtual void SetIdealPitch(CTFPlayer* player, const Vec3& origin, const Vec3& angles, const Vec3& viewheight) = 0;
 	virtual void _Update(bool received_new_world_update, bool validframe, int incoming_acknowledged, int outgoing_command) = 0;
 public:
 	int last_ground;

@@ -107,8 +107,6 @@ inline CRC32_t	CRC32_GetTableEntry(unsigned int slot)
     return pulCRCTable[(unsigned char)slot];
 }
 
-#pragma warning (disable : 26819)
-
 static void CRC32_ProcessBuffer(CRC32_t* pulCRC, const void* pBuffer, int nBuffer)
 {
     CRC32_t ulCrc = *pulCRC;

@@ -1,4 +1,5 @@
 #include "interfaces.h"
+#include "createinterface.h"
 
 HCursor cursor = 0;
 AttributeHookValueFn AttributeHookValue = nullptr;
@@ -24,6 +25,9 @@ namespace interfaces
 	IKeyValuesSystem* KeyValuesSystem = nullptr;
 	IVModelInfoClient* ModelInfoClient = nullptr;
 	void* ClientState = nullptr; // fuck C++
+	CBaseHudChat* gHUD = nullptr;
+	IStudioRender* StudioRender = nullptr;
+	//CEconNotificationQueue* g_notificationQueue = nullptr;
 }
 
 namespace factories
@@ -36,6 +40,7 @@ namespace factories
 	CreateInterfaceFn enginevgui = nullptr;
 	CreateInterfaceFn inputsystem = nullptr;
 	CreateInterfaceFn materialsystem = nullptr;
+	CreateInterfaceFn studiorender = nullptr;
 };
 
 template <typename T>
@@ -117,6 +122,14 @@ bool InitializeInterfaces()
 		factories::materialsystem = reinterpret_cast<CreateInterfaceFn>(dlsym(materialsystem, "CreateInterface"));
 	}
 
+	{	// studio render factory
+		void *studiorender = dlopen("./bin/linux64/studiorender.so", RTLD_NOLOAD | RTLD_NOW);
+		if (!studiorender)
+			return false;
+
+		factories::studiorender = reinterpret_cast<CreateInterfaceFn>(dlsym(studiorender, "CreateInterface"));
+	}
+
 	// get interfaces
 	// i should probably check if they return false
 	
@@ -156,8 +169,8 @@ bool InitializeInterfaces()
 	if (!GetInterface(interfaces::Prediction, factories::client, "VClientPrediction001"))
 		return false;
 
-	/*if (!GetInterface(interfaces::StudioRender, factories::client, "VStudioRender025"))
-		return false;*/
+	if (!GetInterface(interfaces::StudioRender, factories::studiorender, "VStudioRender025"))
+		return false;
 
 	if (!GetInterface(interfaces::ModelRender, factories::engine, "VEngineModel016"))
 		return false;
@@ -215,6 +228,18 @@ bool InitializeInterfaces()
 		uintptr_t movInstr = reinterpret_cast<uintptr_t>(sigscan_module("engine.so", "48 8D 05 ? ? ? ? 4C 8B 40"));
 		uintptr_t g_ClientState = vtable::ResolveRIP(movInstr, 3, 7);
 		interfaces::ClientState = reinterpret_cast<void*>(g_ClientState); // fuck c++
+	}
+
+	{ // gHUD
+		// xref: CBaseHudChat
+		// its the first parameter of gHUD->FindElement(&gHUD, "CBaseHudChat");
+		uintptr_t leaInstr = reinterpret_cast<uintptr_t>(sigscan_module("client.so", "4C 8D 25 ? ? ? ? 53 48 89 FB 4C 89 E7 E8 ? ? ? ?"));
+		interfaces::gHUD = reinterpret_cast<CBaseHudChat*>(vtable::ResolveRIP(leaInstr, 3, 7));
+	}
+
+	{ // g_notificationQueue
+		//uintptr_t movInstr = reinterpret_cast<uintptr_t>(sigscan_module("client.so", "83 EA 01 48 8D 54 D0 08 EB ? 48 83 C0 08")) + 11;
+		//interfaces::g_notificationQueue = reinterpret_cast<CEconNotificationQueue*>(vtable::ResolveRIP(movInstr, 3, 7));
 	}
 
 	return true;
