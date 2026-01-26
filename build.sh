@@ -79,6 +79,11 @@ fi
 # copy our p100 attach script
 cp attach.sh build/
 
+# copy our p100 docs
+cp -r lua-docs build/
+
+chmod +x build/attach.sh
+
 # compile it
 # this shit takes longer to compile than I want to admit
 # i shouldn't include the entire pluto and glew libraries
