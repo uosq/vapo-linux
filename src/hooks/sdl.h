@@ -133,13 +133,6 @@ inline void Hooked_SwapWindow(SDL_Window* window)
 	{
 		origcontext = SDL_GL_GetCurrentContext();
 		ourcontext = SDL_GL_CreateContext(window);
-
-		GLenum err = glewInit();
-		if (err != GLEW_OK) {
-			interfaces::Cvar->ConsolePrintf("Failed to initialize GLEW: %s\n", glewGetErrorString(err));
-			DETOUR_ORIG_CALL(&swapdetour, original_SwapWindow, window);
-			return;
-		}
 		
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();

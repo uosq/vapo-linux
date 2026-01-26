@@ -13,6 +13,7 @@
 #include "../sdk/definitions/eteam.h"
 #include "../features/aimbot/melee/aimbot_melee.h"
 #include "../features/aimbot/utils/utils.h"
+#include "../features/triggerbot/triggerbot.h"
 
 static TextEditor editor;
 
@@ -198,7 +199,20 @@ static void DrawTriggerTab()
 	ImGui::Checkbox("Trigger Enabled", &settings.triggerbot.enabled);
 	ImGui::InputText("Trigger Key", &settings.triggerbot.key);
 	ImGui::Checkbox("Hitscan", &settings.triggerbot.hitscan);
-	ImGui::Checkbox("Auto Backstab", &settings.triggerbot.autobackstab);
+
+	if (ImGui::BeginCombo("Auto Backstab", Triggerbot::GetAutoBackstabModeName().c_str()))
+	{
+		if (ImGui::Selectable("None"))
+			settings.triggerbot.autobackstab = AutoBackstabMode::NONE;
+
+		if (ImGui::Selectable("Legit"))
+			settings.triggerbot.autobackstab = AutoBackstabMode::LEGIT;
+
+		if (ImGui::Selectable("Rage"))
+			settings.triggerbot.autobackstab = AutoBackstabMode::RAGE;
+
+		ImGui::EndCombo();
+	}
 
 	ImGui::EndGroup();
 }

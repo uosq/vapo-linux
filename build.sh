@@ -47,30 +47,30 @@ fi
 
 # check for glew (opengl)
 # if not there, compile it
-if [ ! -f build/libGLEW.a ]; then
-	cd build
+#if [ ! -f build/libGLEW.a ]; then
+	#cd build
 
-	if [ ! -d glew-2.3.0 ]; then
-		wget https://github.com/nigels-com/glew/releases/download/glew-2.3.0/glew-2.3.0.zip
-		unzip glew-2.3.0.zip
-		rm glew-2.3.0.zip
-	fi
+	#if [ ! -d glew-2.3.0 ]; then
+		#wget https://github.com/nigels-com/glew/releases/download/glew-2.3.0/glew-2.3.0.zip
+		#unzip glew-2.3.0.zip
+		#rm glew-2.3.0.zip
+	#fi
 
-	cd glew-2.3.0
-	cd build
+	#cd glew-2.3.0
+	#cd build
 
-	cmake ./cmake \
-  		-DBUILD_SHARED_LIBS=OFF \
-  		-DCMAKE_POSITION_INDEPENDENT_CODE=ON
+	#cmake ./cmake \
+  		#-DBUILD_SHARED_LIBS=OFF \
+  		#-DCMAKE_POSITION_INDEPENDENT_CODE=ON
 
-	make -j$(nproc) glew_s
-	cp lib/libGLEW.a ../../
+	#make -j$(nproc) glew_s
+	#cp lib/libGLEW.a ../../
 
-	cd ../../../
+	#cd ../../../
 
-	rm build/glew-2.3.0
-fi
-
+	#rm build/glew-2.3.0
+#fi
+#
 # check for netvar text file (I should probably generate it on the fly from the already made SetupNetvars function)
 if [ ! -f build/netvars.txt ]; then
 	cp netvars.txt build/
@@ -90,11 +90,7 @@ chmod +x build/attach.sh
 # but it doesn't attach without them
 # fuck my life
 g++ -shared -fPIC \
-	-Wl,--whole-archive \
-	build/libGLEW.a \
-	build/libplutostatic.a \
-	-Wl,--no-whole-archive \
-	src/main.cpp \
+	src/*.cpp \
 	src/libsigscan.c \
 	src/libdetour/libdetour.c \
 	src/imgui/*.cpp \
@@ -104,7 +100,8 @@ g++ -shared -fPIC \
 	src/gui/*.cpp \
 	src/features/entitylist/*.cpp \
 	src/features/aimbot/aimbot.cpp \
-	src/settings.cpp \
+	src/features/triggerbot/triggerbot.cpp \
+	build/libplutostatic.a \
 	-o build/libvapo.so \
 	-O2 -std=c++17 -lSDL2 -lvulkan -lm -ldl \
-	-Werror -flto=auto -g
+	-Werror -flto=auto -fno-exceptions -s

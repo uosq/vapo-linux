@@ -57,7 +57,7 @@ void RegisterSettings(void)
 	//triggerbot
 	REG_SETTING(triggerbot, enabled, SettingType::BOOL)
 	REG_SETTING(triggerbot, hitscan, SettingType::BOOL)
-	REG_SETTING(triggerbot, autobackstab, SettingType::BOOL)
+	REG_SETTING(triggerbot, autobackstab, SettingType::INT)
 	REG_SETTING(triggerbot, key, SettingType::STRING)
 
 	// colors

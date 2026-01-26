@@ -1624,7 +1624,7 @@ namespace LuaFuncs
 				return 0;
 			}
 
-			if (lua_isnil(L, 2) || luaL_checkinteger(L, 2))
+			if (lua_istrue(L, 2))
 				interfaces::Engine->ClientCmd_Unrestricted(luaL_checkstring(L, 1));
 			else
 				interfaces::Engine->ClientCmd(luaL_checkstring(L, 1));

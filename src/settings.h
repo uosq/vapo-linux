@@ -53,6 +53,12 @@ enum class AimbotMode
 	MAX
 };
 
+enum class AutoBackstabMode
+{
+	NONE = 0,
+	LEGIT, RAGE
+};
+
 struct Settings_Antiaim
 {
 	bool enabled = false;
@@ -116,7 +122,7 @@ struct Settings_Triggerbot
 {
 	bool enabled = false;
 	bool hitscan = false;
-	bool autobackstab = false;
+	AutoBackstabMode autobackstab = AutoBackstabMode::NONE;
 	std::string key = "";
 };
 

@@ -145,20 +145,20 @@ DECLARE_VTABLE_HOOK(CreateMove, bool, (IClientMode* thisptr, float sample_framet
 
 	uintptr_t current_frame_address = reinterpret_cast<uintptr_t>(__builtin_frame_address(0));
     	uintptr_t current_stack_address = current_frame_address + 0x8;
-    	bool* bSendPacket = (bool*)(current_stack_address + SENDPACKET_STACK_OFFSET);
+    	bool* pSendPacket = (bool*)(current_stack_address + SENDPACKET_STACK_OFFSET);
 
 	Bhop::Run(pLocal, pCmd);
-	Antiaim::Run(pLocal, pWeapon, pCmd, bSendPacket);
-	Aimbot::Run(pLocal, pWeapon, pCmd, bSendPacket);
-	Triggerbot::Run(pLocal, pWeapon, pCmd);
+	Antiaim::Run(pLocal, pWeapon, pCmd, pSendPacket);
+	Aimbot::Run(pLocal, pWeapon, pCmd, pSendPacket);
+	Triggerbot::Run(pLocal, pWeapon, pCmd, pSendPacket);
 
 	if (LuaHookManager::HasHooks("CreateMove"))
-		RunLuaCreateMoveCallback(pCmd, bSendPacket);
+		RunLuaCreateMoveCallback(pCmd, pSendPacket);
 
 	if (reinterpret_cast<CClientState*>(interfaces::ClientState)->chokedcommands >= 21)
-		*bSendPacket = true;
+		*pSendPacket = true;
 
-	if (*bSendPacket == true)
+	if (*pSendPacket == true)
 		helper::localplayer::LastAngle = pCmd->viewangles;
 
 	helper::engine::FixMovement(pCmd, originalAngles, pCmd->viewangles);

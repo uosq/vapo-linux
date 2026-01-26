@@ -69,7 +69,7 @@ namespace Chams
 
 			int passes = 0;
 			auto moveChild = entity->FirstShadowChild();
-			while (moveChild != nullptr && passes <= 32 && moveChild->ShouldDraw())
+			while (moveChild != nullptr && passes <= 32)
 			{
 				CBaseEntity* attachment = static_cast<CBaseEntity*>(moveChild);
 				if (settings.esp.weapon && attachment->IsWeapon())
