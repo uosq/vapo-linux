@@ -8,7 +8,6 @@
 #include "../imgui/TextEditor.h"
 #include "../features/lua/api.h"
 #include "console.h"
-#include "netvar_parser.h"
 #include "../features/entitylist/entitylist.h"
 #include "../sdk/definitions/eteam.h"
 #include "../features/aimbot/melee/aimbot_melee.h"
@@ -100,6 +99,20 @@ static void DrawAimbotTab()
 
 		if (ImGui::Selectable("pSilent"))
 			settings.aimbot.mode = AimbotMode::PSILENT;
+
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::BeginCombo("Team Selection", AimbotUtils::GetTeamModeName().c_str()))
+	{
+		if (ImGui::Selectable("Only Enemy"))
+			settings.aimbot.teamMode = TeamMode::ONLYENEMY;
+
+		if (ImGui::Selectable("Only Teammate"))
+			settings.aimbot.teamMode = TeamMode::ONLYTEAMMATE;
+
+		if (ImGui::Selectable("Both"))
+			settings.aimbot.teamMode = TeamMode::BOTH;
 
 		ImGui::EndCombo();
 	}
@@ -400,7 +413,7 @@ static void DrawLuaTab()
 	ImGui::EndGroup();
 }
 
-static void DrawParsedNetvarData(const std::vector<ClassEntry>& classes)
+static void DrawParsedNetvarData(const std::vector<NetvarClassEntry>& classes)
 {
 	for (const auto& cls : classes)
 	{
@@ -419,13 +432,9 @@ static void DrawParsedNetvarData(const std::vector<ClassEntry>& classes)
 
 static void DrawNetVarsTab()
 {
-	static auto path = GetLocalFilePath("netvars.txt");
-	static auto data = ParseFile(path);
-
 	if (ImGui::BeginChild("NetvarContent"))
-		DrawParsedNetvarData(data);
+		DrawParsedNetvarData(netvarUI);
 	ImGui::EndChild();
-
 }
 
 static void DrawSpectatorList()

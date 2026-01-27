@@ -184,8 +184,12 @@ namespace LuaClasses
 				return 1;
 			}
 
-			const char* str = luaL_checkstring(L, 2);
-			auto it = netvars.find(fnv::Hash(str));
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
+
+			std::string str = std::string(className) + "->" + std::string(varName);
+
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;
@@ -208,8 +212,12 @@ namespace LuaClasses
 				return 1;
 			}
 
-			const char* str = luaL_checkstring(L, 2);
-			auto it = netvars.find(fnv::Hash(str));
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
+
+			std::string str = std::string(className) + "->" + std::string(varName);
+
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;
@@ -232,8 +240,12 @@ namespace LuaClasses
 				return 1;
 			}
 
-			const char* str = luaL_checkstring(L, 2);
-			auto it = netvars.find(fnv::Hash(str));
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
+
+			std::string str = std::string(className) + "->" + std::string(varName);
+
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;
@@ -256,8 +268,12 @@ namespace LuaClasses
 				return 1;
 			}
 
-			const char* str = luaL_checkstring(L, 2);
-			auto it = netvars.find(fnv::Hash(str));
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
+
+			std::string str = std::string(className) + "->" + std::string(varName);
+
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;
@@ -465,20 +481,23 @@ namespace LuaClasses
 			return 1;
 		}
 
-		// entity:SetNetvarInt("CBasePlayer->m_iHealth", 10)
+		// entity:SetNetvarInt("CBasePlayer", "m_iHealth", 10)
 		int SetNetvarInt(lua_State* L)
 		{
 			LuaEntity* le = CheckEntity(L, 1);
 			if (le->ent == nullptr)
 				return 0;
 
-			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3))
+			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3) || lua_isnoneornil(L, 4))
 				return 0;
 
-			const char* str = luaL_checkstring(L, 2);
-			int number = luaL_checkinteger(L, 3);
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
 
-			auto it = netvars.find(fnv::Hash(str));
+			int number = luaL_checkinteger(L, 4);
+			
+			std::string str = std::string(className) + "->" + std::string(varName);
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;
@@ -496,13 +515,16 @@ namespace LuaClasses
 			if (le->ent == nullptr)
 				return 0;
 
-			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3))
+			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3) || lua_isnoneornil(L, 4))
 				return 0;
 
-			const char* str = luaL_checkstring(L, 2);
-			float number = luaL_checknumber(L, 3);
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
 
-			auto it = netvars.find(fnv::Hash(str));
+			float number = luaL_checknumber(L, 4);
+			
+			std::string str = std::string(className) + "->" + std::string(varName);
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;
@@ -520,13 +542,18 @@ namespace LuaClasses
 			if (le->ent == nullptr)
 				return 0;
 
-			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3))
+			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3) || lua_isnoneornil(L, 4))
 				return 0;
 
-			const char* str = luaL_checkstring(L, 2);
-			Vector* vec = static_cast<Vector*>(luaL_checkudata(L, 3, "Vector3"));
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
 
-			auto it = netvars.find(fnv::Hash(str));
+			Vector* vec = static_cast<Vector*>(luaL_checkudata(L, 4, "Vector3"));
+			if (vec == nullptr)
+				return 0;
+			
+			std::string str = std::string(className) + "->" + std::string(varName);
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;
@@ -540,22 +567,25 @@ namespace LuaClasses
 
 		// this will likely crash the game
 		// idk why someone would want to do this anyway
+		// entity:SetNetvarEntity("CBaseCombatCharacter", "m_hActiveWeapon", nil??)
 		int SetNetvarEntity(lua_State* L)
 		{
 			LuaEntity* le = CheckEntity(L, 1);
 			if (le->ent == nullptr)
 				return 0;
 
-			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3))
+			if (lua_isnoneornil(L, 2) || lua_isnoneornil(L, 3) || lua_isnoneornil(L, 4))
 				return 0;
 
-			LuaEntity* le2 = CheckEntity(L, 3);
+			LuaEntity* le2 = CheckEntity(L, 4);
 			if (le2->ent == nullptr)
 				return 0;
 
-			const char* str = luaL_checkstring(L, 2);
+			const char* className = luaL_checkstring(L, 2);
+			const char* varName = luaL_checkstring(L, 3);
 
-			auto it = netvars.find(fnv::Hash(str));
+			std::string str = std::string(className) + "->" + std::string(varName);
+			auto it = netvars.find(fnv::Hash(str.c_str()));
 			if (it != netvars.end())
 			{
 				auto& offset = it->second;

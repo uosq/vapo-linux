@@ -129,7 +129,7 @@ namespace Aimbot
 		if (!settings.aimbot.enabled)
 			return;
 
-		DrawTargetPath();
+		//DrawTargetPath();
 		DrawFOVIndicator(pLocal);
 	}
 };

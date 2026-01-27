@@ -59,6 +59,15 @@ enum class AutoBackstabMode
 	LEGIT, RAGE
 };
 
+enum class TeamMode
+{
+	INVALID = -1,
+	ONLYENEMY,
+	ONLYTEAMMATE,
+	BOTH,
+	MAX
+};
+
 struct Settings_Antiaim
 {
 	bool enabled = false;
@@ -98,6 +107,7 @@ struct Settings_Aimbot
 	bool waitforcharge = false;
 	AimbotMode mode = AimbotMode::PLAIN;
 	MeleeMode melee = MeleeMode::NONE;
+	TeamMode teamMode = TeamMode::ONLYENEMY;
 	float smoothness = 10.0f;
 };
 

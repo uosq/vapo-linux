@@ -22,8 +22,8 @@ typedef unsigned short WEAPON_FILE_INFO_HANDLE;
 // Then to get the ofset for the handle you do
 // go inside GetTFWpnData
 // it will call GetFileWeaponInfoFromHandle
-// whatever it passes (this + 0xsomething), the 0x123 is the offset
-inline FileWeaponInfo_t* Rebuild_GetFileWeaponInfoFromHandle(void* handle)
+// whatever it passes (this + 0xsomething), the 0x123 is the offset to the handle
+inline FileWeaponInfo_t* original_GetFileWeaponInfoFromHandle(void* handle)
 {
 	using GetFileWeaponInfoFromHandleFn = FileWeaponInfo_t*(*)(void*);
 	static auto orig = (GetFileWeaponInfoFromHandleFn)sigscan_module("client.so", "66 3B 3D ? ? ? ? 48 8D 05");
@@ -69,7 +69,7 @@ public:
 		// offset from EDI,word ptr [RDI + 0xF12] in CCombatWeapon(?)->GetTFWpnData()
 		uintptr_t handleAddress = reinterpret_cast<uintptr_t>(this) + 0xf12;
 		void* handleValue = *(void**)handleAddress;
-		return Rebuild_GetFileWeaponInfoFromHandle(handleValue);
+		return original_GetFileWeaponInfoFromHandle(handleValue);
 	}
 
 	int GetWeaponID() {
@@ -203,6 +203,37 @@ public:
 	{
 		return GetClassID() == ETFClassID::CTFRevolver
 		&& (m_iItemDefinitionIndex() == Spy_m_FestiveAmbassador || m_iItemDefinitionIndex() == Spy_m_TheAmbassador);
+	}
+
+	bool CanHitTeammates()
+	{
+		switch(GetWeaponID())
+		{
+			case TF_WEAPON_CROSSBOW:
+			case TF_WEAPON_LUNCHBOX:
+			case TF_WEAPON_JAR_MILK:
+			case TF_WEAPON_JAR:
+			case TF_WEAPON_MEDIGUN:
+			case TF_WEAPON_WRENCH:
+			return true;
+
+			default: break;
+		}
+
+		switch (m_iItemDefinitionIndex())
+		{
+			case Soldier_t_TheDisciplinaryAction:
+			case Sniper_m_TheSydneySleeper:
+			return true;
+
+			default: break;
+		}
+
+		static ConVar* mp_friendlyfire = interfaces::Cvar->FindVar("mp_friendlyfire");
+		if (mp_friendlyfire && mp_friendlyfire->GetBool())
+			return true;
+
+		return false;
 	}
 };
 

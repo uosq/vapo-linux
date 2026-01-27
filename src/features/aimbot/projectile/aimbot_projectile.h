@@ -343,33 +343,47 @@ struct AimbotProjectile
 
 		float gravity = sv_gravity->GetFloat() * 0.5f * info.gravity;
 
-		for (auto entity : EntityList::GetEnemies())
+		auto scanList = [&](const auto& list)
 		{
-			if (!AimbotUtils::IsValidEntity(entity, localTeam))
-				continue;
-
-			Vector center;// = entity->GetCenter();
+			for (CBaseEntity* entity : list)
 			{
-				if (entity->IsPlayer())
-					center = static_cast<CTFPlayer*>(entity)->GetCenter();
-				else if (entity->IsBuilding())
-					center = reinterpret_cast<CBaseObject*>(entity)->GetCenter();
-				else
-					center = entity->GetAbsOrigin();
+				if (!AimbotUtils::IsValidEntity(entity, 0))
+					continue;
+	
+				Vector center;// = entity->GetCenter();
+				{
+					if (entity->IsPlayer())
+						center = static_cast<CTFPlayer*>(entity)->GetCenter();
+					else if (entity->IsBuilding())
+						center = reinterpret_cast<CBaseObject*>(entity)->GetCenter();
+					else
+						center = entity->GetAbsOrigin();
+				}
+	
+				Vector dir = center - shootPos;
+				float distance = dir.Normalize();
+	
+				if (distance >= 2048.f)
+					continue;
+	
+				float dot = dir.Dot(viewForward);
+	
+				if (dot < minDot)
+					continue;
+	
+				targets.emplace_back(PotentialTarget{dir, center, distance, dot, entity});
 			}
+		};
 
-			Vector dir = center - shootPos;
-			float distance = dir.Normalize();
-
-			if (distance >= 2048.f)
-				continue;
-
-			float dot = dir.Dot(viewForward);
-
-			if (dot < minDot)
-				continue;
-
-			targets.emplace_back(PotentialTarget{dir, center, distance, dot, entity});
+		{
+			TeamMode teamMode = settings.aimbot.teamMode;
+			bool bCanHitTeammates = pWeapon->CanHitTeammates();
+	
+			if (!bCanHitTeammates || teamMode == TeamMode::ONLYENEMY || teamMode == TeamMode::BOTH)
+				scanList(EntityList::GetEnemies());
+	
+			if (bCanHitTeammates && (teamMode == TeamMode::ONLYTEAMMATE || teamMode == TeamMode::BOTH))
+				scanList(EntityList::GetTeammates());
 		}
 
 		if (targets.empty())

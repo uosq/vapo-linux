@@ -73,7 +73,7 @@ namespace EntityList
 
 				case ETFClassID::CTFPlayerResource:
 				{
-					m_pPlayerResource = reinterpret_cast<CTFPlayerResource*>(entity);
+					m_pPlayerResource = static_cast<CTFPlayerResource*>(entity);
 					break;
 				}
 

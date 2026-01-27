@@ -53,28 +53,43 @@ struct AimbotMelee
 		Math::AngleVectors(viewAngles, &viewForward);
 		viewForward.Normalize();
 
-		for (const auto& enemy : EntityList::GetEnemies())
+		auto scanList = [&](const auto& list)
 		{
-			if (!AimbotUtils::IsValidEntity(enemy, localTeam))
-				continue;
+			for (CBaseEntity* enemy : list)
+			{
+				if (!AimbotUtils::IsValidEntity(enemy, 0))
+					continue;
 
-			Vector hitPos = enemy->GetCenter();
-			Vector dir = hitPos - shootPos;
-			float distance = dir.Normalize();
-			if (distance > range)
-				continue;
+				Vector hitPos = enemy->GetCenter();
+				Vector dir = hitPos - shootPos;
+				float distance = dir.Normalize();
+				if (distance > range)
+					continue;
 
-			float dot = dir.Dot(viewForward);
-			if (dot < minDot || highestDot > dot)
-				continue;
+				float dot = dir.Dot(viewForward);
+				if (dot < minDot || highestDot > dot)
+					continue;
 
-			helper::engine::TraceHull(shootPos, shootPos + (dir * range), swingMins, swingMaxs, MASK_SHOT_HULL, &filter, &trace);
-			if (!trace.DidHit() || !trace.m_pEnt || trace.m_pEnt != enemy)
-				continue;
+				helper::engine::TraceHull(shootPos, shootPos + (dir * range), swingMins, swingMaxs, MASK_SHOT_HULL, &filter, &trace);
 
-			targetAngle = dir.ToAngle();
-			target = enemy;
-			highestDot = dot;
+				if (!trace.DidHit() || trace.m_pEnt != enemy)
+					continue;
+
+				targetAngle = dir.ToAngle();
+				target = enemy;
+				highestDot = dot;
+			}
+		};
+
+		{
+			bool bCanHitTeammates = pWeapon->CanHitTeammates();
+			TeamMode teamMode = settings.aimbot.teamMode;
+
+			if (!bCanHitTeammates || teamMode == TeamMode::ONLYENEMY || teamMode == TeamMode::BOTH)
+				scanList(EntityList::GetEnemies());
+
+			if (bCanHitTeammates && (teamMode == TeamMode::ONLYTEAMMATE || teamMode == TeamMode::BOTH))
+				scanList(EntityList::GetTeammates());
 		}
 
 		if (target == nullptr)
@@ -100,9 +115,9 @@ inline std::string GetMeleeModeName()
 {
 	switch(settings.aimbot.melee)
 	{
-		case MeleeMode::NONE: return "NONE";
-		case MeleeMode::LEGIT: return "LEGIT";
-		case MeleeMode::RAGE: return "RAGE";
-		default: return "UNKNOWN";
+		case MeleeMode::NONE: return "None";
+		case MeleeMode::LEGIT: return "Legit";
+		case MeleeMode::RAGE: return "Rage";
+		default: return "Invalid";
         }
 }

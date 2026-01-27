@@ -150,47 +150,61 @@ struct AimbotHitscan
 		bool bIsSniperRifle = pWeapon->IsSniperRifle();
 		bool bIsZoomed = pLocal->InCond(TF_COND_ZOOMED);
 
-		for (const auto& entity : EntityList::GetEnemies())
+		auto scanList = [&](const auto& list)
 		{
-			if (!AimbotUtils::IsValidEntity(entity, localTeam))
-				continue;
-
-			Vector pos;
+			for (CBaseEntity* entity : list)
 			{
-				if (entity->IsPlayer())
-					{
-						if (!GetShotPosition(pLocal, entity, pWeapon, shootPos, pos))
-							continue;
-					}
-				else if (entity->IsBuilding())
-					pos = reinterpret_cast<CBaseObject*>(entity)->GetCenter();
-				else
-					pos = entity->GetAbsOrigin();
-			}
-
-			Vector dir = pos - shootPos;
-			float distance = dir.Normalize();
-
-			if (distance >= 2048.f)
-				continue;
-
-			float dot = dir.Dot(viewForward);
-
-			if (dot < minDot)
-				continue;
-
-			if (settings.aimbot.waitforcharge && bIsZoomed && bIsSniperRifle && !AimbotUtils::CanDamageWithSniperRifle(pLocal, entity, pWeapon))
-				continue;
-
-			// GetShotPosition already checks if its visible
-			if (!entity->IsPlayer())
-			{
-				helper::engine::Trace(shootPos, pos, MASK_SHOT | CONTENTS_HITBOX, &filter, &trace);
-				if (!trace.DidHit() || trace.m_pEnt != entity)
+				if (!AimbotUtils::IsValidEntity(entity, 0))
 					continue;
+	
+				Vector pos;
+				{
+					if (entity->IsPlayer())
+						{
+							if (!GetShotPosition(pLocal, entity, pWeapon, shootPos, pos))
+								continue;
+						}
+					else if (entity->IsBuilding())
+						pos = reinterpret_cast<CBaseObject*>(entity)->GetCenter();
+					else
+						pos = entity->GetAbsOrigin();
+				}
+	
+				Vector dir = pos - shootPos;
+				float distance = dir.Normalize();
+	
+				if (distance >= 2048.f)
+					continue;
+	
+				float dot = dir.Dot(viewForward);
+	
+				if (dot < minDot)
+					continue;
+	
+				if (settings.aimbot.waitforcharge && bIsZoomed && bIsSniperRifle && !AimbotUtils::CanDamageWithSniperRifle(pLocal, entity, pWeapon))
+					continue;
+	
+				// GetShotPosition already checks if its visible
+				if (!entity->IsPlayer())
+				{
+					helper::engine::Trace(shootPos, pos, MASK_SHOT | CONTENTS_HITBOX, &filter, &trace);
+					if (!trace.DidHit() || trace.m_pEnt != entity)
+						continue;
+				}
+	
+				targets.emplace_back(PotentialTarget{dir, pos, distance, dot, entity});
 			}
+		};
 
-			targets.emplace_back(PotentialTarget{dir, pos, distance, dot, entity});
+		{
+			bool bCanHitTeammates = pWeapon->CanHitTeammates();
+			TeamMode teamMode = settings.aimbot.teamMode;
+
+			if (!bCanHitTeammates || teamMode == TeamMode::ONLYENEMY || teamMode == TeamMode::BOTH)
+				scanList(EntityList::GetEnemies());
+
+			if (bCanHitTeammates && (teamMode == TeamMode::ONLYTEAMMATE || teamMode == TeamMode::BOTH))
+				scanList(EntityList::GetTeammates());
 		}
 
 		if (targets.empty())
@@ -285,11 +299,16 @@ struct AimbotHitscan
 					state.angle = angle;
 					state.running = true;
 				}
+
 				break;
 			}
-                }
 
-		if (targets.front().entity != nullptr)
+                        case AimbotMode::INVALID:
+                        case AimbotMode::MAX:
+                        	break;
+                        }
+
+                if (targets.front().entity != nullptr)
 			EntityList::m_pAimbotTarget = targets.front().entity;
 	}
 };

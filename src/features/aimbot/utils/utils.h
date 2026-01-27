@@ -196,7 +196,18 @@ namespace AimbotUtils
 			case AimbotMode::ASSISTANCE: return "Assistance";
 			case AimbotMode::SILENT: return "Silent";
 			case AimbotMode::PSILENT: return "pSilent";
-			default: return "Unknown";
+			default: return "Invalid";
+                }
+        }
+
+	inline std::string GetTeamModeName()
+	{
+		switch(settings.aimbot.teamMode)
+		{
+			case TeamMode::ONLYENEMY: return "Only Enemy";
+			case TeamMode::ONLYTEAMMATE: return "Only Teammate";
+			case TeamMode::BOTH: return "Both";
+			default: return "Invalid";
                 }
         }
 

@@ -16,6 +16,13 @@ Used this tutorial for the netvar manager
 https://www.youtube.com/watch?v=VCsNZ0GRVzo
 */
 
+struct NetvarClassEntry
+{
+    std::string className;
+    std::vector<std::string> members;
+};
+
+inline std::vector<NetvarClassEntry> netvarUI;
 inline std::unordered_map<uint32_t, uint32_t> netvars;
 
 #define NETVAR(func_name, netvar, type) type& func_name() \
@@ -44,6 +51,16 @@ inline std::unordered_map<uint32_t, uint32_t> netvars;
 
 inline void Dump(const char* baseClass, RecvTable* table, uint32_t offset = 0)
 {
+	// find or create class entry
+	auto it = std::find_if(netvarUI.begin(), netvarUI.end(),
+		[&](const NetvarClassEntry& e) { return e.className == baseClass; });
+
+	if (it == netvarUI.end())
+	{
+		netvarUI.push_back({ baseClass, {} });
+		it = std::prev(netvarUI.end());
+	}
+
 	for (int i = 0; i < table->propsCount; ++i)
 	{
 		const auto prop = &table->props[i];
@@ -56,8 +73,14 @@ inline void Dump(const char* baseClass, RecvTable* table, uint32_t offset = 0)
 		if (prop->recvType == SendPropType::DATATABLE && prop->dataTable && prop->dataTable->tableName[0] == 'D')
 			Dump(baseClass, prop->dataTable, offset + prop->offset);
 
-		auto netvarName = baseClass + std::string("->") + prop->varName;
-		netvars[fnv::Hash(netvarName.c_str())] = offset + prop->offset;
+		std::string netvarName = std::string(baseClass) + "->" + prop->varName;
+		uint32_t finalOffset = offset + prop->offset;
+
+		// for the netvar macro
+		netvars[fnv::Hash(netvarName.c_str())] = finalOffset;
+
+		// for imgui
+		it->members.push_back(prop->varName + std::string(" = 0x") + std::to_string(finalOffset));
 	}
 }
 

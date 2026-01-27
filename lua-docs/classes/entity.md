@@ -22,25 +22,25 @@ returns **Vector3**
 ### > GetAbsAngles( )
 returns **Vector3**
 
-### > GetNetvarInt( netvar: **string** )
+### > GetNetvarInt( className: **string**, netvar: **string** )
 returns **int**
 
-### > GetNetvarFloat( netvar: **string** )
+### > GetNetvarFloat( className: **string**, netvar: **string** )
 returns **number**
 
-### > GetNetvarVector( netvar: **string** )
+### > GetNetvarVector( className: **string**, netvar: **string** )
 returns **Vector3**
 
-### > GetNetvarEntity( netvar: **string** )
+### > GetNetvarEntity( className: **string**, netvar: **string** )
 returns **Entity**?
 
-### > SetNetvarInt( netvar: **string**, value: **int** )
+### > SetNetvarInt( className: **string**, netvar: **string**, value: **int** )
 
-### > SetNetvarFloat( netvar: **string**, value: **numb er** )
+### > SetNetvarFloat( className: **string**, netvar: **string**, value: **number** )
 
-### > SetNetvarVector( netvar: **string**, value: **Vector3** )
+### > SetNetvarVector( className: **string**, netvar: **string**, value: **Vector3** )
 
-### > SetNetvarEntity( netvar: **string**, value: **Entity** )
+### > SetNetvarEntity( className: **string**, netvar: **string**, value: **Entity** )
 
 ### > GetHealth( )
 returns **int**
