@@ -42,6 +42,13 @@ DECLARE_VTABLE_HOOK(VGuiPaint, void, (IEngineVGui* thisptr, PaintMode_t paint))
 			Aimbot::RunPaint(pLocal);
 		}
 
+		// compile time
+		if (settings.menu_open)
+		{
+			Color color = {255, 255, 255, 255};
+			helper::draw::TextShadow(10, 10, color, "Build date: " __DATE__ " " __TIME__);
+		}
+
 		interfaces::Surface->FinishDrawing();
 	}
 }
