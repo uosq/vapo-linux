@@ -45,8 +45,8 @@ struct AimbotMelee
 		float highestDot = -1.0f;
 
 		MeleeMode mode = settings.aimbot.melee;
-		float fovRad = DEG2RAD(mode == MeleeMode::LEGIT ? 90.0f : 180.0f);
-		float minDot = cosf(fovRad);
+		float maxFov = mode == MeleeMode::LEGIT ? 90.0f : 180.0f;
+		float smallestFov = maxFov;
 
 		Vector viewAngles, viewForward;
 		interfaces::Engine->GetViewAngles(viewAngles);
@@ -66,8 +66,9 @@ struct AimbotMelee
 				if (distance > range)
 					continue;
 
-				float dot = dir.Dot(viewForward);
-				if (dot < minDot || highestDot > dot)
+				Vector angle = Math::CalcAngle(shootPos, hitPos);
+				float fov = Math::CalcFov(viewAngles, angle);
+				if (fov > maxFov || fov > smallestFov)
 					continue;
 
 				helper::engine::TraceHull(shootPos, shootPos + (dir * range), swingMins, swingMaxs, MASK_SHOT_HULL, &filter, &trace);
@@ -77,7 +78,7 @@ struct AimbotMelee
 
 				targetAngle = dir.ToAngle();
 				target = enemy;
-				highestDot = dot;
+				smallestFov = fov;
 			}
 		};
 

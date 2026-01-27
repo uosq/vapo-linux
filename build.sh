@@ -70,11 +70,6 @@ fi
 
 	#rm build/glew-2.3.0
 #fi
-#
-# check for netvar text file (I should probably generate it on the fly from the already made SetupNetvars function)
-if [ ! -f build/netvars.txt ]; then
-	cp netvars.txt build/
-fi
 
 # copy our p100 attach script
 cp attach.sh build/

@@ -77,7 +77,7 @@ public:
 	NETVAR(m_nPlayerCondEx4, "CTFPlayer->m_nPlayerCondEx4", int)
 	NETVAR(m_condition_bits, "CTFPlayer->_condition_bits", int)
 
-	// !!! Only has 2 fields ([0], [1])
+	// !!! Only has 2 fields ([0], [1]) // is it really only 2 fields? TEST
 	NETVAR(m_angEyeAngles, "CTFPlayer->m_angEyeAngles[0]", Vector)
 
 	NETVAR(m_vecViewOffset, "CBasePlayer->m_vecViewOffset[0]", Vector)
@@ -88,7 +88,8 @@ public:
 	NETVAR(m_iObserverMode, "CBasePlayer->m_iObserverMode", int)
 	NETVAR(m_iClass, "CTFPlayer->m_iClass", int)
 	NETVAR(m_hGroundEntity, "CBasePlayer->m_hGroundEntity", EHANDLE)
-	NETVAR(m_nWaterLevel, "CTFPlayer->m_nWaterLevel", int)
+	NETVAR(m_nWaterLevel, "CTFPlayer->m_nWaterLevel", uint8_t)
+	NETVAR(m_iFOV, "CBasePlayer->m_iFOV", int)
 
 	bool IsAlive()
 	{

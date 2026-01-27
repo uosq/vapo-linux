@@ -284,7 +284,7 @@ struct AimbotProjectile
 
 		Vector velocity;
 		Math::AngleVectors(angle, &velocity);
-		
+
 		velocity *= info.speed;
 
 		CGameTrace trace;
@@ -330,8 +330,7 @@ struct AimbotProjectile
 
 		std::vector<PotentialTarget> targets;
 
-		float fovRad = DEG2RAD(settings.aimbot.fov);
-		float minDot = cosf(fovRad);
+		float maxFov = AimbotUtils::GetAimbotFovScaled(pLocal); //settings.aimbot.fov;
 
 		CGameTrace trace;
 		CTraceFilterHitscan filter;
@@ -360,18 +359,16 @@ struct AimbotProjectile
 						center = entity->GetAbsOrigin();
 				}
 	
-				Vector dir = center - shootPos;
-				float distance = dir.Normalize();
-	
+				float distance = (center - shootPos).Normalize();
 				if (distance >= 2048.f)
 					continue;
-	
-				float dot = dir.Dot(viewForward);
-	
-				if (dot < minDot)
+
+				Vector angle = Math::CalcAngle(shootPos, center);
+				float fov = Math::CalcFov(viewAngles, angle);
+				if (fov > maxFov)
 					continue;
-	
-				targets.emplace_back(PotentialTarget{dir, center, distance, dot, entity});
+
+				targets.emplace_back(PotentialTarget{angle, center, distance, fov, entity});
 			}
 		};
 
@@ -389,7 +386,9 @@ struct AimbotProjectile
 		if (targets.empty())
 			return;
 
-		AimbotUtils::QuickSort(targets, 0, targets.size() - 1);
+		std::sort(targets.begin(), targets.end(), [&](PotentialTarget a, PotentialTarget b){
+			return a.fov < b.fov;
+		});
 
 		for (const auto& target : targets)
 		{
@@ -432,7 +431,7 @@ struct AimbotProjectile
 
 			if (info.simple_trace)
 			{
-				Vector dir = (lastPos - shootPos);
+				Vector dir = lastPos - shootPos;
 				dir.Normalize();
 				angle = dir.ToAngle();
 

@@ -7,13 +7,13 @@ AttributeHookValueFn AttributeHookValue = nullptr;
 namespace interfaces
 {
 	IVEngineClient014* Engine = nullptr;
-	IBaseClientDLL* BaseClientDLL = nullptr;
+	CHLClient* ClientDLL = nullptr;
 	IClientMode* ClientMode = nullptr;
 	ICvar* Cvar = nullptr;
 	IPanel* VGui = nullptr;
 	ISurface* Surface = nullptr;
 	IClientEntityList* EntityList = nullptr;
-	IEngineVGui* EngineVGui = nullptr;
+	IEngineVGuiInternal* EngineVGui = nullptr;
 	IVRenderView* RenderView = nullptr;
 	IInputSystem* InputSystem = nullptr;
 	IEngineTrace* EngineTrace = nullptr;
@@ -139,7 +139,7 @@ bool InitializeInterfaces()
 	if (!GetInterface(interfaces::EngineVGui, factories::engine, "VEngineVGui002"))
 		return false;
 	
-	if (!GetInterface(interfaces::BaseClientDLL, factories::client, "VClient017"))
+	if (!GetInterface(interfaces::ClientDLL, factories::client, "VClient017"))
 		return false;
 	
 	if (!GetInterface(interfaces::Cvar, factories::vstdlib, "VEngineCvar004"))

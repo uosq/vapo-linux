@@ -45,3 +45,6 @@ Called at various stages of a frame
 
 ## FireGameEvent ( event: **GameEvent** )
 Called when a game event is called. For example, when a player spawns
+
+## OverrideView ( view: **ViewSetup** )
+Called before drawing the localplayer's view

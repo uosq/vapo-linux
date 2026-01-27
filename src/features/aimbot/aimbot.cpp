@@ -1,5 +1,6 @@
 #include "aimbot.h"
-#include "melee/aimbot_melee.h"
+#include "utils/utils.h"
+//#include "../visuals/customfov/customfov.h"
 
 namespace Aimbot
 {
@@ -66,20 +67,19 @@ namespace Aimbot
 
 	void DrawFOVIndicator(CTFPlayer* pLocal)
 	{
-		if (settings.aimbot.fov >= 90 || !settings.aimbot.draw_fov_indicator || helper::engine::IsTakingScreenshot())
+		if (settings.aimbot.fov >= 90 || !settings.aimbot.draw_fov_indicator)
 			return;
 
-		float aimFov = DEG2RAD(settings.aimbot.fov);
-		float camFov = 0.0f;
-		if (settings.misc.customfov_enabled)
-			camFov = DEG2RAD(std::max(settings.misc.customfov * 0.5f, 1.0f));
-		else
-			camFov = DEG2RAD(pLocal->m_iDefaultFOV() * 0.5f);
+		//float aimFov = DEG2RAD(settings.aimbot.fov);
+		float aimFov = DEG2RAD(AimbotUtils::GetAimbotFovScaled(pLocal));
+		float camFov = DEG2RAD(customfov.GetFov() * 0.5f);
 
 		int w, h;
 		helper::draw::GetScreenSize(w, h);
 
-		float radius = tan(aimFov)/tan(camFov) * w*0.5f * ((float)3/(float)4);
+		// Unfortunately my old formula was bad, like very bad and wrong
+		// I got this one from Amalgam and it SEEMS to be working fine, but I still need to do more tests
+		float radius = tanf(aimFov) / tanf(camFov) * (float)(w) * (4.f / 6.f) / (16.f / 9.f);
 
 		helper::draw::SetColor(255, 255, 255, 255);
 		interfaces::Surface->DrawOutlinedCircle((int)(w*0.5f), (int)(h*0.5f), (int)(radius), 64);

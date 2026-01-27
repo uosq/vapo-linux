@@ -13,3 +13,5 @@ returns **int**, **number**, **string**
 
 ### > IsClassMenuOpen()
 returns **bool**
+
+### > ClearConsole()

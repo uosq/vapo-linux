@@ -8,20 +8,31 @@
 #include "../settings.h"
 #include <string>
 
-DECLARE_VTABLE_HOOK(OverrideView, void, (IClientMode *thisptr, CViewSetup *view))
-{
-	originalOverrideView(thisptr, view);
+#include "../features/lua/classes.h"
+#include "../features/lua/hooks.h"
+#include "../features/lua/api.h"
 
-	if (view == nullptr)
+#include "../features/visuals/customfov/customfov.h"
+
+DECLARE_VTABLE_HOOK(OverrideView, void, (IClientMode *thisptr, CViewSetup *pView))
+{
+	originalOverrideView(thisptr, pView);
+
+	if (pView == nullptr)
 		return;
+
+	if (LuaHookManager::HasHooks("OverrideView"))
+	{
+		LuaClasses::ViewSetupLua::push_viewsetup(Lua::m_luaState, pView);
+		LuaHookManager::Call(Lua::m_luaState, "OverrideView", 1);
+	}
 
 	if (CTFPlayer* pLocal = EntityList::GetLocal(); pLocal != nullptr)
 	{
-		if (!pLocal->IsAlive() || pLocal->InCond(ETFCond::TF_COND_ZOOMED))
+		if (!pLocal->IsAlive())
 			return;
 
-		if (settings.misc.customfov_enabled)
-			view->fov = settings.misc.customfov;
+		customfov.Run(pLocal, pView);
 	}
 }
 

@@ -1033,7 +1033,7 @@ namespace LuaFuncs
 		int GetDepthRange(lua_State* L)
 		{
 			CViewSetup view;
-			if (!interfaces::BaseClientDLL->GetPlayerView(view))
+			if (!interfaces::ClientDLL->GetPlayerView(view))
 			{
 				lua_pushnil(L);
 				lua_pushnil(L);
@@ -1511,6 +1511,7 @@ namespace LuaFuncs
 			{"ChatSay", ChatSay},
 			{"Command", Command},
 			{"IsClassMenuOpen", IsClassMenuOpen},
+			{"ClearConsole", ClearConsole},
 			//{"ChatPrintf", ChatPrintf}, Why this not work?? :sob:
 			//{"Notification", Notification},
 			{nullptr, nullptr}
@@ -1665,6 +1666,12 @@ namespace LuaFuncs
 			interfaces::g_notificationQueue->AddNotification(notification);
 			return 0;
 		}*/
+
+		int ClearConsole(lua_State *L)
+		{
+			interfaces::EngineVGui->ClearConsole();
+			return 0;
+		}
 	}
 }
 

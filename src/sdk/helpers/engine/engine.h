@@ -61,7 +61,7 @@ namespace helper
 		inline bool GetViewMatrix(VMatrix &out)
 		{
 			CViewSetup view;
-			if (interfaces::BaseClientDLL->GetPlayerView(view))
+			if (interfaces::ClientDLL->GetPlayerView(view))
 			{
 				VMatrix mWorldToView, mViewToProjection, mWorldToPixels;
 				interfaces::RenderView->GetMatricesForView(view, &mWorldToView, &mViewToProjection, &out, &mWorldToPixels);

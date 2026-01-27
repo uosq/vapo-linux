@@ -69,7 +69,7 @@ namespace helper
 			std::wstring wtext(text.begin(), text.end());
 			Color black = {0, 0, 0, 255};
 
-			interfaces::Surface->DrawSetTextPos(x + 2, y + 2);
+			interfaces::Surface->DrawSetTextPos(x + 1, y + 1);
 			interfaces::Surface->DrawSetTextColor(black);
 			interfaces::Surface->DrawPrintText(wtext.c_str(), wtext.length());
 
@@ -96,8 +96,8 @@ namespace helper
 
 		inline void GetScreenSize(int &w, int &h)
 		{
-			w = interfaces::BaseClientDLL->GetScreenWidth();
-			h = interfaces::BaseClientDLL->GetScreenHeight();
+			w = interfaces::ClientDLL->GetScreenWidth();
+			h = interfaces::ClientDLL->GetScreenHeight();
 		}
 	}
 };

@@ -7,6 +7,7 @@
 #include "../../../sdk/definitions/ctracefilters.h"
 #include "../../../sdk/helpers/helper.h"
 #include "../../entitylist/entitylist.h"
+#include "../../visuals/customfov/customfov.h"
 
 #define ARRAYSIZE(x) sizeof((x))/sizeof((x[0]))
 
@@ -15,7 +16,7 @@ struct PotentialTarget
 	Vector dir;
 	Vector center;
 	float distance;
-	float dot;
+	float fov;
 	CBaseEntity* entity;
 };
 
@@ -91,41 +92,6 @@ namespace AimbotUtils
 		}
 
 		return false;
-	}
-
-	// I forgor :skull:
-	// Source: https://www.geeksforgeeks.org/cpp/cpp-program-to-sort-the-elements-of-an-array-in-ascending-order/
-	inline void QuickSort(std::vector<PotentialTarget>& targets, int low, int high)
-	{
-		if (low >= high)
-			return;
-
-		int start = low;
-		int end   = high;
-
-		float pivot = targets[low + (high - low) / 2].dot;
-
-		while (start <= end)
-		{
-			while (targets[start].dot > pivot)
-				start++;
-
-			while (targets[end].dot < pivot)
-				end--;
-
-			if (start <= end)
-			{
-				std::swap(targets[start], targets[end]);
-				start++;
-				end--;
-			}
-		}
-
-		if (low < end)
-			QuickSort(targets, low, end);
-
-		if (start < high)
-			QuickSort(targets, start, high);
 	}
 
 	// Is this optimized? absolutely fucking not
@@ -240,5 +206,18 @@ namespace AimbotUtils
 		}
 
 		return false;
+	}
+
+	inline float GetAimbotFovScaled(CTFPlayer* pLocal)
+	{
+		float cameraFOV = customfov.GetFov();
+
+		float radAimbotHalf = DEG2RAD(settings.aimbot.fov / 2.0f);
+		float radPlayerHalf = DEG2RAD(cameraFOV / 2.0f);
+		float radBaseHalf   = DEG2RAD(90.0f / 2.0f);
+
+		float scaledRad = atan(tan(radAimbotHalf) * (tan(radPlayerHalf) / tan(radBaseHalf)));
+
+		return RAD2DEG(scaledRad) * 2.0f;
 	}
 };

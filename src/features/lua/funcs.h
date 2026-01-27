@@ -152,6 +152,7 @@ namespace LuaFuncs
 		int Command(lua_State* L);
 		int IsClassMenuOpen(lua_State* L);
 		int ChatPrintf(lua_State* L);
+		int ClearConsole(lua_State* L);
 	}
 
 	namespace clientstate

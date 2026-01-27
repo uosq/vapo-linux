@@ -10,6 +10,8 @@ This is made for Linux, so trying to build it on Windows or non Unix-like system
 
 8dcc - [libsigscan](https://github.com/8dcc/libsigscan)
 
+ocornut - [imgui](https://github.com/ocornut/imgui)
+
 ## How to attach
 
 Run the `attach.sh` file as **sudo**/**root**!

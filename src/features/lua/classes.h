@@ -51,6 +51,11 @@ struct LuaGameEvent
 	IGameEvent* event;
 };
 
+struct LuaViewSetup
+{
+	CViewSetup* view;
+};
+
 namespace LuaClasses
 {
 	namespace VectorLua
@@ -310,5 +315,14 @@ namespace LuaClasses
 		int SetInt(lua_State* L);
 		int SetFloat(lua_State* L);
 		int SetString(lua_State* L);
+	}
+
+	namespace ViewSetupLua
+	{
+		void luaopen_viewsetup(lua_State* L);
+		LuaViewSetup* push_viewsetup(lua_State* L, CViewSetup* view);
+
+		int Index(lua_State* L);
+		int NewIndex(lua_State* L);
 	}
 }

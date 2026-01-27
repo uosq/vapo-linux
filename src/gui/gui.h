@@ -196,7 +196,7 @@ static void DrawMiscTab()
 	ImGui::Separator();
 
 	ImGui::Checkbox("Custom Fov Enabled", &settings.misc.customfov_enabled);
-	ImGui::SliderFloat("Custom Fov", &settings.misc.customfov, 0, 140);
+	ImGui::SliderFloat("Custom Fov", &settings.misc.customfov, 54.0f, 120.0f);
 
 	ImGui::Separator();
 

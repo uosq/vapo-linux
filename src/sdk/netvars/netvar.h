@@ -139,7 +139,7 @@ inline void SetupNetVarsToFile()
 		return;
 	}
 
-	for (auto clientClass = interfaces::BaseClientDLL->GetAllClasses();
+	for (auto clientClass = interfaces::ClientDLL->GetAllClasses();
 	     clientClass;
 	     clientClass = clientClass->next)
 	{
@@ -162,7 +162,7 @@ inline void SetupNetVars()
 {
 	//interfaces::cvar->ConsoleColorPrintf(Color_t{0, 255, 255, 255}, "Dumping netvars...\n");
 
-	for (auto clientClass = interfaces::BaseClientDLL->GetAllClasses(); clientClass; clientClass = clientClass->next)
+	for (auto clientClass = interfaces::ClientDLL->GetAllClasses(); clientClass; clientClass = clientClass->next)
 		// check if table valid
 		if (clientClass->recvTable)
 			Dump(clientClass->networkName, clientClass->recvTable);

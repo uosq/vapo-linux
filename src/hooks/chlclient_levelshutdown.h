@@ -7,7 +7,7 @@
 #include "../features/lua/api.h"
 #include "../features/lua/classes.h"
 
-DECLARE_VTABLE_HOOK(LevelShutdown, void, (IBaseClientDLL* thisptr))
+DECLARE_VTABLE_HOOK(LevelShutdown, void, (CHLClient* thisptr))
 {
 	EntityList::Clear();
 
@@ -19,7 +19,7 @@ DECLARE_VTABLE_HOOK(LevelShutdown, void, (IBaseClientDLL* thisptr))
 
 static void HookLevelShutdown()
 {
-	INSTALL_VTABLE_HOOK(LevelShutdown, interfaces::BaseClientDLL, 7);
+	INSTALL_VTABLE_HOOK(LevelShutdown, interfaces::ClientDLL, 7);
 
 	constexpr Color_t color = {100, 255, 100, 255};
 	helper::console::ColoredPrint("BaseClientDll::LevelShutdown hooked\n", color);

@@ -8,7 +8,7 @@
 #include "../features/lua/api.h"
 #include "../features/lua/classes.h"
 
-DECLARE_VTABLE_HOOK(LevelInitPreEntity, void, (IBaseClientDLL* thisptr, const char* mapName))
+DECLARE_VTABLE_HOOK(LevelInitPreEntity, void, (CHLClient* thisptr, const char* mapName))
 {
 	if (LuaHookManager::HasHooks("LevelInitPreEntity"))
 	{
@@ -21,7 +21,7 @@ DECLARE_VTABLE_HOOK(LevelInitPreEntity, void, (IBaseClientDLL* thisptr, const ch
 
 static void HookLevelInitPreEntity()
 {
-	INSTALL_VTABLE_HOOK(LevelInitPreEntity, interfaces::BaseClientDLL, 5);
+	INSTALL_VTABLE_HOOK(LevelInitPreEntity, interfaces::ClientDLL, 5);
 
 	constexpr Color_t color{100, 255, 100, 255};
 	helper::console::ColoredPrint("BaseClientDll::LevelInitPreEntity hooked\n", color);

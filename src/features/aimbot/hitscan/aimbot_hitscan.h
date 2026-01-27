@@ -89,7 +89,7 @@ struct AimbotHitscan
 			case HitscanOffset::CHEST:
 			{
 				Vector boneCenter;
-				static_cast<CBaseAnimating*>(pTarget)->GetHitboxCenter(bones, HITBOX_SPINE3, boneCenter);
+				static_cast<CBaseAnimating*>(pTarget)->GetHitboxCenter(bones, HITBOX_SPINE0, boneCenter);
 
 				helper::engine::Trace(eyePos, boneCenter, MASK_SHOT | CONTENTS_HITBOX, &filter, &trace);
 				if (!trace.DidHit() || trace.m_pEnt != pTarget)
@@ -140,15 +140,14 @@ struct AimbotHitscan
 		Math::AngleVectors(viewAngles, &viewForward);
 		viewForward.Normalize();
 
-		float fovRad = DEG2RAD(settings.aimbot.fov);
-		float minDot = cosf(fovRad);
-
 		CGameTrace trace;
 		CTraceFilterHitscan filter;
 		filter.pSkip = pLocal;
-
+		
 		bool bIsSniperRifle = pWeapon->IsSniperRifle();
 		bool bIsZoomed = pLocal->InCond(TF_COND_ZOOMED);
+		
+		float maxFov = AimbotUtils::GetAimbotFovScaled(pLocal); //settings.aimbot.fov;
 
 		auto scanList = [&](const auto& list)
 		{
@@ -160,25 +159,23 @@ struct AimbotHitscan
 				Vector pos;
 				{
 					if (entity->IsPlayer())
-						{
-							if (!GetShotPosition(pLocal, entity, pWeapon, shootPos, pos))
-								continue;
-						}
+					{
+						if (!GetShotPosition(pLocal, entity, pWeapon, shootPos, pos))
+							continue;
+					}
 					else if (entity->IsBuilding())
 						pos = reinterpret_cast<CBaseObject*>(entity)->GetCenter();
 					else
 						pos = entity->GetAbsOrigin();
 				}
-	
-				Vector dir = pos - shootPos;
-				float distance = dir.Normalize();
-	
+
+				float distance = (pos - shootPos).Normalize();
 				if (distance >= 2048.f)
 					continue;
-	
-				float dot = dir.Dot(viewForward);
-	
-				if (dot < minDot)
+
+				Vector angle = Math::CalcAngle(shootPos, pos);
+				float fov = Math::CalcFov(viewAngles, angle);
+				if (fov > maxFov)
 					continue;
 	
 				if (settings.aimbot.waitforcharge && bIsZoomed && bIsSniperRifle && !AimbotUtils::CanDamageWithSniperRifle(pLocal, entity, pWeapon))
@@ -192,7 +189,7 @@ struct AimbotHitscan
 						continue;
 				}
 	
-				targets.emplace_back(PotentialTarget{dir, pos, distance, dot, entity});
+				targets.emplace_back(PotentialTarget{angle, pos, distance, fov, entity});
 			}
 		};
 
@@ -210,7 +207,10 @@ struct AimbotHitscan
 		if (targets.empty())
 			return;
 
-		AimbotUtils::QuickSort(targets, 0, targets.size() - 1);
+		std::sort(targets.begin(), targets.end(), [&](PotentialTarget a, PotentialTarget b){
+			return a.fov < b.fov;
+		});
+
 		AimbotMode mode = settings.aimbot.mode;
 
 		switch(mode)
@@ -221,7 +221,7 @@ struct AimbotHitscan
 					pCmd->buttons |= IN_ATTACK;
 
 				auto target = targets.front();
-				Vector angle = target.dir.ToAngle();
+				Vector angle = target.dir;
 
 				pCmd->viewangles = angle;
 				interfaces::Engine->SetViewAngles(angle);
@@ -230,7 +230,7 @@ struct AimbotHitscan
 			case AimbotMode::SMOOTH:
 			{
 				auto target = targets.front();
-				Vector targetAngle = target.dir.ToAngle();
+				Vector targetAngle = target.dir;
 				
 				Vector delta = targetAngle - viewAngles;
 				Vector smoothedAngle = viewAngles + (delta * settings.aimbot.smoothness * 0.01f);
@@ -256,12 +256,14 @@ struct AimbotHitscan
 			}
 			case AimbotMode::ASSISTANCE:
 			{
+				// this sh dont work right
+				// gotta think of something else
 				// not moving the mouse, dont do anything
 				if (pCmd->mousedx == 0 && pCmd->mousedy == 0)
 					break;
 				
 				auto target = targets.front();
-				Vector targetAngle = target.dir.ToAngle();
+				Vector targetAngle = target.dir;
 
 				Vector delta = targetAngle - viewAngles;
 				Vector smoothedAngle = viewAngles + (delta * settings.aimbot.smoothness * 0.01f);
@@ -294,7 +296,7 @@ struct AimbotHitscan
 				if (helper::localplayer::IsAttacking(pLocal, pWeapon, pCmd))
 				{
 					auto target = targets.front();
-					Vector angle = target.dir.ToAngle();
+					Vector angle = target.dir;
 					pCmd->viewangles = angle;
 					state.angle = angle;
 					state.running = true;

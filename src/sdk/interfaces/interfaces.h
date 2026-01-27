@@ -39,13 +39,13 @@ extern HCursor cursor;
 namespace interfaces
 {
 	extern IVEngineClient014* Engine;
-	extern IBaseClientDLL* BaseClientDLL;
+	extern CHLClient* ClientDLL;
 	extern IClientMode* ClientMode;
 	extern ICvar* Cvar;
 	extern IPanel* VGui;
 	extern ISurface* Surface;
 	extern IClientEntityList* EntityList;
-	extern IEngineVGui* EngineVGui;
+	extern IEngineVGuiInternal* EngineVGui;
 	extern IVRenderView* RenderView;
 	extern IInputSystem* InputSystem;
 	extern IEngineTrace* EngineTrace;
